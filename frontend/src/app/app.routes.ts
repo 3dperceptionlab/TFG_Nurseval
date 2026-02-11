@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Landing } from './components/landing/landing';
 import { Theory } from './components/theory/theory';
+import { StudentDashboard } from './components/student-dashboard/student-dashboard';
 
 export const routes: Routes = [
     {
@@ -10,5 +11,9 @@ export const routes: Routes = [
     {
         path: 'theory',
         component: Theory,
+    },
+    {
+        path: 'student/evaluations/:evaluationId',
+        component: StudentDashboard,
     }
 ];
