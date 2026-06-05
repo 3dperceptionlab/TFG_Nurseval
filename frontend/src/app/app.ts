@@ -1,5 +1,5 @@
 
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 interface TimelineEvent {
@@ -13,6 +13,7 @@ interface TimelineEvent {
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.css'
 })
 export class App {

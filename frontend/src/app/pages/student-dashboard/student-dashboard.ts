@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { 
   Clock, TriangleAlert, Eye, ChartNoAxesColumnDecreasing, Lightbulb, ChevronDown, Play, Volume2, Maximize, Video, ChevronRight,
   LucideAngularModule, 
@@ -13,6 +13,7 @@ import { Sidebar } from "../../shared/sidebar/sidebar";
   imports: [LucideAngularModule, RouterLink, Sidebar],
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css',
+   changeDetection: ChangeDetectionStrategy.Eager,
    providers: [
     {
       provide: LUCIDE_ICONS,

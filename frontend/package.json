@@ -20,12 +20,12 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "^21.2.16",
-    "@angular/compiler": "^21.2.16",
-    "@angular/core": "^21.2.16",
-    "@angular/forms": "^21.2.16",
-    "@angular/platform-browser": "^21.2.16",
-    "@angular/router": "^21.2.16",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/router": "^22.0.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindplus/elements": "^1.0.22",
     "lucide-angular": "^0.563.0",
@@ -33,11 +33,12 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.14",
-    "@angular/cli": "^21.2.14",
-    "@angular/compiler-cli": "^21.2.16",
+    "@angular/build": "^22.0.0",
+    "@angular/cli": "^22.0.0",
+    "@angular/compiler-cli": "^22.0.0",
     "@types/jasmine": "~5.1.0",
     "autoprefixer": "^10.5.0",
+    "istanbul-lib-instrument": "^6.0.3",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -46,6 +47,6 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.3.0",
-    "typescript": "~5.9.3"
+    "typescript": "~6.0.3"
   }
 }

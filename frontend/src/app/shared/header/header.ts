@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ArrowRight, LUCIDE_ICONS, LucideAngularModule, LucideIconProvider, Stethoscope } from "lucide-angular";
 
 @Component({
@@ -6,6 +6,7 @@ import { ArrowRight, LUCIDE_ICONS, LucideAngularModule, LucideIconProvider, Stet
   imports: [LucideAngularModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
       {
         provide: LUCIDE_ICONS,

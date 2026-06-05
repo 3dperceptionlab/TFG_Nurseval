@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { 
   ArrowRight, 
   Scissors,
@@ -18,6 +18,7 @@ import { PROTOCOLOS_DATA } from '../../models/protocolos-data';
   imports: [LucideAngularModule],
   templateUrl: './theory.html',
   styleUrl: './theory.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     {
         provide: LUCIDE_ICONS,

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { BookOpen, ChevronLeft, LogOut, LucideAngularModule, User } from "lucide-angular";
 
 @Component({
   selector: 'app-sidebar',
   imports: [LucideAngularModule],
   templateUrl: './sidebar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sidebar.css',
 })
 export class Sidebar {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { 
   ArrowRight, 
   Brain, 
@@ -17,6 +17,7 @@ import { Header } from "../../shared/header/header";
   imports: [LucideAngularModule, Header],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     {
       provide: LUCIDE_ICONS,
