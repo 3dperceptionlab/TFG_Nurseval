@@ -1,0 +1,36 @@
+<div class=" bg-background text-slate-800">
+  <app-header></app-header>
+
+  <div class="min-h-screen flex flex-col items-center justify-center">
+    
+    <div class="max-w-xl w-full">
+      <div
+        class="p-20 rounded-4xl bg-white border border-slate-200 shadow-xs ">
+        <h1 class="text-3xl text-center text-slate-800 font-bold mb-4">Inicia sesión</h1>
+
+        <form class="space-y-3 mt-10">
+            <div>
+              <label for="email"
+                  class="mb-2 text-slate-900 inline-block ">Email</label>
+              <input type="email" id="email" name="email" placeholder="yourname@example.com" required
+                  class="px-3 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue " />
+            </div>
+            <div>
+              <label for="password"
+                  class="mb-2 text-slate-900 inline-block ">Contraseña</label>
+              <input type="password" id="password" name="password" placeholder="••••••••" required
+                  class="px-3 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue " />
+            </div>
+            
+            <button type="submit" class="w-full px-8 py-3 bg-aqua-blue text-white rounded-xl hover:bg-dark-blue transition-all shadow-sm shadow-blue-shadow">
+              Iniciar sesión
+            </button>
+
+            <div class="text-slate-900 text-sm text-center">¿No tienes una cuenta?<a routerLink="/register"
+                  class="text-aqua-blue hover:underline ml-1 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-dark-blue rounded">Regístrate</a>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+</div>

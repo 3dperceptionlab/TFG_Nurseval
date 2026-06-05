@@ -1,7 +1,7 @@
-<div class="flex-1 overflow-y-auto bg-[#f8fafc] p-10">
+<div class="flex-1 overflow-y-auto bg-background p-10">
     <div class="max-w-6xl mx-auto mb-8">
         <div>
-            <h1 class="text-3xl font-extrabold text-slate-900 mb-2 uppercase">Teoría</h1>
+            <h1 class="text-3xl font-extrabold text-slate-800 mb-2 uppercase">Teoría</h1>
             <p class="text-slate-500 mt-1">Aprende la técnica de cada protocolo paso a paso.</p>
         </div>
     </div>
@@ -13,7 +13,7 @@
             @for (key of protocolKeys; track key) {
                 <button 
                 (click)="selectedKey.set(key)"
-                [class]="selectedKey() === key ? 'bg-[#009ea9] text-white border-[#009ea9] shadow-md scale-105' : 'bg-white text-[#009ea9] border-slate-200 hover:border-[#009ea9]'"
+                [class]="selectedKey() === key ? 'bg-aqua-blue text-white border-aqua-blue shadow-md scale-105' : 'bg-white text-aqua-blue border-slate-200 hover:border-aqua-blue'"
                 class="px-4 py-2 rounded-lg border text-sm font-medium transition-all capitalize cursor-pointer">
                     <span class="font-bold">{{ PROTOCOLOS_DATA[key].nombre }}</span> 
                 </button>
@@ -22,7 +22,7 @@
         </div>        
     </div>
     <div class="max-w-6xl mx-auto bg-white border border-slate-200 rounded-2xl p-10 mb-8">
-        <div class="text-slate-900 font-bold mb-6 flex items-center gap-2">
+        <div class="text-slate-800 font-bold mb-6 flex items-center gap-2">
             <span class="px-3 py-1 rounded-md text-2xl">
                 Vendaje de {{ currentProtocol().nombre }}
             </span>
@@ -40,16 +40,16 @@
                     </div>
                 }
             </div>
-            <div class="md:col-span-2  ml-3 pl-5 border-l-[3px] border-[#009ea9] py-1 space-y-6">
+            <div class="md:col-span-2  ml-3 pl-5 border-l-[3px] border-aqua-blue py-1 space-y-6">
                 <div class="flex gap-2 items-baseline">
-                    <span class="font-bold text-slate-900 min-w-25">Propósito:</span>
+                    <span class="font-bold text-slate-800 min-w-25">Propósito:</span>
                     <span class="text-slate-600 leading-relaxed">{{ currentProtocol().objetivo }}</span>
                 </div>
                 <div class="flex gap-2 items-start">
-                    <span class="font-bold text-slate-900 min-w-25 mt-1">Materiales:</span>
+                    <span class="font-bold text-slate-800 min-w-25 mt-1">Materiales:</span>
                     <div class="flex flex-wrap gap-2">
                         @for (material of currentProtocol().materiales; track material) {
-                            <span class="px-3 py-1 bg-[#dcf7f8] text-[#067077] border border-[#bcebed] rounded-full text-sm font-medium shadow-sm whitespace-nowrap">
+                            <span class="px-3 py-1 bg-light-blue text-dark-blue rounded-full text-sm font-medium shadow-sm whitespace-nowrap">
                                 {{ material }}
                             </span>
                         }
@@ -64,28 +64,28 @@
                 <div class="md:col-span-2">
                     <div class="flex items-start gap-6 pr-8 relative">
                         <div class="flex flex-col items-center shrink-0 relative">
-                            <div class="w-10 h-10 rounded-full bg-[#009ea9] text-white flex items-center justify-center font-bold z-20 shadow-md relative">
+                            <div class="w-10 h-10 rounded-full bg-aqua-blue text-white flex items-center justify-center font-bold z-20 shadow-md relative">
                                 {{ i + 1 }}
                             </div>
 
                             @if (!last) {
-                            <div class="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 bg-linear-to-b from-[#009ea9] via-[#009ea9]/40 to-transparent z-10"
+                            <div class="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 bg-linear-to-b from-aqua-blue via-aqua-blue/40 to-transparent z-10"
                                 style="height: calc(100% + 220px);">
                             </div>
                             }
                         </div>
 
                         <div class="space-y-4 pt-1 pb-4">
-                            <h3 class="text-xl font-bold text-[#067077]">{{ paso.titulo }}</h3>
-                            <p class="text-slate-600 leading-relaxed">{{ paso.instrucciones }}</p>
+                            <h3 class="text-xl font-bold text-dark-blue">{{ paso.titulo }}</h3>
+                            <p class="text-slate-500 leading-relaxed">{{ paso.instrucciones }}</p>
 
                             @if (paso.notas && paso.notas.length > 0) {
                             <div class="space-y-3 pt-2">
                                 @for (nota of paso.notas; track nota) {
-                                <div class="flex items-start gap-3 p-4 rounded-2xl bg-[#f8fafc] border border-slate-100">
-                                    <lucide-icon name="lightbulb" size="18" class="text-[#009ea9] mt-0.5 shrink-0"></lucide-icon>
+                                <div class="flex items-start gap-3 p-4 rounded-2xl bg-background border border-slate-100">
+                                    <lucide-icon name="lightbulb" size="18" class="text-aqua-blue mt-0.5 shrink-0"></lucide-icon>
                                     <p class="text-sm text-slate-500 italic">
-                                        <span class="font-bold text-[#067077] not-italic">Tip:</span> {{ nota }}
+                                        <span class="font-bold text-dark-blue not-italic">Tip:</span> {{ nota }}
                                     </p>
                                 </div>
                                 }
@@ -100,7 +100,7 @@
                     @if (paso.ilustracion) {
                         <img [src]="paso.ilustracion" class="w-full h-full object-cover">
                     } @else {
-                        <div class="flex flex-col items-center text-slate-300">
+                        <div class="flex flex-col items-center text-slate-200">
                         <lucide-icon name="image" size="32"></lucide-icon>
                         <span class="text-[10px] font-bold mt-2 uppercase">Sin Ilustración</span>
                         </div>

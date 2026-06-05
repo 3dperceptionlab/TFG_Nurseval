@@ -2,8 +2,20 @@
 @import "tailwindcss";
 
 @theme {
-  /* Definir Noto Sans como la fuente sans principal */
   --font-sans: "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-aqua-blue: #009ea9;
+  --color-dark-blue: #067077;
+  --color-light-blue: #dcf7f8;
+  --color-background: #f8fafc;
+  --color-blue-shadow: #8cd8dd;
+  /*
+  bordes suaves: -slate-200
+  texto sobre fondo blanco: -slate-500
+  texto sobre fondo gris: -slate-600
+  títulos: -slate-800
+  */
+  
 }
 
 html {

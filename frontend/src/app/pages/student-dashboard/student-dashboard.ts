@@ -6,10 +6,11 @@ import {
   LucideIconProvider 
 } from 'lucide-angular';
 import { RouterLink } from '@angular/router';
+import { Sidebar } from "../../shared/sidebar/sidebar";
 
 @Component({
   selector: 'app-student-dashboard',
-  imports: [LucideAngularModule, RouterLink],
+  imports: [LucideAngularModule, RouterLink, Sidebar],
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css',
    providers: [

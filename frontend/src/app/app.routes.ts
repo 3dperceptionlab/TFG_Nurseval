@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
-import { Landing } from './components/landing/landing';
-import { Theory } from './components/theory/theory';
-import { StudentDashboard } from './components/student-dashboard/student-dashboard';
+import { Landing } from './pages/landing/landing';
+import { Theory } from './pages/theory/theory';
+import { StudentDashboard } from './pages/student-dashboard/student-dashboard';
+import { Login } from './pages/login/login';
+import { Register } from './pages/register/register';
 
 export const routes: Routes = [
     {
@@ -15,5 +17,13 @@ export const routes: Routes = [
     {
         path: 'student/evaluations/:evaluationId',
         component: StudentDashboard,
+    },
+    {
+        path: 'login',
+        component: Login,
+    },
+    {
+        path: 'register',
+        component: Register,
     }
 ];

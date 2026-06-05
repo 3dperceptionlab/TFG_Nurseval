@@ -10,10 +10,11 @@ import {
   LUCIDE_ICONS,
   LucideIconProvider 
 } from 'lucide-angular';
+import { Header } from "../../shared/header/header";
 
 @Component({
   selector: 'app-landing',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, Header],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
   providers: [
