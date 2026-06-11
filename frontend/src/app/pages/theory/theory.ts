@@ -2,10 +2,12 @@ import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/c
 import { PROTOCOLOS_DATA } from '../../models/protocolos-data';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUser, faImage, faLightbulb, faPlay, faXmark, faVideo, faExpand} from '@fortawesome/free-solid-svg-icons';
+import { VideoModal } from "./video-modal/video-modal";
+import { Steps } from './steps/steps';
 
 @Component({
   selector: 'app-theory',
-  imports: [FontAwesomeModule],
+  imports: [FontAwesomeModule, VideoModal, Steps],
   templateUrl: './theory.html',
   styleUrl: './theory.css',
   changeDetection: ChangeDetectionStrategy.Eager,

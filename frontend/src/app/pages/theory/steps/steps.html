@@ -1,0 +1,93 @@
+<div class="mx-auto bg-white border border-slate-200 rounded-2xl p-10 mb-8">
+  <h2 class="text-slate-800 text-2xl font-bold mb-6">
+    Vendaje de {{ currentProtocol().nombre }}
+  </h2>
+  <div class="flex gap-8 items-start mb-6">
+    <div class="relative bg-white border border-slate-200 rounded-2xl overflow-hidden flex items-center justify-center h-50 w-fit">
+        @if (currentProtocol().imagen) {
+            <img src="images/{{currentProtocol().imagen}}"
+                [alt]="currentProtocol().nombre"
+                class="w-auto h-full object-contain transition-all duration-500 animate-in zoom-in-95 fade-in">
+        } @else {
+            <div class="flex flex-col items-center py-8 text-slate-300">
+                <fa-icon [icon]="icons.faImage" />
+                <span class="text-[10px] uppercase font-bold mt-2">Sin Vista Previa</span>
+            </div>
+        }
+    </div>
+    <div class="md:col-span-2  ml-3 pl-5 border-l-[3px] border-aqua-blue py-1 space-y-6">
+        <div class="flex gap-2 items-baseline">
+            <span class="font-bold text-slate-800 min-w-25">Propósito:</span>
+            <span class="text-slate-600 leading-relaxed">{{ currentProtocol().objetivo }}</span>
+        </div>
+        <div class="flex gap-2 items-start">
+            <span class="font-bold text-slate-800 min-w-25 mt-1">Materiales:</span>
+            <div class="flex flex-wrap gap-2">
+                @for (material of currentProtocol().materiales; track material) {
+                    <span class="px-3 py-1 bg-light-blue text-dark-blue rounded-full text-sm font-medium shadow-sm whitespace-nowrap">
+                        {{ material }}
+                    </span>
+                }
+            </div>
+        </div>
+        <button (click)="emitOpenModal()" class="px-6 py-3 bg-aqua-blue text-white rounded-xl font-bold flex items-center gap-2 hover:bg-dark-blue transition-all shadow-md whitespace-nowrap">
+          <fa-icon [icon]="icons.faPlay" />
+          Ver demostración
+        </button>
+    </div>
+  </div>
+
+  <div class="px-4 py-4">
+  @for (paso of currentProtocol().procedimiento; track paso.titulo; let i = $index; let last = $last) {
+    <div class="grid md:grid-cols-3 mb-12 relative">
+      <div class="md:col-span-2">
+        <div class="flex items-start gap-6 pr-8 relative">
+          <div class="flex flex-col items-center shrink-0 relative">
+            <div class="w-10 h-10 rounded-full bg-aqua-blue text-white flex items-center justify-center font-bold z-20 shadow-md relative">
+                {{ i + 1 }}
+            </div>
+
+            @if (!last) {
+            <div class="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 bg-linear-to-b from-aqua-blue via-aqua-blue/40 to-transparent z-10"
+                style="height: calc(100% + 220px);">
+            </div>
+            }
+          </div>
+
+          <div class="space-y-4 pt-1 pb-4">
+            <h3 class="text-xl font-bold text-dark-blue">{{ paso.titulo }}</h3>
+            <p class="text-slate-500 leading-relaxed">{{ paso.instrucciones }}</p>
+
+            @if (paso.notas && paso.notas.length > 0) {
+            <div class="space-y-3 pt-2">
+                @for (nota of paso.notas; track nota) {
+                <div class="flex items-start gap-3 p-4 rounded-lg bg-background border text-dark-blue border-slate-100">
+                    <fa-icon [icon]="icons.faLightbulb" />
+                    <p class="text-sm ">
+                        <span class="font-bold text-dark-blue">Tip: </span> <span class=" text-slate-500 italic">{{ nota }}</span>
+                    </p>
+                </div>
+                }
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center">
+        <div class="bg-white w-full aspect-video rounded-lg border border-slate-200 shadow-sm flex items-center justify-center overflow-hidden">
+        @if (paso.ilustracion) {
+          <img [src]="paso.ilustracion" class="w-full h-full object-cover">
+        } @else {
+          <div class="flex flex-col items-center text-slate-200">
+          <fa-icon [icon]="icons.faImage" />
+          <span class="text-[10px] font-bold mt-2 uppercase">Sin Ilustración</span>
+          </div>
+        }
+        </div>
+      </div>
+
+    </div>
+  }
+  </div>
+</div>
