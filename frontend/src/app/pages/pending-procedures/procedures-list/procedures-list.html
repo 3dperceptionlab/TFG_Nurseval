@@ -1,0 +1,57 @@
+<section>
+  <h2 class="text-slate-800 text-2xl font-bold mb-6">
+      Resultados
+  </h2>
+  <div class="flex flex-col gap-4">
+    @for(p of procedures(); track p.id) {
+    <div class="bg-white rounded-2xl py-6 px-8 border border-slate-200 shadow-sm grid grid-cols-[1.5fr_2fr_0.5fr] items-center text-sm gap-4">
+  
+      <div class="flex flex-row items-center gap-6">
+        <div class="text-dark-blue font-semibold pr-3  min-w-40 truncate">
+          {{p.studentName}}
+        </div>
+        <div class="flex flex-col w-fit gap-2 items-center px-5 text-dark-blue border-x border-slate-300">
+          <fa-icon [icon]="icons.faCalendar" class="w-fit"/>
+          <span>{{p.fecha}}</span>
+        </div>
+        <div class="flex flex-col gap-1 items-start text-slate-500">
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Protocolo</span>
+          <span class="text-sm bg-light-blue px-2.5 py-1 rounded-md text-dark-blue font-medium">{{p.protocolo}}</span>
+        </div>
+      </div>
+  
+      <div class="flex flex-row items-center gap-15 text-slate-500 text-sm justify-center">
+        <div class="flex flex-col gap-1 items-center text-center">
+          <fa-icon [icon]="icons.faClock"/>
+          <span >Tiempo</span>
+          <span class="text-dark-blue font-semibold">{{p.tiempo}} min</span>
+        </div>
+  
+        <div class="flex flex-col gap-1 items-center text-center">
+          <fa-icon [icon]="icons.faWarning" />
+          <span >Errores</span>
+          <span class="text-dark-blue font-semibold">{{p.errores ?? 'NA'}}</span>
+        </div>
+  
+        <div class="flex flex-col gap-1 items-center text-center">
+          <fa-icon [icon]="icons.faSquareCheck"/>
+          <span>Estado</span>
+          <span class="text-dark-blue font-semibold">{{p.estado}}</span>
+        </div>
+  
+        <div class="flex flex-col gap-1 items-center text-center">
+          <fa-icon [icon]="icons.faChartSimple"/>
+          <span >Puntuación</span>
+          <span class="text-dark-blue font-semibold">{{p.puntuacion ?? 'NA'}}</span>
+        </div>
+      </div>
+  
+      <a [routerLink]="'/app/procedure/'+ p.id" class="px-6 py-3 bg-aqua-blue text-white rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-dark-blue transition-all shadow-md whitespace-nowrap">
+        <span>Evaluar</span>
+        <fa-icon [icon]="icons.faArrowRight" />
+      </a>
+  
+    </div>
+    }
+  </div>
+</section>
