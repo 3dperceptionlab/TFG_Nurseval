@@ -1,0 +1,89 @@
+
+
+  <div id="modalOverlay"
+   class="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-1000 before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)]">
+
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1"
+        class="w-full max-w-lg bg-white border border-slate-100 shadow-lg rounded-lg relative max-h-[95vh] overflow-y-auto outline-none p-4 md:p-6 ">
+
+        <button (click)="emitCloseModal()" type="button" id="closeModal" aria-label="Close modal"
+          class="flex items-center absolute top-6 right-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded cursor-pointer text-slate-500 hover:text-slate-600">
+          <fa-icon [icon]="icons.faXmark"></fa-icon>
+        </button>
+
+        <div class="text-center mt-6">
+          <div class="flex -space-x-5 justify-center mb-6">
+              <img class="h-14 w-14 rounded-full ring-2 ring-white inline-block" src="https://readymadeui.com/team-1.webp" alt="team-1" />
+              <img class="h-14 w-14 rounded-full ring-2 ring-white inline-block" src="https://readymadeui.com/team-2.webp" alt="team-2" />
+              <img class="h-14 w-14 rounded-full ring-2 ring-white inline-block" src="https://readymadeui.com/team-3.webp" alt="team-3" />
+              <img class="h-14 w-14 rounded-full ring-2 ring-white inline-block" src="https://readymadeui.com/team-4.webp" alt="team-4" />
+          </div>
+          <h3 id="modal-title" class="text-slate-800 text-lg font-semibold ">Invitar alumnos</h3>
+          <p class="text-slate-600 text-sm mt-2 leading-relaxed">Introduce el email para buscarlos.</p>
+        </div>
+
+        <div class="relative mt-8">
+          <div class="flex items-center gap-2 px-3 py-2.5 rounded-md bg-white outline-1 -outline-offset-1 outline-slate-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-aqua-blue">
+              <fa-icon [icon]="icons.faEnvelope" class="text-slate-400"></fa-icon>
+              <input type="email" 
+                     id="email" 
+                     placeholder="yourname@example.com" 
+                     [value]="searchQuery()"
+                     (input)="searchQuery.set($any($event.target).value)"
+                     class="text-sm text-slate-900 w-full outline-none" 
+                     autocomplete="off"/>
+          </div>
+
+          @if (resultadosBusqueda().length > 0) {
+            <ul class="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-slate-200 rounded-md shadow-xl divide-y divide-slate-100">
+              @for (alumno of resultadosBusqueda(); track alumno.id) {
+                <li>
+                  <button type="button" 
+                          (click)="selectStudent(alumno)"
+                          class="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm hover:bg-slate-50 transition-colors cursor-pointer">
+                    <img [src]="alumno.img" class="h-7 w-7 rounded-full" alt="avatar" />
+                    <div class="flex flex-col">
+                      <span class="font-medium text-slate-800 text-xs">{{alumno.name}}</span>
+                      <span class="text-slate-400 text-xs">{{alumno.email}}</span>
+                    </div>
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        @if (selectedStudents().length > 0) {
+          <div class="mt-4 flex flex-wrap gap-2">
+            @for (alumno of selectedStudents(); track alumno.id) {
+              <div class="inline-flex items-center gap-2 bg-slate-100 text-slate-700 pl-2 pr-3 py-1.5 rounded-full border border-slate-200 text-xs font-medium">
+                <img [src]="alumno.img" class="h-5 w-5 rounded-full" alt="avatar-mini" />
+                <span>{{ alumno.email }}</span>
+                <button type="button" 
+                        (click)="deleteStudent(alumno.id)"
+                        class="text-slate-400 hover:text-slate-500 cursor-pointer transition-colors flex items-center ml-1"
+                        aria-label="Quitar alumno">
+                  <fa-icon [icon]="icons.faXmark" class="text-[10px]"></fa-icon>
+                </button>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="my-6 flex items-center gap-4">
+          <hr class="w-full border-slate-200 " />
+          <span class="text-sm text-slate-500">o</span>
+          <hr class="w-full border-slate-200" />
+        </div>
+
+        <div class="flex flex-col gap-4 sm:flex-row">
+          <button type="button" id="cancelBtn" (click)="emitCloseModal()"
+              class="px-3.5 py-2 w-full text-slate-600 font-semibold rounded-md cursor-pointer bg-white border border-slate-200 transition-colors hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:bg-aqua-blue ">
+              Cancelar</button>
+          <button type="button"
+              [disabled]="selectedStudents().length === 0"
+              class="px-3.5 py-2 w-full text-white font-semibold rounded-md cursor-pointer bg-aqua-blue transition-colors hover:bg-dark-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 max-sm:-order-1 disabled:opacity-50 disabled:cursor-not-allowed">
+              Invitar</button>
+        </div>
+    </div>
+  </div>

@@ -1,0 +1,59 @@
+<div class="border border-white  rounded-lg overflow-x-auto shadow-md">
+   <table class="w-full rounded-3xl">
+      <thead
+         class="text-white text-left text-sm font-semibold border-b bg-dark-blue border-slate-300 whitespace-nowrap ">
+         <tr>
+            <th scope="col" class="pl-8 py-3.5">Users</th>
+            <th scope="col" class="px-3 py-3.5">Curso</th>
+            <th scope="col" class="px-3 py-3.5">Grupo</th>
+            <th scope="col" class="px-3 py-3.5">Prácticas</th>
+            <th scope="col" class="px-3 py-3.5">Media</th>
+            <th scope="col" class="px-3 py-3.5">Último inicio</th>
+            <th scope="col" class="px-3 py-3.5">Acciones</th>
+         </tr>
+      </thead>
+
+      <tbody class="text-sm divide-y divide-slate-200 bg-white">
+        @for(s of students(); track s.email) {
+           <tr>
+            <td class="px-3 py-4 font-medium text-slate-900 whitespace-nowrap">
+               <div class="flex items-center gap-3">
+                    @if (s.img) {
+                        <img src="" [alt]="'Foto de ' + s.name"
+                        class="w-9 h-9 rounded-full shrink-0" />
+                    } @else {
+                        <div class="w-9 h-9 flex rounded-full shrink-0 bg-slate-300 justify-center items-center">
+                            <fa-icon class="text-white" [icon]="icons.faImage" [size]="'xl'"></fa-icon>
+                        </div>
+                    }
+                  <div class="flex flex-col">
+                     <span class="text-sm font-semibold leading-relaxed">{{s.name + ' '+ s.surname }}</span>
+                     <span class="text-xs text-slate-400 font-normal">{{s.email}}</span>
+                  </div>
+               </div>
+            </td>
+            <td class="px-3 py-4 text-slate-500">
+               {{s.course}}
+            </td>
+            <td class="px-3 py-4 text-slate-500">
+               {{s.group}}
+            </td>
+            <td class="px-3 py-4 text-slate-500">
+               {{20}}
+            </td>
+            <td class="px-3 py-4">
+               <span
+                  class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">8,5</span>
+            </td>
+            <td class="px-3 py-4 flex gap-3 h-full">
+              {{s.lastLogin | date:"dd MMM hh:mm a"}}
+            </td>
+            <td class="px-3 py-4 text-dark-blue">
+               <a [routerLink]="'/app/procedures/34'+s.id" class="underline">Ver historial</a>
+               <fa-icon [icon]="icons.faAngleRight" class="w-fit"/>
+            </td>
+         </tr>
+        }
+      </tbody>
+   </table>
+</div>
