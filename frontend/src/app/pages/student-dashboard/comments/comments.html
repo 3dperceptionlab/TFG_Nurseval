@@ -1,0 +1,160 @@
+<div class="bg-white rounded-lg border border-slate-200 shadow-sm p-8 mb-8">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-bold text-lg text-slate-800">Línea temporal</h3>
+        
+        <button class="bg-aqua-blue text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-dark-blue transition-colors cursor-pointer">
+          <fa-icon [icon]="icons.faPlus"></fa-icon>
+          Nueva nota
+        </button>
+      </div>
+      <form class="mb-8 block animate-fade-in">
+        <div class="flex justify-end mb-4">
+          <button 
+            type="submit" 
+            class="px-6 py-2 bg-slate-700 hover:bg-slate-800 text-white font-medium rounded-lg flex items-center gap-2 shadow-sm transition-colors text-sm cursor-pointer">
+            <fa-icon [icon]="icons.faCheck" />
+            Guardar
+          </button>
+        </div>
+
+        
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="md:col-span-6 flex flex-col gap-2">
+              <label for="noteName" class="text-sm font-bold text-slate-700">Nombre</label>
+              <input 
+                id="noteName"
+                type="text" 
+                class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-slate-700 placeholder-slate-400 bg-white focus:border-aqua-blue focus:outline-none transition-all text-sm font-medium"
+                placeholder="Error de precisión">
+            </div>
+            <div class="md:col-span-3 flex flex-col gap-2">
+              <label class="text-sm font-bold text-slate-700">Tipo</label>
+              <div class="relative flex items-center">
+                <!-- Indicador visual de color para el tipo de nota -->
+                <span class="absolute left-4 w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                <select class="w-full pl-9 pr-10 py-2.5 border border-slate-200 rounded-lg text-slate-700 font-bold uppercase tracking-wider bg-white focus:border-aqua-blue focus:outline-none transition-all text-xs appearance-none cursor-pointer">
+                  <option value="problema">Problema</option>
+                  <option value="mejorable">Mejorable</option>
+                  <option value="correcto">Correcto</option>
+                </select>
+                <fa-icon [icon]="icons.faAngleDown" class="absolute right-4 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
+
+            <div class="md:col-span-3 flex flex-col gap-2">
+              <label for="noteTime" class="text-sm font-bold text-slate-700">Minuto</label>
+              <input 
+                id="noteTime"
+                type="text" 
+                class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-slate-400 font-mono bg-white focus:border-aqua-blue focus:outline-none transition-all text-sm"
+                placeholder="00:01:23">
+            </div>
+
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="noteDescription" class="text-sm font-bold text-slate-700">Descripción</label>
+            <textarea 
+              id="noteDescription"
+              rows="3" 
+              class="w-full p-4 border border-slate-200 rounded-lg text-slate-700 placeholder-slate-400 bg-white focus:border-aqua-blue focus:outline-none transition-all text-sm leading-relaxed"
+              placeholder="En el paso 3 ..."></textarea>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="noteSuggestion" class="text-sm font-bold text-slate-700">Sugerencia</label>
+            <textarea 
+              id="noteSuggestion"
+              rows="3" 
+              class="w-full p-4 border border-slate-200 rounded-lg text-slate-700 placeholder-slate-400 bg-white focus:border-aqua-blue focus:outline-none transition-all text-sm leading-relaxed"
+              placeholder="Es recomendable ..."></textarea>
+          </div>
+
+        </div>
+      </form>
+      <div class="relative h-4 bg-slate-100 rounded-full mb-12">
+      @for (nota of evaluation().notas; track nota.id) {
+          <a [routerLink]="[]" [fragment]="nota.id.toString()"><div 
+          class="absolute -top-1/3 w-6 h-6 border-4 border-white rounded-full shadow-sm cursor-pointer transition-transform hover:scale-125 z-20 -translate-x-1/2"
+          [style.left]="getNotePosition(nota.tiempo_seg)"
+          [class.bg-red-500]="nota.categoria === 'problema'"
+          [class.bg-yellow-400]="nota.categoria === 'mejorable'"
+          [class.bg-emerald-500]="nota.categoria === 'correcto'"
+          (mouseenter)="showTooltip(nota)"
+          (mouseleave)="hideTooltip()">
+          </div></a>
+      }
+
+      @if (activeTooltip()) {
+          <div 
+          class="absolute -top-20 bg-white border border-slate-200 p-3 rounded-xl shadow-xl z-30 whitespace-nowrap -translate-x-1/2"
+          [style.left]="getNotePosition(activeTooltip().tiempo_seg)">
+              <div class="flex items-center gap-2 mb-1">
+                  <div class="w-2 h-2 rounded-full"
+                      [class.bg-red-500]="activeTooltip().categoria === 'problema'"
+                      [class.bg-yellow-400]="activeTooltip().categoria === 'mejorable'"
+                      [class.bg-emerald-500]="activeTooltip().categoria === 'correcto'">
+                  </div>
+                  <span class="text-xs font-bold text-slate-600">{{ activeTooltip().titulo }}</span>
+              </div>
+              <p class="text-[12px] text-slate-500">Instante {{ activeTooltip().timestamp }}</p>
+              <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-slate-200 rotate-45"></div>
+          </div>
+      }
+      </div>
+
+      <div class="space-y-4">
+          <button class="w-full flex items-center gap-3 text-dark-blue font-bold uppercase" (click)="toggleNotes()">
+              <fa-icon [icon]="icons.faAngleDown" />
+              Desglose de notas ({{ evaluation().notas.length }})
+          </button>
+          @if(showNotes()){
+              <div class="pl-7 space-y-6">
+              @for (nota of evaluation().notas; track nota.id; let i = $index) {
+                <div [id]="nota.id" class="border-l-2 border-slate-100 pl-6 relative enter-animation flex justify-between items-start group" [style.animation-delay]="i * 0.1 + 's'">
+                    <div class="absolute -left-2.25 top-0 w-4 h-4 rounded-full border-2 border-white"
+                        [class.bg-red-500]="nota.categoria === 'problema'"
+                        [class.bg-yellow-400]="nota.categoria === 'mejorable'"
+                        [class.bg-emerald-500]="nota.categoria === 'correcto'">
+                    </div>
+
+                    <div class="flex-1">
+                      <h4 class="font-bold text-slate-600 text">{{ nota.titulo }} ({{ nota.timestamp }})</h4>
+                      
+                      <div class="mt-3 space-y-3">
+                          <div [class]="'p-4 rounded-xl border ' + 
+                              (nota.categoria === 'problema' ? 'bg-red-50 border-red-100' : 
+                              nota.categoria === 'mejorable' ? 'bg-yellow-50 border-yellow-100' : 'bg-emerald-50 border-emerald-100')">
+                              
+                              <span [class]="'text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded ' + 
+                                  (nota.categoria === 'problema' ? 'text-red-600 bg-red-100' : 
+                                  nota.categoria === 'mejorable' ? 'text-yellow-700 bg-yellow-100' : 'text-emerald-700 bg-emerald-100')">
+                                {{ nota.categoria }}
+                              </span>
+                              <p class="text-sm text-slate-600 mt-2 leading-relaxed">{{ nota.descripcion }}</p>
+                          </div>
+                          
+                          @if (nota.sugerencia) {
+                            <div class="bg-background p-4 rounded-xl border border-slate-100">
+                                <div class="flex items-center gap-2 mb-2">
+                                  <fa-icon [icon]="icons.faLightbulb" />
+                                  <span class="text-[10px] font-bold text-dark-blue uppercase tracking-widest">Sugerencia</span>
+                                </div>
+                                <p class="text-sm text-slate-500 italic leading-relaxed">{{ nota.sugerencia }}</p>
+                            </div>
+                          }
+                      </div>
+                    </div>
+
+                    <button
+                            type="button"
+                            class="absolute -top-2 right-2 flex items-center justify-center w-9 h-9 text-white bg-dark-blue hover:bg-white hover:text-dark-blue rounded-full shadow-sm border border-slate-200 transition-all cursor-pointer active:scale-95">
+                      <fa-icon [icon]="icons.faPen" class="text-sm"></fa-icon>
+                    </button>
+                </div>
+              }
+              </div>
+          }
+      </div>
+    </div>

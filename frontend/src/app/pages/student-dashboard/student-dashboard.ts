@@ -1,20 +1,23 @@
-import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faClock, faCheck, faArrowRight, faPlus, faTriangleExclamation,faPen, faPenToSquare, faEye, faChartColumn, faPlay, faExpand, faAngleDown, faVrCardboard, faLightbulb, faHand, faFaceMeh, faStopwatch} from '@fortawesome/free-solid-svg-icons';
-import { RouterLink } from '@angular/router';
+import { faCheck} from '@fortawesome/free-solid-svg-icons';
+import { Evaluation } from "./evaluation/evaluation";
+import { VideoSection } from "./video-section/video-section";
+import { Comments } from "./comments/comments";
+import { GeneralFeedback } from './general-feedback/general-feedback';
 
 @Component({
   selector: 'app-student-dashboard',
-  imports: [ RouterLink, FontAwesomeModule],
+  imports: [FontAwesomeModule, Evaluation, VideoSection, Comments, GeneralFeedback],
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css',
    changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class StudentDashboard {
-    readonly icons = { faClock, faArrowRight,faPlus, faCheck, faTriangleExclamation,faPen, faPenToSquare, faEye, faChartColumn, faPlay, faExpand, faAngleDown, faVrCardboard, faLightbulb, faHand, faFaceMeh, faStopwatch};
-    readonly activeTooltip = signal<any>(null);
-    readonly showNotes = signal<boolean>(true);
+    readonly icons = { faCheck};
+
     enterClass = signal('enter-animation');
+
     readonly evaluation = signal({
         evaluacion: {
             procedimiento: "Vendaje de capelina",
@@ -33,37 +36,8 @@ export class StudentDashboard {
         ]
     });
     
-    // Calcula la escala de la nota automáticamente si cambia la puntuación
-    readonly markScale = computed(() => {
-        const mark = this.evaluation().evaluacion.metricas.puntuacion;
-        if (mark < 5) return "deficiente";
-        if (mark < 7) return "bien";
-        if (mark < 9) return "notable";
-        return "sobresaliente";
-    });
 
-    // Calcula el número de errores segun las notas
-    readonly errorCount = computed(() => {
-        return this.evaluation().notas.filter(n => n.categoria === "problema").length;
-    });
 
-    // Cálculo de posición en la timeline
-    getNotePosition(segundos: number): string {
-        const total = this.evaluation().evaluacion.duracion_total_seg;
-        const porcentaje = (segundos / total) * 100;
-        return `${porcentaje}%`;
-    }
 
-    showTooltip(nota: any) {
-        this.activeTooltip.set(nota);
-    }
-
-    hideTooltip() {
-        this.activeTooltip.set(null);
-    }
-
-    toggleNotes(){
-        this.showNotes.set(!this.showNotes());
-    }
 
 }

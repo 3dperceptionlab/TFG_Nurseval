@@ -1,0 +1,50 @@
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-light-blue flex items-center justify-center text-aqua-blue">
+          <fa-icon [icon]="icons.faClock" />
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tiempo</p>
+          <p class="text-xl font-bold text-slate-800">{{ evaluation().evaluacion.duracion_total_seg / 60 }} min</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500">
+          <fa-icon [icon]="icons.faTriangleExclamation" />
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Errores</p>
+          <p class="text-xl font-bold text-slate-800">{{ errorCount()}}</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-light-blue flex items-center justify-center text-aqua-blue">
+          <fa-icon [icon]="icons.faEye" />
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Atención</p>
+          <p class="text-xl font-bold text-slate-800">{{ evaluation().evaluacion.metricas.atencion }}%</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4 relative group">
+        <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+          <fa-icon [icon]="icons.faChartColumn" />
+        </div>
+        <div class="flex-1">
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Puntuación</p>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-bold text-slate-800">{{ evaluation().evaluacion.metricas.puntuacion }}/10</span>
+            <span class="bg-light-blue text-dark-blue text-xs font-bold px-2 py-0.5 rounded uppercase">
+              {{ markScale() }}
+            </span>
+          </div>
+        </div>
+        
+        <button type="button" class="absolute right-5 flex items-center justify-center w-9 h-9 text-white bg-dark-blue hover:bg-white hover:text-dark-blue rounded-full shadow-sm border border-slate-200 transition-all cursor-pointer active:scale-95">
+          <fa-icon [icon]="icons.faPen" class="text-sm"></fa-icon>
+        </button>
+      </div>
+    </div>
