@@ -1,7 +1,7 @@
 <div class="bg-background text-slate-800 h-dvh w-full flex flex-col overflow-hidden">
   
   <app-header class="flex-none"></app-header>
-  <main class="flex-1 overflow-y-auto flex items-center justify-center p-4 sm:p-10 bg-linear-to-b from-white to-light-blue">
+  <main class="flex-1 overflow-y-auto flex items-center justify-center p-4 sm:p-10 bg-linear-to-b from-background to-light-blue">
     
     <div class="max-w-3xl w-full">
       <div class="p-8 sm:p-16 rounded-4xl bg-white border border-slate-200 shadow-xs">
@@ -9,7 +9,7 @@
 
         <form (submit)="onSubmit($event)" class="mt-10 space-y-3 flex flex-col items-center justify-center">
           
-          <div class="inline-flex w-full max-w-md p-1 bg-white border border-slate-200 rounded-xl shadow-sm">
+          <div class="inline-flex w-full max-w-md p-1 bg-white border border-slate-200 rounded-lg shadow-sm">
             <button 
               type="button"
               (click)="setRole('student')"
@@ -87,7 +87,7 @@
             </div>
           </div>
 
-          <button type="submit" class="w-fit px-20 py-3 bg-aqua-blue text-white rounded-xl font-bold hover:bg-dark-blue transition-all shadow-sm shadow-blue-shadow">
+          <button type="submit" class="w-fit px-20 py-3 bg-aqua-blue text-white rounded-lg font-bold hover:bg-dark-blue transition-all shadow-sm shadow-blue-shadow">
               Registrar cuenta
           </button>
 

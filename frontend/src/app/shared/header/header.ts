@@ -1,20 +1,16 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ArrowRight, LUCIDE_ICONS, LucideAngularModule, LucideIconProvider, Stethoscope } from "lucide-angular";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faStethoscope, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-header',
-  imports: [LucideAngularModule],
+  imports: [FontAwesomeModule, RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.css',
   changeDetection: ChangeDetectionStrategy.Eager,
-  providers: [
-      {
-        provide: LUCIDE_ICONS,
-        multi: true,
-        useValue: new LucideIconProvider({ ArrowRight, Stethoscope })
-      }
-    ]
 })
 export class Header {
-  readonly icons = { ArrowRight, Stethoscope};
+  readonly icons = { faArrowRight, faStethoscope};
+  authenticated = true;
 }

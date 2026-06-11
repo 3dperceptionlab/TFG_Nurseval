@@ -1,29 +1,17 @@
 import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
-import { 
-  Clock, TriangleAlert, Eye, ChartNoAxesColumnDecreasing, Lightbulb, ChevronDown, Play, Volume2, Maximize, Video, ChevronRight,
-  LucideAngularModule, 
-  LUCIDE_ICONS,
-  LucideIconProvider 
-} from 'lucide-angular';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faClock, faCheck, faArrowRight, faPlus, faTriangleExclamation,faPen, faPenToSquare, faEye, faChartColumn, faPlay, faExpand, faAngleDown, faVrCardboard, faLightbulb, faHand, faFaceMeh, faStopwatch} from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from '@angular/router';
-import { Sidebar } from "../../shared/sidebar/sidebar";
 
 @Component({
   selector: 'app-student-dashboard',
-  imports: [LucideAngularModule, RouterLink, Sidebar],
+  imports: [ RouterLink, FontAwesomeModule],
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css',
    changeDetection: ChangeDetectionStrategy.Eager,
-   providers: [
-    {
-      provide: LUCIDE_ICONS,
-      multi: true,
-      useValue: new LucideIconProvider({ Clock,TriangleAlert, Eye, ChartNoAxesColumnDecreasing, Lightbulb, ChevronDown, Play, Volume2, Maximize, Video, ChevronRight})
-    }
-  ],
 })
 export class StudentDashboard {
-    readonly icons = { Clock, TriangleAlert, Eye, ChartNoAxesColumnDecreasing, Lightbulb, ChevronDown, Play, Volume2, Maximize, Video, ChevronRight };
+    readonly icons = { faClock, faArrowRight,faPlus, faCheck, faTriangleExclamation,faPen, faPenToSquare, faEye, faChartColumn, faPlay, faExpand, faAngleDown, faVrCardboard, faLightbulb, faHand, faFaceMeh, faStopwatch};
     readonly activeTooltip = signal<any>(null);
     readonly showNotes = signal<boolean>(true);
     enterClass = signal('enter-animation');

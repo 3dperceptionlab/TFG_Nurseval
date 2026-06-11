@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-background text-slate-800">
   <app-header></app-header>
 
-  <header class="max-w-7xl mx-auto px-6 py-16 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
+  <header class="max-w-4/5 mx-auto px-6 py-16 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
     <div class="space-y-6">
       <span class="inline-block px-4 py-1.5 bg-light-blue text-dark-blue rounded-full text-sm font-semibold">
         Aprendizaje · Enfermería · Evaluación · Realidad Mixta
@@ -13,18 +13,18 @@
         NurseEval combina la potencia de las HoloLens con analítica de datos para ofrecer una plataforma de evaluación objetiva, permitiendo a los estudiantes perfeccionar sus habilidades clínicas.
       </p>
       <div class="flex gap-4">
-        <button class="px-8 py-3 bg-aqua-blue text-white rounded-xl font-bold flex items-center gap-2 hover:bg-dark-blue transition-all shadow-lg shadow-blue-shadow">
-          Comenzar Evaluación <lucide-icon [name]="icons.ArrowRight" size="18"></lucide-icon>
+        <button class="px-8 py-3 bg-aqua-blue text-white rounded-lg font-bold flex items-center gap-2 hover:bg-dark-blue transition-all shadow-lg shadow-blue-shadow">
+          Comenzar Evaluación <fa-icon [icon]="icons.faArrowRight" />
         </button>
-        <button class="px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all">
+        <button class="px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-all">
           Ver Demo
         </button>
       </div>
     </div>
     
     <div class="relative">
-      <div class="absolute -inset-4 bg-blue-100/50 rounded-3xl blur-2xl"></div>
-      <div class="relative bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden h-100">
+      <div class="absolute -inset-4 bg-blue-100/50 rounded-lg blur-2xl"></div>
+      <div class="relative bg-white border border-slate-200 rounded-lg shadow-2xl overflow-hidden h-100">
          <img src="images/hero_holo_student.png" 
               alt="Estudiante usando HoloLens" class="rounded-2xl object-cover h-full w-full object-center">
       </div>
@@ -32,7 +32,7 @@
   </header>
 
   <section class="bg-white py-20 border-y border-slate-200">
-    <div class="max-w-7xl mx-auto px-6">
+    <div class="max-w-4/5 mx-auto px-6">
       <div class="text-center max-w-2x2 mx-auto mb-16 w-fit">
         <h2 class="text-3xl text-slate-800 font-bold mb-4">¿Por qué NursEval?</h2>
         <p class="text-slate-500">Permite transformar el aprendizaje tradicional en una experiencia interactiva impulsada por datos.</p>
@@ -40,9 +40,9 @@
 
       <div class="grid md:grid-cols-3 gap-8">
         @for (feature of features; track feature.title) {
-          <div class="p-8 border border-white rounded-2xl bg-background hover:border-blue-shadow transition-colors">
-            <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-aqua-blue mb-6">
-              <lucide-icon [name]="feature.icon" size="24"></lucide-icon>
+          <div class="p-8 border border-slate-200 rounded-lg bg-background hover:border-blue-shadow transition-colors">
+            <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center text-aqua-blue mb-6">
+              <fa-icon [icon]="feature.icon" [size]="'xl'"></fa-icon>
             </div>
             <h3 class="text-xl text-slate-800 font-bold mb-3">{{feature.title}}</h3>
             <p class="text-slate-600 text-sm leading-relaxed">{{feature.description}}</p>
@@ -53,11 +53,11 @@
   </section>
 
   <section class="max-w-5xl mx-auto px-6 py-20 text-center">
-    <div class="bg-aqua-blue rounded-4xl p-12 text-white relative overflow-hidden">
+    <div class="bg-aqua-blue rounded-3xl p-12 text-white relative overflow-hidden">
       <div class="relative z-10">
         <h2 class="text-4xl font-bold mb-6">¿Listo para mejorar tu técnica?</h2>
         <p class="text-white mb-10 text-lg max-w-xl mx-auto">Únete y empieza a perfeccionar tus habilidades como futuro enfermero profesional.</p>
-        <button class="bg-white text-aqua-blue px-10 py-4 rounded-2xl font-black uppercase tracking-wider hover:scale-105 transition-transform">
+        <button class="bg-white text-aqua-blue px-10 py-4 rounded-lg text-lg font-bold tracking-wider hover:scale-105 transition-transform">
           Acceder al Panel de Estudiante
         </button>
       </div>
@@ -66,3 +66,19 @@
     </div>
   </section>
 </div>
+<footer class="flex flex-col md:flex-row gap-3 items-center justify-around w-full py-4 text-sm border-t border-slate-300 bg-slate-800 text-white/70">
+    <p>Copyright © 2026 Belén Sempere González.</p>
+    <div class="flex items-center gap-4">
+        <a href="#" class="hover:text-white transition-all">
+            Universidad de Alicante
+        </a>
+        <div class="h-8 w-px bg-white/20"></div>
+        <a href="#" class="hover:text-white transition-all">
+            Linkedin
+        </a>
+        <div class="h-8 w-px bg-white/20"></div>
+        <a href="#" class="hover:text-white transition-all">
+            Github
+        </a>
+    </div>
+</footer>

@@ -1,34 +1,18 @@
 import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
-import { 
-  ArrowRight, 
-  Scissors,
-  CircleCheck,
-  ChevronDown,
-  Search,
-  Lightbulb,
-  LucideAngularModule, 
-  LUCIDE_ICONS,
-  LucideIconProvider,
-  Image 
-} from 'lucide-angular';
 import { PROTOCOLOS_DATA } from '../../models/protocolos-data';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faUser, faImage, faLightbulb, faPlay, faXmark, faVideo, faExpand} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-theory',
-  imports: [LucideAngularModule],
+  imports: [FontAwesomeModule],
   templateUrl: './theory.html',
   styleUrl: './theory.css',
   changeDetection: ChangeDetectionStrategy.Eager,
-  providers: [
-    {
-        provide: LUCIDE_ICONS,
-        multi: true,
-        useValue: new LucideIconProvider({ ArrowRight, Scissors, CircleCheck, Image, ChevronDown,Search,Lightbulb   })
-    }
-  ]
-  
 })
 export class Theory {
+    icons = {faImage, faLightbulb, faPlay, faXmark, faVideo, faExpand};
+    showVideoModal = signal(false);
     PROTOCOLOS_DATA = PROTOCOLOS_DATA;
     protocolKeys = Object.keys(PROTOCOLOS_DATA);
     selectedKey = signal<string>('capelina');
@@ -38,4 +22,6 @@ export class Theory {
         const selectElement = event.target as HTMLSelectElement;
         this.selectedKey.set(selectElement.value);
     }
+
+    
 }
