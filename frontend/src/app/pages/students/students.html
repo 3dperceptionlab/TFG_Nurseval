@@ -116,38 +116,9 @@
       </tbody>
    </table>
 </div>
-<nav aria-label="Pagination"
-   class="flex justify-center w-max mx-auto mt-8 rounded-md bg-white shadow-sm border border-slate-200 sad p-1">
-   <a href="#" aria-label="Previous page"
-      class="flex items-center justify-center shrink-0 w-9 h-9 rounded-l-md text-slate-600 hover:bg-slate-200  focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue ">
-      <fa-icon [icon]="icons.faAngleLeft" class="w-fit"/>
-   </a>
-   <a href="#"
-      class="flex items-center justify-center shrink-0 text-sm font-semibold w-9 h-9 text-slate-600 hover:bg-slate-200  focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue">
-      1
-   </a>
-   <a href="#" aria-current="page"
-      class="flex items-center justify-center shrink-0 text-sm font-semibold  w-9 h-9 text-slate-600 hover:bg-slate-200  focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue">
-      2
-   </a>
-   <a href="#"
-      class="flex items-center justify-center shrink-0 text-sm font-semibold  w-9 h-9  text-slate-600 hover:bg-slate-200  focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue ">
-      3
-   </a>
-   <a href="#"
-      class="flex items-center justify-center shrink-0 text-sm font-semibold  w-9 h-9 text-slate-600 hover:bg-slate-200  focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue">
-      4
-   </a>
-   <a href="#"
-      class="flex items-center justify-center shrink-0 text-sm font-semibold  w-9 h-9 text-slate-600 hover:bg-slate-200  focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue">
-      5
-   </a>
 
-   <a href="#" aria-label="Next page"
-      class="flex items-center justify-center shrink-0 w-9 h-9 rounded-r-md text-slate-600 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue ">
-      <fa-icon [icon]="icons.faAngleRight" class="w-fit"/>
-   </a>
-</nav>
+<app-page-selector [actualPage]="1" [elementsPerPage]="6" [totalElements]="35"></app-page-selector>
+
 @if(showModal()){
   <div id="modalOverlay"
    class="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-1000 before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)]">

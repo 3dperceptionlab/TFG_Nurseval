@@ -4,10 +4,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ALUMNOS } from '../../models/procedimientos.model';
 import { RouterLink } from "@angular/router";
 import { DatePipe } from '@angular/common';
+import { PageSelector } from "../../shared/page-selector/page-selector";
 
 @Component({
   selector: 'app-students',
-  imports: [FontAwesomeModule, RouterLink, DatePipe],
+  imports: [FontAwesomeModule, RouterLink, DatePipe, PageSelector],
   templateUrl: './students.html',
   styleUrl: './students.css',
 })

@@ -1,0 +1,25 @@
+@if (totalPages() > 1) {
+  <nav aria-label="Pagination" class="flex justify-center gap-1 w-max mx-auto mt-8 rounded-md bg-white shadow-sm border border-slate-200 p-1">
+     
+    <button type="button" (click)="goTo(actualPage() - 1)" [disabled]="actualPage() === 1"
+      class="flex items-center justify-center shrink-0 w-9 h-9 rounded-l-md text-slate-600 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue disabled:opacity-40 disabled:hover:bg-transparent cursor-pointer">
+      <fa-icon [icon]="icons.faAngleLeft" class="w-fit"/>
+    </button>
+
+    @for (num of pages(); track num) {
+      <button  type="button" (click)="goTo(num)"
+        class="flex items-center justify-center shrink-0 text-sm font-semibold w-9 h-9 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue cursor-pointer transition-colors"
+        [class.bg-aqua-blue]="actualPage() === num"
+        [class.text-white]="actualPage() === num"
+        [class.text-slate-600]="actualPage() !== num"
+        [class.hover:bg-slate-200]="actualPage() !== num">
+        {{ num }}
+      </button>
+    }
+
+    <button type="button"(click)="goTo(actualPage() + 1)" [disabled]="actualPage() === totalPages()" 
+      class="flex items-center justify-center shrink-0 w-9 h-9 rounded-r-md text-slate-600 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-aqua-blue disabled:opacity-40 disabled:hover:bg-transparent cursor-pointer">
+      <fa-icon [icon]="icons.faAngleRight" class="w-fit"/>
+    </button>
+  </nav>
+}
