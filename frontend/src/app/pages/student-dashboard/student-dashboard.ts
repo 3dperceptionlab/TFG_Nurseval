@@ -11,7 +11,6 @@ import { GeneralFeedback } from './general-feedback/general-feedback';
   imports: [FontAwesomeModule, Evaluation, VideoSection, Comments, GeneralFeedback],
   templateUrl: './student-dashboard.html',
   styleUrl: './student-dashboard.css',
-   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class StudentDashboard {
     readonly icons = { faCheck};

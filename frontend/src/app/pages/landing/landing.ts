@@ -8,7 +8,6 @@ import { Header } from "../../shared/header/header";
   imports: [FontAwesomeModule, Header],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class Landing {
     readonly icons = { faUser, faArrowRight, faBrain, faUserGraduate, faHandHoldingMedical };

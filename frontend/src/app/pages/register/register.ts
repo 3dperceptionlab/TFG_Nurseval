@@ -9,7 +9,6 @@ import { RegisterData } from '../../models/forms.model';
   selector: 'app-register',
   imports: [Header, RouterLink, CommonModule, FormField],
   templateUrl: './register.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register.css',
 })
 export class Register {

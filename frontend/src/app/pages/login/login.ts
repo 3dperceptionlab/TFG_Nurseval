@@ -8,7 +8,6 @@ import { LoginData } from '../../models/forms.model';
   selector: 'app-login',
   imports: [Header, RouterLink, FormField],
   templateUrl: './login.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login.css',
 })
 export class Login {

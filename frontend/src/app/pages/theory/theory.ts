@@ -10,7 +10,6 @@ import { Steps } from './steps/steps';
   imports: [FontAwesomeModule, VideoModal, Steps],
   templateUrl: './theory.html',
   styleUrl: './theory.css',
-  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class Theory {
     icons = {faImage, faLightbulb, faPlay, faXmark, faVideo, faExpand};

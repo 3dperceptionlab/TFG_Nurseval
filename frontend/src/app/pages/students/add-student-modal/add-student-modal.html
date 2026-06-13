@@ -29,14 +29,14 @@
                      id="email" 
                      placeholder="yourname@example.com" 
                      [value]="searchQuery()"
-                     (input)="searchQuery.set($any($event.target).value)"
+                     (input)="onInputChange($event)"
                      class="text-sm text-slate-900 w-full outline-none" 
                      autocomplete="off"/>
           </div>
 
-          @if (resultadosBusqueda().length > 0) {
+          @if (searchResults().length > 0) {
             <ul class="absolute z-50 left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-slate-200 rounded-md shadow-xl divide-y divide-slate-100">
-              @for (alumno of resultadosBusqueda(); track alumno.id) {
+              @for (alumno of searchResults(); track alumno.id) {
                 <li>
                   <button type="button" 
                           (click)="selectStudent(alumno)"

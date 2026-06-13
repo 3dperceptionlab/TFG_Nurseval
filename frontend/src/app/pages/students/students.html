@@ -17,5 +17,5 @@
 <app-page-selector [actualPage]="1" [elementsPerPage]="6" [totalElements]="35"></app-page-selector>
 
 @if(showModal()){
-  <app-add-student-modal (closeModal)="this.showModal.set(!this.showModal())" [students]="alumnos()"></app-add-student-modal>
+  <app-add-student-modal (closeModal)="this.showModal.set(!this.showModal())" ></app-add-student-modal>
 }
