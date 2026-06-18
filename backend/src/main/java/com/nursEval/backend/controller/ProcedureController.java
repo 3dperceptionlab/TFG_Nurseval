@@ -3,6 +3,7 @@ package com.nursEval.backend.controller;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nursEval.backend.dtos.FinalizeEvaluationRequest;
 import com.nursEval.backend.model.Procedure;
 import com.nursEval.backend.model.Student;
 import com.nursEval.backend.model.embedded.Annotation;
@@ -108,12 +110,11 @@ public class ProcedureController {
 
   // Cerrar evaluación, poner nota y comentarios globales
   @PatchMapping("/{id}/finalize")
-  public ResponseEntity<Procedure> finalizeEvaluation(
+  public ResponseEntity<String> finalizeEvaluation(
     @PathVariable String id,
-    @RequestParam Double mark,
-    @RequestParam(required = false) String comment) {
+    @Valid @RequestBody FinalizeEvaluationRequest request) {
 
-    Procedure finalizedProcedure = procedureService.finalizeEvaluation(id, mark, comment);
-    return ResponseEntity.ok(finalizedProcedure);
+    procedureService.finalizeEvaluation(id, request);
+    return ResponseEntity.status(HttpStatus.OK).body("success");
   }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.nursEval.backend.exceptions.ResourceNotFoundException;
 import com.nursEval.backend.model.Protocol;
 import com.nursEval.backend.repository.ProtocolRepository;
 
@@ -20,6 +21,6 @@ public class ProtocolService {
   }
 
   public Protocol getById( String id) {
-    return protocolRepository.findById(id).orElseThrow(() -> new RuntimeException("Protocolo no encontrado con id: " + id));
+    return protocolRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Protocolo no encontrado"));
   }
 }

@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import com.nursEval.backend.dtos.auth.LoginRequest;
 import com.nursEval.backend.dtos.auth.LoginResponse;
 import com.nursEval.backend.dtos.auth.RegisterRequest;
+import com.nursEval.backend.exceptions.EmailAlreadyExistsException;
+import com.nursEval.backend.exceptions.InvalidCredentialsException;
+import com.nursEval.backend.exceptions.PasswordsDoNotMatchException;
 import com.nursEval.backend.model.Professor;
 import com.nursEval.backend.model.Student;
 import com.nursEval.backend.repository.ProfessorRepository;
@@ -29,24 +32,28 @@ public class AuthService {
     // buscar en ambas colecciones
     Optional<Professor> prof = professorRepository.findByEmail(request.getEmail());
     if (prof.isPresent() && passwordEncoder.matches(request.getPassword(), prof.get().getPassword())) {
-        String token = jwtService.generateToken(prof.get().getEmail(), "professor");
-        return new LoginResponse(token, "Bearer", "professor", prof.get().getEmail(), token);
+      String token = jwtService.generateToken(prof.get().getId(), prof.get().getName(), "professor");
+      return new LoginResponse(token, "professor", prof.get().getName());
     }
 
     Optional<Student> stu = studentRepository.findByEmail(request.getEmail());
     if (stu.isPresent() && passwordEncoder.matches(request.getPassword(), stu.get().getPassword())) {
-        String token = jwtService.generateToken(stu.get().getEmail(), "student");
-        return new LoginResponse(token, "Bearer", "student", stu.get().getEmail(), token);
+      String token = jwtService.generateToken(stu.get().getId(), stu.get().getName(), "student");
+      return new LoginResponse(token, "student", stu.get().getName());
     }
 
-    throw new RuntimeException("Credenciales inválidas");
+    throw new InvalidCredentialsException("Credenciales inválidas.");
   }
 
   public void createUser(RegisterRequest request) {
+    if (request.getPassword() == null || !request.getPassword().equals(request.getRepassword())) {
+      throw new PasswordsDoNotMatchException("Las contraseñas introducidas no coinciden.");
+    }
+
     // el email existe en alguna tabla?
     if (studentRepository.existsByEmail(request.getEmail()) || 
       professorRepository.existsByEmail(request.getEmail())) {
-      throw new RuntimeException("El email ya está registrado");
+      throw new EmailAlreadyExistsException("El email ya está registrado");
     }
 
     String encodedPassword = passwordEncoder.encode(request.getPassword());

@@ -26,10 +26,12 @@ public class JwtService {
   @Value("${security.jwt.expiration}")
   private long jwtExpiration;
 
-  public String generateToken(String email, String role) {
+  public String generateToken(String id, String name, String role) {
     Map<String, Object> claims = new HashMap<>();
     claims.put("role", role);
-    return buildToken(claims, email, jwtExpiration);
+    claims.put("name", name); 
+    
+    return buildToken(claims, id, jwtExpiration);
   }
 
   public String extractUsername(String token) {

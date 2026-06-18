@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nursEval.backend.dtos.StudentResponse;
 import com.nursEval.backend.dtos.UpdateStudentProfileRequest;
 import com.nursEval.backend.model.Student;
 import com.nursEval.backend.service.StudentService;
@@ -27,41 +28,62 @@ public class StudentController {
   
   private final StudentService studentService;
 
+  private StudentResponse convertToStudentResponse(Student student) {
+    String profName = (student.getProfessor() != null)  ? student.getProfessor().getName() + " " + student.getProfessor().getSurname() : "Sin profesor asignado"; 
+
+    return StudentResponse.builder()
+      .id(student.getId())
+      .name(student.getName())
+      .surname(student.getSurname())
+      .email(student.getEmail())
+      .course(student.getCourse())
+      .group(student.getGroup())
+      .professorName(profName) 
+      .build();
+  }
+
+
   @GetMapping("/me")
-  public ResponseEntity<Student> getMyProfile(Principal principal) {
-      String email = principal.getName(); // Extrae el email del token
-      return ResponseEntity.ok(studentService.getStudentByEmail(email));
+  public ResponseEntity<StudentResponse> getMyProfile(Principal principal) {
+    String email = principal.getName(); // Extrae el email del token
+    return ResponseEntity.ok(convertToStudentResponse(studentService.getStudentByEmail(email)));
   }
 
   @PutMapping("/me")
-  public ResponseEntity<Student> updateMyProfile(
+  public ResponseEntity<Void> updateMyProfile(
     Principal principal, 
     @Valid @RequestBody UpdateStudentProfileRequest request) {
       
     String email = principal.getName(); //  desde el JWT
-    Student updated = studentService.updateProfile(email, request);
-    return ResponseEntity.ok(updated);
+    studentService.updateProfile(email, request);
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping
-  public ResponseEntity<List<Student>> getGlobalStudents(
-      @RequestParam(required = false) String query,
-      @RequestParam(required = false) Integer course, 
-      @RequestParam(required = false) Integer group) 
+  public ResponseEntity<List<StudentResponse>> getGlobalStudents(
+    @RequestParam(required = false) String query,
+    @RequestParam(required = false) Integer course, 
+    @RequestParam(required = false) Integer group) 
   {
-      List<Student> result = studentService.getAllStudents(query, course, group);
-      return ResponseEntity.ok(result);
+    List<StudentResponse> filteredStudents = studentService.getAllStudents(query, course, group).stream()
+      .map(this::convertToStudentResponse)
+      .toList();
+
+    return ResponseEntity.ok(filteredStudents);
   }
 
   // Obtener los alumnos asociados a un profesor específico
   @GetMapping("/professor/{professorId}")
-  public ResponseEntity<List<Student>> getMyStudents(
+  public ResponseEntity<List<StudentResponse>> getMyStudents(
     @PathVariable String professorId, 
     @RequestParam(required = false) String query,
     @RequestParam(required = false) Integer course,  
     @RequestParam(required = false) Integer group) { 
 
-    List<Student> filteredStudents = studentService.getStudentsFromProfessor(professorId, query, course, group);
+    List<StudentResponse> filteredStudents = studentService.getStudentsFromProfessor(professorId, query, course, group).stream()
+      .map(this::convertToStudentResponse)
+      .toList();
+
     return ResponseEntity.ok(filteredStudents);
   }
 
