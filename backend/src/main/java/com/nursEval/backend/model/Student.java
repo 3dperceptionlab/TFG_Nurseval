@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,5 +29,6 @@ public class Student {
   private int course;
   private int group;
   private boolean active;
-  private String professor; // referencia al id de Professor
+  @DocumentReference
+  private Professor professor; // referencia al id de Professor
 }

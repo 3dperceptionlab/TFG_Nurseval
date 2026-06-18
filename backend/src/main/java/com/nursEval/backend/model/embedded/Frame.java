@@ -1,5 +1,7 @@
 package com.nursEval.backend.model.embedded;
 
+import org.springframework.data.annotation.Id;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Frame {
+  @Id
+  private String id;
+
   private double time;
   private Position rightHandPos;
   private Rotation rightHandRot;

@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../environment/environment';
 
 @Service()
-export class Practice {
+export class Procedure {
   http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/procedures`;
 

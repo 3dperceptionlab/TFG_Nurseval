@@ -9,7 +9,7 @@ import com.nursEval.backend.model.Procedure;
 public interface ProcedureRepository extends MongoRepository<Procedure, String>{
   List<Procedure> findByStudent(String studentId);
  
-  List<Procedure> findByProtocol(String protocolId);
+  List<Procedure> findByProtocol(String protocolName) ;
  
   List<Procedure> findByState(String state);
 }

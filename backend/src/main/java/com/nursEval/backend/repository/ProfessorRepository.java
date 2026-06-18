@@ -8,4 +8,6 @@ import com.nursEval.backend.model.Professor;
 
 public interface ProfessorRepository extends MongoRepository<Professor, String>{
   Optional<Professor> findByEmail(String email);
+
+  Boolean existsByEmail(String email);
 }

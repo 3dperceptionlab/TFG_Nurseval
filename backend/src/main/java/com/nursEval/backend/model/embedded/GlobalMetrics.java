@@ -11,5 +11,5 @@ public class GlobalMetrics {
   private double duration;
   private int errorCount;
   private double attentionPercent;
-  private int mark;
+  private double mark;
 }
