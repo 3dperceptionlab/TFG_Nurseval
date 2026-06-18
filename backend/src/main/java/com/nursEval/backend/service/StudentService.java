@@ -20,11 +20,9 @@ public class StudentService {
     List<Student> students;
 
     if (query != null && !query.trim().isEmpty()) {
-        students = studentRepository.searchAllByField(query.trim());
-    } else if (course != null || group != null) {
-        students = studentRepository.findAll();
+      students = studentRepository.searchAllByField(query.trim());
     } else {
-        return List.of();
+      students = studentRepository.findAll();
     }
 
     if (course != null) {
@@ -32,25 +30,22 @@ public class StudentService {
     }
 
     if (group != null) {
-        students = students.stream().filter(s -> group.equals(s.getGroup())).toList();
+      students = students.stream().filter(s -> group.equals(s.getGroup())).toList();
     }
 
     return students;
   }
 
   public Student getStudentById(String id) {
-    return studentRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado"));
+    return studentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado"));
   }
 
   public Student getStudentByEmail(String email) {
-    return studentRepository.findByEmail(email)
-        .orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado con el email indicado"));
+    return studentRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado con el email indicado"));
   }
 
   public Student getStudentByName(String name) {
-    return studentRepository.findByName(name)
-        .orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado"));
+    return studentRepository.findByName(name).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado"));
   }
 
   public List<Student> getStudentsFromProfessor(String professorId, String query, Integer course, Integer group) {

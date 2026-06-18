@@ -19,7 +19,7 @@ public class RegisterRequest {
   @Email(message = "El formato del email no es válido")
   private String email;
 
-  @NotBlank(message = "La contraseña no puede estar vacía")
+  @NotBlank(message = "Debes introducir de nuevo la contraseña")
   @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
   private String password;
 

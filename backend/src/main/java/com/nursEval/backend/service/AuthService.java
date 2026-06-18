@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.nursEval.backend.dtos.auth.LoginRequest;
 import com.nursEval.backend.dtos.auth.LoginResponse;
 import com.nursEval.backend.dtos.auth.RegisterRequest;
+import com.nursEval.backend.exceptions.AccountInactiveException;
 import com.nursEval.backend.exceptions.EmailAlreadyExistsException;
 import com.nursEval.backend.exceptions.InvalidCredentialsException;
 import com.nursEval.backend.exceptions.PasswordsDoNotMatchException;
@@ -32,12 +33,20 @@ public class AuthService {
     // buscar en ambas colecciones
     Optional<Professor> prof = professorRepository.findByEmail(request.getEmail());
     if (prof.isPresent() && passwordEncoder.matches(request.getPassword(), prof.get().getPassword())) {
+      
+      if(!prof.get().isActive())
+        throw new AccountInactiveException();
+
       String token = jwtService.generateToken(prof.get().getId(), prof.get().getName(), "professor");
       return new LoginResponse(token, "professor", prof.get().getName());
     }
 
     Optional<Student> stu = studentRepository.findByEmail(request.getEmail());
     if (stu.isPresent() && passwordEncoder.matches(request.getPassword(), stu.get().getPassword())) {
+
+      if(!stu.get().isActive())
+        throw new AccountInactiveException();
+
       String token = jwtService.generateToken(stu.get().getId(), stu.get().getName(), "student");
       return new LoginResponse(token, "student", stu.get().getName());
     }
@@ -65,6 +74,7 @@ public class AuthService {
       p.setEmail(request.getEmail());
       p.setPassword(encodedPassword);
       p.setPosition(request.getPosition());
+      p.setActive(true);
       professorRepository.save(p);
     } else {
       Student s = new Student();
@@ -72,8 +82,14 @@ public class AuthService {
       s.setSurname(request.getSurname());
       s.setEmail(request.getEmail());
       s.setPassword(encodedPassword);
-      s.setGroup(request.getStudent_group());
-      s.setCourse(request.getStudent_course());
+      s.setActive(true);
+
+      if (request.getStudent_group() != null) 
+        s.setGroup(request.getStudent_group());
+
+      if (request.getStudent_course() != null) 
+        s.setCourse(request.getStudent_course());
+      
       studentRepository.save(s);
     }
   }

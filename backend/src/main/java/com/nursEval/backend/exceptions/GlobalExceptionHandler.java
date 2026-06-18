@@ -50,7 +50,19 @@ public class GlobalExceptionHandler {
         .timestamp(LocalDateTime.now())
         .build();
     }
+    
+    // --------- ERRORES 403 - FORBIDDEN --------- 
 
+    @ExceptionHandler(AccountInactiveException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrorResponse handleAccountInactive(AccountInactiveException ex) {
+      return ApiErrorResponse.builder()
+        .status("KO")
+        .statusCode(HttpStatus.FORBIDDEN.value())
+        .message("Lo sentimos, su cuenta se encuentra inactiva")
+        .timestamp(LocalDateTime.now())
+        .build();
+    }
 
     // --------- ERRORES 404 - NOT FOUND --------- 
 
@@ -115,7 +127,7 @@ public class GlobalExceptionHandler {
       return ApiErrorResponse.builder()
         .status("KO")
         .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-        .message("Ha ocurrido un error interno en el servidor. Por favor, contacte con soporte.")
+        .message("Ha ocurrido un error interno en el servidor.")
         .timestamp(LocalDateTime.now())
         .build();
     }
