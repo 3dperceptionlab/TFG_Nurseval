@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import com.nursEval.backend.dtos.auth.LoginRequest;
 import com.nursEval.backend.dtos.auth.LoginResponse;
 import com.nursEval.backend.dtos.auth.RegisterRequest;
+import com.nursEval.backend.dtos.auth.UserProfileResponse;
 import com.nursEval.backend.exceptions.AccountInactiveException;
 import com.nursEval.backend.exceptions.EmailAlreadyExistsException;
 import com.nursEval.backend.exceptions.InvalidCredentialsException;
 import com.nursEval.backend.exceptions.PasswordsDoNotMatchException;
+import com.nursEval.backend.exceptions.ResourceNotFoundException;
 import com.nursEval.backend.model.Professor;
 import com.nursEval.backend.model.Student;
 import com.nursEval.backend.repository.ProfessorRepository;
@@ -28,6 +30,21 @@ public class AuthService {
   private final BCryptPasswordEncoder passwordEncoder;
   private final JwtService jwtService;
 
+  public UserProfileResponse getData(String id) {
+    Optional<Student> stu = studentRepository.findById(id);
+
+    if(stu.isPresent()){
+      return new UserProfileResponse( stu.get().getId(), stu.get().getName(), stu.get().getSurname(), stu.get().getEmail(), stu.get().getRole());
+    }
+
+    Optional<Professor> pro = professorRepository.findById(id);
+
+    if(pro.isPresent()){
+      return new UserProfileResponse( pro.get().getId(), pro.get().getName(), pro.get().getSurname(), pro.get().getEmail(), pro.get().getRole());
+    }
+
+    throw new ResourceNotFoundException("Usuario no encontrado.");
+  }
 
   public LoginResponse authenticate(LoginRequest request) {
     // buscar en ambas colecciones
@@ -38,7 +55,7 @@ public class AuthService {
         throw new AccountInactiveException();
 
       String token = jwtService.generateToken(prof.get().getId(), prof.get().getName(), "professor");
-      return new LoginResponse(token, "professor", prof.get().getName());
+      return new LoginResponse(token);
     }
 
     Optional<Student> stu = studentRepository.findByEmail(request.getEmail());
@@ -48,7 +65,7 @@ public class AuthService {
         throw new AccountInactiveException();
 
       String token = jwtService.generateToken(stu.get().getId(), stu.get().getName(), "student");
-      return new LoginResponse(token, "student", stu.get().getName());
+      return new LoginResponse(token);
     }
 
     throw new InvalidCredentialsException("Credenciales inválidas.");
@@ -75,6 +92,7 @@ public class AuthService {
       p.setPassword(encodedPassword);
       p.setPosition(request.getPosition());
       p.setActive(true);
+      p.setRole("professor");
       professorRepository.save(p);
     } else {
       Student s = new Student();
@@ -82,6 +100,7 @@ public class AuthService {
       s.setSurname(request.getSurname());
       s.setEmail(request.getEmail());
       s.setPassword(encodedPassword);
+      s.setRole("student");
       s.setActive(true);
 
       if (request.getStudent_group() != null) 
@@ -92,5 +111,9 @@ public class AuthService {
       
       studentRepository.save(s);
     }
+  }
+
+  public boolean emailExists(String email) {
+    return studentRepository.existsByEmail(email) || professorRepository.existsByEmail(email);
   }
 }

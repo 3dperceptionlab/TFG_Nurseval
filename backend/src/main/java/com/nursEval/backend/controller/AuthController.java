@@ -1,15 +1,20 @@
 package com.nursEval.backend.controller;
 
+import java.security.Principal;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nursEval.backend.dtos.auth.LoginRequest;
 import com.nursEval.backend.dtos.auth.LoginResponse;
 import com.nursEval.backend.dtos.auth.RegisterRequest;
+import com.nursEval.backend.dtos.auth.UserProfileResponse;
 import com.nursEval.backend.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -21,6 +26,19 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
   private final AuthService authService;
+
+  @GetMapping("/me")
+  public ResponseEntity<UserProfileResponse> getMyData(Principal principal) {
+    String id = principal.getName(); 
+    UserProfileResponse profile = authService.getData(id);
+    return ResponseEntity.ok(profile);
+  }
+
+  @GetMapping("/check-email")
+  public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+    boolean exists = authService.emailExists(email);
+    return ResponseEntity.ok(exists);
+  }
 
   @PostMapping("/register")
   public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {

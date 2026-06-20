@@ -4,9 +4,10 @@ export interface LoginResponse {
 }
 
 export interface User {
-  username: string;
+  id: string;
+  name: string;
   email: string;
-  firstName: string;
+  surname: string;
   lastName: string;
   role: string; 
 }

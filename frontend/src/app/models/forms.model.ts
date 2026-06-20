@@ -7,7 +7,7 @@ export interface RegisterData {
   role: string;
   position:string;
   student_group: number;
-  student_course: string;
+  student_course: number;
 }
 
 export interface LoginData {

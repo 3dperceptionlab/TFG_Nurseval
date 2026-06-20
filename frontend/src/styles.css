@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&display=swap');
 @import "tailwindcss";
 
+@tailwind utilities;
+
 @theme {
   --font-montserrat:  "Montserrat", sans-serif;
 
@@ -16,6 +18,12 @@
   títulos: -slate-800
   */
   
+}
+@layer components {
+  .form-error {
+    @apply text-sm text-red-600;
+  }
+
 }
 
 html {

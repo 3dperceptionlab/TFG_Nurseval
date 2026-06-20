@@ -24,111 +24,122 @@ public class GlobalExceptionHandler {
 
 // --------- ERRORES 400 - BAD REQUEST ---------
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse handleValidation(MethodArgumentNotValidException ex) {
-      List<String> detalles = ex.getBindingResult().getFieldErrors().stream()
-        .map(err -> err.getField() + ": " + err.getDefaultMessage())
-        .collect(Collectors.toList());
-
-      return ApiErrorResponse.builder()
-        .status("KO")
-        .statusCode(HttpStatus.BAD_REQUEST.value())
-        .message("Validación de campos fallida.")
-        .errors(detalles) // Pasamos la lista limpia
-        .timestamp(LocalDateTime.now())
-        .build();
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse handleMalformedJson(HttpMessageNotReadableException ex) {
-      return ApiErrorResponse.builder()
-        .status("KO")
-        .statusCode(HttpStatus.BAD_REQUEST.value())
-        .message("El JSON enviado tiene un formato inválido o faltan campos obligatorios.")
-        .timestamp(LocalDateTime.now())
-        .build();
-    }
-    
-    // --------- ERRORES 403 - FORBIDDEN --------- 
-
-    @ExceptionHandler(AccountInactiveException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ApiErrorResponse handleAccountInactive(AccountInactiveException ex) {
-      return ApiErrorResponse.builder()
-        .status("KO")
-        .statusCode(HttpStatus.FORBIDDEN.value())
-        .message("Lo sentimos, su cuenta se encuentra inactiva")
-        .timestamp(LocalDateTime.now())
-        .build();
-    }
-
-    // --------- ERRORES 404 - NOT FOUND --------- 
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrorResponse handleResourceNotFound(ResourceNotFoundException ex) {
-      return ApiErrorResponse.builder()
-        .status("KO")
-        .statusCode(HttpStatus.NOT_FOUND.value())
-        .message(ex.getMessage()) 
-        .timestamp(LocalDateTime.now())
-        .build();
-    }
-
-    @ExceptionHandler(NoResourceFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrorResponse handleRouteNotFound(NoResourceFoundException ex) {
-      return ApiErrorResponse.builder()
-        .status("KO")
-        .statusCode(HttpStatus.NOT_FOUND.value())
-        .message("La ruta solicitada no existe.")
-        .timestamp(LocalDateTime.now())
-        .build();
-    }
-
-
-    // --------- ERRORES 405 - METHOD NOT ALLOWED ---------
-
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public ApiErrorResponse handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
-      return ApiErrorResponse.builder()
-        .status("KO")
-        .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value())
-        .message("Método HTTP no permitido para esta ruta.")
-        .timestamp(LocalDateTime.now())
-        .build();
-    }
-
-
-    // --------- ERRORES 409 - CONFLICT ---------
-
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiErrorResponse handleEmailConflict(EmailAlreadyExistsException ex) {
-      return ApiErrorResponse.builder()
+  @ExceptionHandler(PasswordsDoNotMatchException.class) 
+  @ResponseStatus(HttpStatus.BAD_REQUEST)               
+  public ApiErrorResponse handlePasswordsDoNotMatch(PasswordsDoNotMatchException ex) {
+    return ApiErrorResponse.builder()
       .status("KO")
-      .statusCode(HttpStatus.CONFLICT.value())
-      .message(ex.getMessage())
+      .statusCode(HttpStatus.BAD_REQUEST.value())
+      .message(ex.getMessage()) 
       .timestamp(LocalDateTime.now())
       .build();
-    }
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiErrorResponse handleValidation(MethodArgumentNotValidException ex) {
+    List<String> detalles = ex.getBindingResult().getFieldErrors().stream()
+      .map(err -> err.getField() + ": " + err.getDefaultMessage())
+      .collect(Collectors.toList());
+
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.BAD_REQUEST.value())
+      .message("Validación de campos fallida.")
+      .errors(detalles) // Pasamos la lista limpia
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiErrorResponse handleMalformedJson(HttpMessageNotReadableException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.BAD_REQUEST.value())
+      .message("El JSON enviado tiene un formato inválido o faltan campos obligatorios.")
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
+  
+  // --------- ERRORES 403 - FORBIDDEN --------- 
+
+  @ExceptionHandler(AccountInactiveException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ApiErrorResponse handleAccountInactive(AccountInactiveException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.FORBIDDEN.value())
+      .message("Lo sentimos, su cuenta se encuentra inactiva")
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
+
+  // --------- ERRORES 404 - NOT FOUND --------- 
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ApiErrorResponse handleResourceNotFound(ResourceNotFoundException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.NOT_FOUND.value())
+      .message(ex.getMessage()) 
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ApiErrorResponse handleRouteNotFound(NoResourceFoundException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.NOT_FOUND.value())
+      .message("La ruta solicitada no existe.")
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
 
 
-    // --------- ERRORES 500 - INTERNAL SERVER ERROR ---------
+  // --------- ERRORES 405 - METHOD NOT ALLOWED ---------
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiErrorResponse handleGlobalException(Exception ex) {
-      log.error("Excepción interna no controlada detectada: ", ex);
-      
-      return ApiErrorResponse.builder()
-        .status("KO")
-        .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-        .message("Ha ocurrido un error interno en el servidor.")
-        .timestamp(LocalDateTime.now())
-        .build();
-    }
+  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+  @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+  public ApiErrorResponse handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value())
+      .message("Método HTTP no permitido para esta ruta.")
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
+
+
+  // --------- ERRORES 409 - CONFLICT ---------
+
+  @ExceptionHandler(EmailAlreadyExistsException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public ApiErrorResponse handleEmailConflict(EmailAlreadyExistsException ex) {
+    return ApiErrorResponse.builder()
+    .status("KO")
+    .statusCode(HttpStatus.CONFLICT.value())
+    .message(ex.getMessage())
+    .timestamp(LocalDateTime.now())
+    .build();
+  }
+
+
+  // --------- ERRORES 500 - INTERNAL SERVER ERROR ---------
+
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ApiErrorResponse handleGlobalException(Exception ex) {
+    log.error("Excepción interna no controlada detectada: ", ex);
+    
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+      .message("Ha ocurrido un error interno en el servidor.")
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
 }

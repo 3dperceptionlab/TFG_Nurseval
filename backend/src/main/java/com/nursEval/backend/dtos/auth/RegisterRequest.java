@@ -19,11 +19,15 @@ public class RegisterRequest {
   @Email(message = "El formato del email no es válido")
   private String email;
 
-  @NotBlank(message = "Debes introducir de nuevo la contraseña")
-  @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
+  @NotBlank(message = "La contraseña no puede estar vacía")
+  @Size(min = 8,  max = 32, message = "La contraseña debe tener entre 8 y 32 caracteres")
+  @Pattern(
+    regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$",
+    message = "Debe contener mayúsculas, minúsculas, un número y un carácter especial"
+  )
   private String password;
 
-  @NotBlank(message = "La contraseña no puede estar vacía")
+  @NotBlank(message = "Debes introducir de nuevo la contraseña")
   private String repassword;
 
   @NotBlank(message = "El nombre no puede estar vacío")

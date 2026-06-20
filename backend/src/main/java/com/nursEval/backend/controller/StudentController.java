@@ -43,13 +43,13 @@ public class StudentController {
   }
 
 
-  @GetMapping("/me")
+  @GetMapping("/profile")
   public ResponseEntity<StudentResponse> getMyProfile(Principal principal) {
     String email = principal.getName(); // Extrae el email del token
     return ResponseEntity.ok(convertToStudentResponse(studentService.getStudentByEmail(email)));
   }
 
-  @PutMapping("/me")
+  @PutMapping("/profile")
   public ResponseEntity<Void> updateMyProfile(
     Principal principal, 
     @Valid @RequestBody UpdateStudentProfileRequest request) {

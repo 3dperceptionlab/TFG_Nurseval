@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUser, faHistory, faBook, faUserCircle, faSignOut, faHourglass, faUserGraduate } from '@fortawesome/free-solid-svg-icons';
+import { Auth } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,9 +12,13 @@ import { faUser, faHistory, faBook, faUserCircle, faSignOut, faHourglass, faUser
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
+  authService = inject(Auth);
+  router = inject(Router);
 
   role = "doc";
   icons = {faUser, faHistory, faBook, faUserCircle, faSignOut, faUserGraduate};
+
+  itemSelected = signal('Teoria');
   menuItems = computed(() => {
     const isStudent = this.role === 'student';
 
@@ -21,7 +26,6 @@ export class Sidebar {
       return [
         { label: 'Mi Perfil', icon: faUser, route: '/app/profile' },
         { label: 'Teoría', icon: faBook, route: '/app/theory' },
-        // Reemplazamos el parámetro dinámico aquí mismo
         { label: 'Historial', icon: faHistory, route: `/app/procedures/:studentId` },
       ];
     } else {
@@ -33,9 +37,13 @@ export class Sidebar {
       ];
     }
   });
-  itemSelected = signal('Teoria');
 
   setItem(item: string) {
     this.itemSelected.set(item);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigateByUrl('/login');
   }
 }

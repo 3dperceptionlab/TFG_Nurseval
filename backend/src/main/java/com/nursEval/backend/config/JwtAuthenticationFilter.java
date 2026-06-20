@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter { 
     
-  final private JwtService jwtService;
+  private final JwtService jwtService;
 
   @Override
   protected void doFilterInternal(
@@ -41,17 +41,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     final String token = authHeader.substring(7);
 
     if (jwtService.isTokenValid(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
-      String email = jwtService.extractUsername(token);
+      String id = jwtService.extractUserId(token);
       String role = jwtService.extractRole(token);
 
-      var authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
-      var authToken = new UsernamePasswordAuthenticationToken(
-        email,
-        null,
-        Collections.singletonList(authority) 
-      );
+      if (id != null && role != null) {
+        var authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+        var authToken = new UsernamePasswordAuthenticationToken(
+          id,
+          null,
+          Collections.singletonList(authority)
+        );
 
-      SecurityContextHolder.getContext().setAuthentication(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+      }
     }
 
     filterChain.doFilter(request, response);

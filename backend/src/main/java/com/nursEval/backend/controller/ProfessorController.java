@@ -22,13 +22,13 @@ import lombok.RequiredArgsConstructor;
 public class ProfessorController {
   private final ProfessorService professorService;
 
-  @GetMapping("/me")
+  @GetMapping("/profile")
   public ResponseEntity<Professor> getMyProfile(Principal principal) {
     String email = principal.getName(); // Extrae el email del token
     return ResponseEntity.ok(professorService.getProfessorById(email));
   }
 
-  @PutMapping("/me")
+  @PutMapping("/profile")
   public ResponseEntity<Professor> updateMyProfile(
     Principal principal, 
     @Valid @RequestBody UpdateProfessorProfileRquest request) {

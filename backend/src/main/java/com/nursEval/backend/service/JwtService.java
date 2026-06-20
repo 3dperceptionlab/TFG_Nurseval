@@ -34,7 +34,7 @@ public class JwtService {
     return buildToken(claims, id, jwtExpiration);
   }
 
-  public String extractUsername(String token) {
+  public String extractUserId(String token) {
     return extractClaim(token, Claims::getSubject);
   }
 

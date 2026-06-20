@@ -2,7 +2,7 @@
   <a routerLink="/" class="flex items-center gap-2">
     <img  src="/images/logo.png" alt="" class="w-1/2">
   </a>
-  @if(authenticated){
+  @if(authService.isAuthenticated()){
    <button routerLink="/app/profile" class="flex gap-2 items-center cursor-pointer text-slate-600 hover:text-aqua-blue"> Mi dashboard <fa-icon [icon]="icons.faArrowRight" /></button>   
   }@else {  
     <button routerLink="/login" class="flex gap-2 items-center cursor-pointer text-slate-600 hover:text-aqua-blue">Iniciar Sesión <fa-icon [icon]="icons.faArrowRight" /></button>  

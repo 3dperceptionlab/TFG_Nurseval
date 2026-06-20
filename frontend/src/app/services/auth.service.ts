@@ -1,4 +1,4 @@
-import { HttpClient, httpResource } from '@angular/common/http';
+import { HttpClient, HttpHeaders, httpResource } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
 import { environment } from '../environment/environment';
 import {  tap } from 'rxjs';
@@ -15,13 +15,17 @@ private http = inject(HttpClient);
   isLoading = computed(() => this.profilelResource.isLoading() || this.statsResource.isLoading());
   isAuthenticated = computed(() => this.tokenSignal() !== null);
 
-  profilelResource = httpResource(() => {
+  profilelResource = httpResource<User>(() => {
     return this.tokenSignal() ? `${this.baseUrl}/me` : undefined;
   });
 
   statsResource = httpResource(() => {
     return this.tokenSignal() ? `${this.baseUrl}/me/stats` : undefined;
   });
+
+  checkEmail(email: string) {
+    return this.http.get<boolean>(`${this.baseUrl}/check-email?email=${email}`);
+  }
 
   // POST login 
   login(credentials: any) {
@@ -35,6 +39,10 @@ private http = inject(HttpClient);
 
   // POST register
   register(userData: any) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
     return this.http.post<User>(`${this.baseUrl}/register`, userData);
   }
 
