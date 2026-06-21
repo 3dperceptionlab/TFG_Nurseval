@@ -1,39 +1,57 @@
 import { Routes } from '@angular/router';
-import { Landing } from './pages/landing/landing';
-import { Theory } from './pages/theory/theory';
-import { StudentDashboard } from './pages/student-dashboard/student-dashboard';
-import { Login } from './pages/login/login';
-import { Register } from './pages/register/register';
 import { SidebarLayout } from './layout/sidebar-layout/sidebar-layout';
-import { StudentRecord } from './pages/student-record/student-record';
-import { Students } from './pages/students/students';
-import { Profile } from './pages/profile/profile';
-import { PendingProcedures } from './pages/pending-procedures/pending-procedures';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-    {
-        path: '',
-        component: Landing,
-    },
-    {
-        path: 'login',
-        component: Login,
-    },
-    {
-        path: 'register',
-        component: Register,
-    },
-    {
+  {
+    path: '',
+    loadComponent: () => import('./pages/landing/landing').then(m => m.Landing),
+  },
+  {
+    path: 'login',
+    canActivate: [authGuard(['guest'])],
+    loadComponent: () => import('./pages/login/login').then(m => m.Login),
+  },
+  {
+    path: 'register',
+    canActivate: [authGuard(['guest'])],
+    loadComponent: () => import('./pages/register/register').then(m => m.Register),
+  },
+  {
     path: 'app',
     component: SidebarLayout,
     children: [
       { path: '', redirectTo: 'theory', pathMatch: 'full' },
-      { path: 'profile', component: Profile },
-      { path: 'theory', component: Theory },
-      { path: 'procedures/:studentId', component: StudentRecord },
-      { path: 'procedure/:procedureId', component: StudentDashboard },
-      { path: 'students', component: Students },
-      { path: 'pending', component: PendingProcedures },
+      { 
+        path: 'profile', 
+        canActivate: [authGuard(['professor', 'student'])],
+        loadComponent: () => import('./pages/profile/profile').then(m => m.Profile) 
+      },
+      { 
+        path: 'theory', 
+        canActivate: [authGuard(['professor', 'student'])],
+        loadComponent: () => import('./pages/theory/theory').then(m => m.Theory) 
+      },
+      { 
+        path: 'procedures/:studentId', 
+        canActivate: [authGuard(['professor', 'student'])],
+        loadComponent: () => import('./pages/student-record/student-record').then(m => m.StudentRecord) 
+      },
+      { 
+        path: 'procedure/:procedureId', 
+        canActivate: [authGuard(['professor', 'student'])],
+        loadComponent: () => import('./pages/student-dashboard/student-dashboard').then(m => m.StudentDashboard) 
+      },
+      { 
+        path: 'students', 
+        canActivate: [authGuard(['professor'])],
+        loadComponent: () => import('./pages/students/students').then(m => m.Students) 
+      },
+      { 
+        path: 'pending', 
+        canActivate: [authGuard(['professor'])],
+        loadComponent: () => import('./pages/pending-procedures/pending-procedures').then(m => m.PendingProcedures) 
+      }
     ]
   },
   { path: '**', redirectTo: '' }

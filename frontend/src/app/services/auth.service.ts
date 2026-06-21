@@ -6,23 +6,32 @@ import { LoginResponse, User } from '../models/auth.model';
 
 @Service()
 export class Auth {
-private http = inject(HttpClient);
+  private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/auth`;
 
   private tokenSignal = signal<string | null>(localStorage.getItem('accessToken'));
 
-  currentUser = computed(() => this.profilelResource.value() ?? null);
-  isLoading = computed(() => this.profilelResource.isLoading() || this.statsResource.isLoading());
+  currentUser = computed(() => this.profileResource.value() ?? null);
+  isLoading = computed(() => this.profileResource.isLoading() || this.statsResource.isLoading());
   isAuthenticated = computed(() => this.tokenSignal() !== null);
 
-  profilelResource = httpResource<User>(() => {
+  userRole = computed<string>(() => {
+    if (!this.tokenSignal()) {
+      return 'guest';
+    }
+
+    const user = this.currentUser();
+    return user && 'role' in user ? user.role : 'guest';
+  });
+
+  profileResource = httpResource<User>(() => {
     return this.tokenSignal() ? `${this.baseUrl}/me` : undefined;
   });
 
   statsResource = httpResource(() => {
     return this.tokenSignal() ? `${this.baseUrl}/me/stats` : undefined;
   });
-
+  
   checkEmail(email: string) {
     return this.http.get<boolean>(`${this.baseUrl}/check-email?email=${email}`);
   }
