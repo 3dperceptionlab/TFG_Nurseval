@@ -16,5 +16,5 @@ public class Step {
   private String title;
   private String description;
   private String tip;
-  private String video;
+  private String image;
 }

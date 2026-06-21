@@ -15,12 +15,12 @@ export class Sidebar {
   authService = inject(Auth);
   router = inject(Router);
 
-  role = "doc";
+  role = computed(() => this.authService.currentUser()?.role);
   icons = {faUser, faHistory, faBook, faUserCircle, faSignOut, faUserGraduate};
 
   itemSelected = signal('Teoria');
   menuItems = computed(() => {
-    const isStudent = this.role === 'student';
+    const isStudent = this.role() === 'student';
 
     if (isStudent) {
       return [

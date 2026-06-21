@@ -1,17 +1,34 @@
-export interface Paso {
-  titulo: string;
-  instrucciones: string;
-  ilustracion: string;
-  notas?: string[];
+export interface Step {
+  id: string
+  title: string;
+  description: string;
+  tip: string;
+  image?: string;
+}
+
+export interface Protocol {
+  id: string;
+  title: string;
+  purpose: string;
+  materials: string[];
+  image?: string;
+  steps: Step[];
+  vide: string;
 }
 
 export interface Protocolo {
-  nombre: string;
-  objetivo: string;
-  imagen: string;
-  ilustracion?: string;
-  materiales: string[];
-  procedimiento: Paso[];
+  nombre?: string;
+  objetivo?: string;
+  materiales?: string[];
+  imagen?: string;
+  procedimiento: {
+    titulo: string;
+    instrucciones: string;
+    ilustracion: string;
+    notas?: string[];
+  }[];
+  steps?: Step[];
+  video?: string;
 }
 
 export const PROTOCOLOS_DATA: Record<string, Protocolo> = {

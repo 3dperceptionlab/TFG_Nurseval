@@ -21,12 +21,12 @@ private final ProtocolService protocolService;
 
   @GetMapping
   public ResponseEntity<List<Protocol>> getAll() {
-      return ResponseEntity.ok(protocolService.getAll());
+    return ResponseEntity.ok(protocolService.getAll());
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<Protocol> getById(@PathVariable String id) {
-      return ResponseEntity.ok(protocolService.getById(id));
+    return ResponseEntity.ok(protocolService.getById(id));
   }
 
 }

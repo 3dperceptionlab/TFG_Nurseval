@@ -1,12 +1,12 @@
 <div class="mx-auto bg-white border border-slate-200 rounded-2xl p-10 mb-8">
   <h2 class="text-slate-800 text-2xl font-bold mb-6">
-    Vendaje de {{ currentProtocol().nombre }}
+    Vendaje de {{ currentProtocol()?.title }}
   </h2>
   <div class="flex gap-8 items-start mb-6">
     <div class="relative bg-white border border-slate-200 rounded-2xl overflow-hidden flex items-center justify-center h-50 w-fit">
-        @if (currentProtocol().imagen) {
-            <img src="images/{{currentProtocol().imagen}}"
-                [alt]="currentProtocol().nombre"
+        @if (currentProtocol()?.image) {
+            <img src="images/{{currentProtocol()?.image ?? ''}}"
+                [alt]="currentProtocol()?.title"
                 class="w-auto h-full object-contain transition-all duration-500 animate-in zoom-in-95 fade-in">
         } @else {
             <div class="flex flex-col items-center py-8 text-slate-300">
@@ -18,12 +18,12 @@
     <div class="md:col-span-2  ml-3 pl-5 border-l-[3px] border-aqua-blue py-1 space-y-6">
         <div class="flex gap-2 items-baseline">
             <span class="font-bold text-slate-800 min-w-25">Propósito:</span>
-            <span class="text-slate-600 leading-relaxed">{{ currentProtocol().objetivo }}</span>
+            <span class="text-slate-600 leading-relaxed">{{ currentProtocol()?.purpose }}</span>
         </div>
         <div class="flex gap-2 items-start">
             <span class="font-bold text-slate-800 min-w-25 mt-1">Materiales:</span>
             <div class="flex flex-wrap gap-2">
-                @for (material of currentProtocol().materiales; track material) {
+                @for (material of currentProtocol()?.materials; track material) {
                     <span class="px-3 py-1 bg-light-blue text-dark-blue rounded-full text-sm font-medium shadow-sm whitespace-nowrap">
                         {{ material }}
                     </span>
@@ -38,7 +38,7 @@
   </div>
 
   <div class="px-4 py-4">
-  @for (paso of currentProtocol().procedimiento; track paso.titulo; let i = $index; let last = $last) {
+  @for (paso of currentProtocol()?.steps; track paso.title; let i = $index; let last = $last) {
     <div class="grid md:grid-cols-3 mb-12 relative">
       <div class="md:col-span-2">
         <div class="flex items-start gap-6 pr-8 relative">
@@ -55,10 +55,10 @@
           </div>
 
           <div class="space-y-4 pt-1 pb-4">
-            <h3 class="text-xl font-bold text-dark-blue">{{ paso.titulo }}</h3>
-            <p class="text-slate-500 leading-relaxed">{{ paso.instrucciones }}</p>
+            <h3 class="text-xl font-bold text-dark-blue">{{ paso.title }}</h3>
+            <p class="text-slate-500 leading-relaxed">{{ paso.description }}</p>
 
-            @if (paso.notas && paso.notas.length > 0) {
+            <!-- @if (paso.notas && paso.notas.length > 0) {
             <div class="space-y-3 pt-2">
                 @for (nota of paso.notas; track nota) {
                 <div class="flex items-start gap-3 p-4 rounded-lg bg-background border text-dark-blue border-slate-100">
@@ -69,15 +69,15 @@
                 </div>
                 }
             </div>
-            }
+            } -->
           </div>
         </div>
       </div>
 
       <div class="flex items-center justify-center">
         <div class="bg-white w-full aspect-video rounded-lg border border-slate-200 shadow-sm flex items-center justify-center overflow-hidden">
-        @if (paso.ilustracion) {
-          <img [src]="paso.ilustracion" class="w-full h-full object-cover">
+        @if (paso.image) {
+          <img [src]="paso.image" class="w-full h-full object-cover">
         } @else {
           <div class="flex flex-col items-center text-slate-200">
           <fa-icon [icon]="icons.faImage" />

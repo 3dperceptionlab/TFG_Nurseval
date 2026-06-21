@@ -3,7 +3,7 @@ import { inject, Service, signal } from '@angular/core';
 import { environment } from '../environment/environment';
 
 @Service()
-export class Protocol {
+export class ProtocolService {
   http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/protocols`;
 
