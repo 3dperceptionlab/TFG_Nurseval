@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
-import { PROTOCOLOS_DATA } from '../../models/protocolos-data';
-import {  PROCEDIMIENTOS } from '../../models/procedimientos.model';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft, faFaceFrownOpen } from '@fortawesome/free-solid-svg-icons';
 import { PageSelector } from "../../shared/page-selector/page-selector";
 import { ProceduresList } from "./procedures-list/procedures-list";
+import { procedureSummary } from '../../models/procedure.model';
+import { ProcedureService } from '../../services/procedure.service';
+import { ProtocolService } from '../../services/protocol.service';
 
 @Component({
   selector: 'app-pending-procedures',
@@ -13,11 +14,16 @@ import { ProceduresList } from "./procedures-list/procedures-list";
   styleUrl: './pending-procedures.css',
 })
 export class PendingProcedures {
-  icons = {faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft}
+  icons = {faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft, faFaceFrownOpen}
 
-  PROTOCOLOS_DATA = PROTOCOLOS_DATA;
-  protocolKeys = Object.keys(PROTOCOLOS_DATA);
-  selectedKey = signal<string>('capelina');
+  selectedKey = signal<string>('Capelina');
 
-  procedimientos = PROCEDIMIENTOS;
+  procedureService = inject(ProcedureService);
+  protocolService = inject(ProtocolService);
+
+  myStudentsProcedures = computed<procedureSummary[]>(() => (this.procedureService.myStudentProceduresResource.value() as procedureSummary[]) ?? [])
+  filteredProcedures = computed(() => {
+    if(this.selectedKey() === "Todo") return this.myStudentsProcedures();
+    return this.myStudentsProcedures().filter((p) => p.protocolName === this.selectedKey());
+  });
 }

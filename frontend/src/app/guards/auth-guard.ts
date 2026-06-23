@@ -2,25 +2,27 @@ import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '../services/auth.service';
 import { inject } from '@angular/core';
 
-
 export const authGuard = (allowedRoles: string[]): CanActivateFn => {
-  return (route, state) => {
-    const authService = inject(Auth);
+  return () => {
+    const auth = inject(Auth);
     const router = inject(Router);
-    
-    const currentRole = authService.userRole();
 
-    // permitir si coincide
-    if (allowedRoles.includes(currentRole)) {
-      return true;
+    if (allowedRoles.includes('guest')) {
+      return auth.isAuthenticated() ? router.createUrlTree(['/app']) : true;
     }
 
-    // sino mandar al login
-    if (currentRole === 'guest') {
+    if (!auth.isAuthenticated()) {
       return router.createUrlTree(['/login']);
     }
 
-    // si esta autenticado pero no es el usuario correcto mandar a un sitio seguro
+    const role = auth.userRole();
+    
+    if (allowedRoles.includes(role)) 
+      return true;
+
+    if (role === 'guest') 
+      return router.createUrlTree(['/login']);
+
     return router.createUrlTree(['/app']);
   };
 };

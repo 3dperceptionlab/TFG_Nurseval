@@ -1,6 +1,5 @@
 package com.nursEval.backend.repository;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +13,7 @@ public interface StudentRepository extends MongoRepository<Student, String>{
 
   Optional<Student> findByName(String name);
 
+  @Query("{ 'professor': ObjectId(?0) }")
   List<Student> findByProfessor(String professorId);
 
   Boolean existsByEmail(String email);

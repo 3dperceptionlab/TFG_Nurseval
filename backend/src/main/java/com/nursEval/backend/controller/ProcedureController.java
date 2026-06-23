@@ -17,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nursEval.backend.dtos.FinalizeEvaluationRequest;
+import com.nursEval.backend.dtos.ProcedureResponse;
+import com.nursEval.backend.dtos.StudentResponse;
+import com.nursEval.backend.dtos.auth.UserProfileResponse;
 import com.nursEval.backend.model.Procedure;
+import com.nursEval.backend.model.Professor;
 import com.nursEval.backend.model.Student;
 import com.nursEval.backend.model.embedded.Annotation;
 import com.nursEval.backend.service.ProcedureService;
+import com.nursEval.backend.service.ProfessorService;
 import com.nursEval.backend.service.StudentService;
 
 import jakarta.validation.Valid;
@@ -33,23 +38,48 @@ public class ProcedureController {
 
   private final ProcedureService procedureService;
   private final StudentService studentService;
+  private final ProfessorService professorService;
+
+  private ProcedureResponse convertToProcedureResponse(Procedure procedure) {
+    UserProfileResponse student = UserProfileResponse.builder()
+      .id(procedure.getStudent().getId())
+      .name(procedure.getStudent().getName())
+      .surname(procedure.getStudent().getSurname())
+      .email(procedure.getStudent().getEmail())
+      .role(procedure.getStudent().getRole())
+      .build();
+
+    return ProcedureResponse.builder()
+      .id(procedure.getId())
+      .student(student)
+      .protocolName(procedure.getProtocol().getTitle())
+      .date(procedure.getDate())
+      .state(procedure.getState())
+      .globalMetrics(procedure.getGlobalMetrics())
+      .build();
+  }
 
   @GetMapping("/my-history")
-  public ResponseEntity<List<Procedure>> getMyHistory(Principal principal, @RequestParam(required = false) String protocolName) { 
-    String email = principal.getName();
-    Student student = studentService.getStudentByEmail(email);
+  public ResponseEntity<List<ProcedureResponse>> getMyHistory(Principal principal, @RequestParam(required = false) String protocolName) { 
+    String id = principal.getName();
+    Student student = studentService.getStudentById(id);
 
-    List<Procedure> history = procedureService.searchProcedures(student.getId(), null, null, protocolName);
-    
+    List<ProcedureResponse> history = procedureService.searchProcedures(student.getId(), null, null, protocolName).stream()
+      .map(this::convertToProcedureResponse)
+      .toList();
+
     return ResponseEntity.ok(history);
   }
 
   @GetMapping
-  public ResponseEntity<List<Procedure>> getAll(
+  public ResponseEntity<List<ProcedureResponse>> getAll(
     @RequestParam(required = false) String state,
     @RequestParam(required = false) String protocolName) {
     
-    List<Procedure> procedures = procedureService.searchProcedures(null, null, state, protocolName);
+    List<ProcedureResponse> procedures = procedureService.searchProcedures(null, null, state, protocolName).stream()
+      .map(this::convertToProcedureResponse)
+      .toList();
+      
     return ResponseEntity.ok(procedures);
   }
 
@@ -59,40 +89,37 @@ public class ProcedureController {
   }
 
   @GetMapping("/student/{studentId}")
-  public ResponseEntity<List<Procedure>> getStudentHistory(
-      @PathVariable String studentId,
-      @RequestParam(required = false) String protocolName) {
+  public ResponseEntity<List<ProcedureResponse>> getStudentHistory( @PathVariable String studentId, @RequestParam(required = false) String protocolName) {
       
-    List<Procedure> history = procedureService.searchProcedures(studentId, null, null, protocolName);
+    List<ProcedureResponse> history = procedureService.searchProcedures(studentId, null, null, protocolName).stream()
+      .map(this::convertToProcedureResponse)
+      .toList();
+
     return ResponseEntity.ok(history);
   }
 
-  @GetMapping("/professor/{professorId}")
-  public ResponseEntity<List<Procedure>> getPendingProcedures(
-      @PathVariable String professorId,
-      @RequestParam(required = false) String state,
-      @RequestParam(required = false) String protocolName) {
+  @GetMapping("/pending")
+  public ResponseEntity<List<ProcedureResponse>> getPendingProcedures(Principal principal, @RequestParam(required = false) String protocolName) {
+    String professorId = principal.getName();
+    Professor professor = professorService.getProfessorById(professorId);
       
-    List<Procedure> history = procedureService.searchProcedures(null, professorId, "pending", protocolName);
+    List<ProcedureResponse> history = procedureService.searchProcedures(null, professor.getId(), "Pendiente", protocolName).stream()
+      .map(this::convertToProcedureResponse)
+      .toList();
+
     return ResponseEntity.ok(history);
   }
 
   // Añadir anotación (error, tip, etc.) a un procedimiento
   @PostMapping("/{procedureId}/annotations")
-  public ResponseEntity<Annotation> addAnnotation(
-    @PathVariable String procedureId, 
-    @Valid @RequestBody Annotation annotation) {
-
+  public ResponseEntity<Annotation> addAnnotation(@PathVariable String procedureId, @Valid @RequestBody Annotation annotation) {
     Annotation savedAnnotation = procedureService.addAnnotation(procedureId, annotation);
     return ResponseEntity.ok(savedAnnotation);
   }
 
   // Editar anotación existente
   @PutMapping("/{procedureId}/annotations/{annotationId}")
-  public ResponseEntity<Annotation> editAnnotation(
-    @PathVariable String procedureId,
-    @PathVariable String annotationId,
-    @Valid @RequestBody Annotation annotationData) {
+  public ResponseEntity<Annotation> editAnnotation(@PathVariable String procedureId, @PathVariable String annotationId, @Valid @RequestBody Annotation annotationData) {
 
     Annotation updatedAnnotation = procedureService.editAnnotation(procedureId, annotationId, annotationData);
     return ResponseEntity.ok(updatedAnnotation);

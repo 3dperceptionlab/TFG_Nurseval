@@ -18,13 +18,9 @@ export class Theory {
 
   showVideoModal = signal(false);
   selectedKey = signal<string>('Capelina');
-  protocols = computed<Protocol[]>(() => (this.protocolService.protocolsResource.value() as Protocol[]) ?? []);
-  protocolkeys = computed(() => {
-    return this.protocols().map(protocol => protocol.title);
-  });
   
   currentProtocol = computed<Protocol | undefined>(() => {
-    const all = this.protocols();
+    const all = this.protocolService.protocols();
     if (all.length === 0) return undefined;
 
     const encontrado = all.find(p => p.title === this.selectedKey());

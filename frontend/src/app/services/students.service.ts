@@ -4,12 +4,11 @@ import { debounceTime, distinctUntilChanged, Observable, switchMap } from 'rxjs'
 import { environment } from '../environment/environment';
 
 @Service()
-export class Professor {
+export class Student {
   http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/students`;
   
   studentsResource = httpResource(() => this.baseUrl,);
-  studentProceduresResource = httpResource((id) => `${this.baseUrl}/${id}/proceduress`);
   
   searchStudents(buscar$: Observable<string>): Observable<any[]> {
     return buscar$.pipe(

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, httpResource } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
 import { environment } from '../environment/environment';
-import {  tap } from 'rxjs';
+import {  firstValueFrom, tap } from 'rxjs';
 import { LoginResponse, User } from '../models/auth.model';
 
 @Service()
@@ -12,7 +12,7 @@ export class Auth {
   private tokenSignal = signal<string | null>(localStorage.getItem('accessToken'));
 
   currentUser = computed(() => this.profileResource.value() ?? null);
-  isLoading = computed(() => this.profileResource.isLoading() || this.statsResource.isLoading());
+  isLoading = computed(() => this.profileResource.isLoading());
   isAuthenticated = computed(() => this.tokenSignal() !== null);
 
   userRole = computed<string>(() => {
@@ -28,9 +28,23 @@ export class Auth {
     return this.tokenSignal() ? `${this.baseUrl}/me` : undefined;
   });
 
-  statsResource = httpResource(() => {
-    return this.tokenSignal() ? `${this.baseUrl}/me/stats` : undefined;
-  });
+  async init(): Promise<void> {
+    if (!this.tokenSignal()) return;
+
+    try {
+      await firstValueFrom(
+        this.http.get<User>(`${this.baseUrl}/me`).pipe(
+          tap(user => this.profileResource.set(user)) 
+        )
+      );
+    } catch {
+      this.logout();
+    }
+  }
+
+  // statsResource = httpResource(() => {
+  //   return this.tokenSignal() ? `${this.baseUrl}/me/stats` : undefined;
+  // });
   
   checkEmail(email: string) {
     return this.http.get<boolean>(`${this.baseUrl}/check-email?email=${email}`);

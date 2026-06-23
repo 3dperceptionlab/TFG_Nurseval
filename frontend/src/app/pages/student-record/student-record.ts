@@ -1,11 +1,11 @@
-import { Component, signal } from '@angular/core';
-import { PROTOCOLOS_DATA } from '../../models/protocolos-data';
-import {  PROCEDIMIENTOS } from '../../models/procedimientos.model';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-import { RouterLink } from "@angular/router";
+import { faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft, faFaceFrownOpen } from '@fortawesome/free-solid-svg-icons';
 import { PageSelector } from "../../shared/page-selector/page-selector";
 import { ProceduresList } from "./procedures-list/procedures-list";
+import { ProcedureService } from '../../services/procedure.service';
+import { procedureSummary } from '../../models/procedure.model';
+import { ProtocolService } from '../../services/protocol.service';
 
 @Component({
   selector: 'app-student-record',
@@ -14,11 +14,17 @@ import { ProceduresList } from "./procedures-list/procedures-list";
   styleUrl: './student-record.css',
 })
 export class StudentRecord {
-  icons = {faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft}
+  icons = {faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft, faFaceFrownOpen}
 
-  PROTOCOLOS_DATA = PROTOCOLOS_DATA;
-  protocolKeys = Object.keys(PROTOCOLOS_DATA);
-  selectedKey = signal<string>('capelina');
+  procedureService = inject(ProcedureService);
+  protocolService = inject(ProtocolService);
 
-  procedimientos = PROCEDIMIENTOS;
+  selectedKey = signal<string>('Capelina');
+
+  myProcedures = computed<procedureSummary[]>(() => (this.procedureService.myHistoryResource.value() as procedureSummary[]) ?? [])
+  
+  filteredProcedures = computed(() => {
+    if(this.selectedKey() === "Todo") return this.myProcedures();
+    return this.myProcedures().filter((p) => p.protocolName === this.selectedKey());
+  });
 }

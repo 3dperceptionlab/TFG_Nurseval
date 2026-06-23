@@ -5,20 +5,37 @@
 <div class="mb-5 flex gap-8 items-center">
     <p class="font-semibold text-slate-500">Filtrar por:</p>
     <div class="flex flex-wrap gap-3">
-    @for (key of protocolKeys; track key) {
+      <button 
+      (click)="selectedKey.set('Todo')"
+      [class]="selectedKey() === 'Todo' ? 'bg-aqua-blue text-white border-aqua-blue shadow-md scale-105' : 'bg-white text-aqua-blue border-slate-200 hover:border-aqua-blue'"
+      class="px-4 py-2 rounded-lg border text-sm font-medium transition-all capitalize cursor-pointer">
+      Todo
+    </button>
+    @for (key of protocolService.protocolkeys(); track key) {
         <button 
         (click)="selectedKey.set(key)"
         [class]="selectedKey() === key ? 'bg-aqua-blue text-white border-aqua-blue shadow-md scale-105' : 'bg-white text-aqua-blue border-slate-200 hover:border-aqua-blue'"
         class="px-4 py-2 rounded-lg border text-sm font-medium transition-all capitalize cursor-pointer">
-          {{ PROTOCOLOS_DATA[key].nombre }}
+          {{ key }}
         </button>
     }
     </div>      
 </div>
 
-<app-procedures-list [procedures]="procedimientos"></app-procedures-list>
+@if(filteredProcedures()?.length === 0){
+  <div class="w-full h-2/3 flex flex-col items-center justify-center text-center text-slate-500 ">
+    <fa-icon [icon]="icons.faFaceFrownOpen" [size]="'6x'"></fa-icon>
+    <h2 class="mt-6 text-2xl font-bold ">No hay resultados</h2>
 
-<app-page-selector [actualPage]="1" [elementsPerPage]="4" [totalElements]="15"></app-page-selector>
+    <p class="mt-4 text-pretty ">
+      Actualmente no hay elementos que mostrar. Cuando tus alumnos realicen una práctica nueva
+    </p>
+  </div>  
+}@else {
+  <app-procedures-list [procedures]="filteredProcedures()"></app-procedures-list>
+  <app-page-selector [actualPage]="1" [elementsPerPage]="4" [totalElements]="myProcedures.length"></app-page-selector>
+}
+
   
         
 

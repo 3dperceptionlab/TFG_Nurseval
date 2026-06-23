@@ -3,7 +3,7 @@ import { faAngleRight, faAngleLeft, faSearch, faEraser, faImage, faPlus, faXmark
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Subject } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Professor } from '../../../services/professor.service';
+import { Student } from '../../../services/students.service';
 
 @Component({
   selector: 'app-add-student-modal',
@@ -14,17 +14,14 @@ import { Professor } from '../../../services/professor.service';
 })
 export class AddStudentModal {
   icons = {faAngleRight, faAngleLeft, faSearch, faEraser, faImage, faPlus, faXmark, faEnvelope};
-  professorService = inject(Professor);
+  studentService = inject(Student);
   private searchSubject$ = new Subject<string>();
 
   selectedStudents = signal<any[]>([]);
   searchQuery = signal(''); 
   closeModal = output();
 
-  searchResults = toSignal(
-   this.professorService.searchStudents(this.searchSubject$),
-    { initialValue: [] }
-  );
+  searchResults = toSignal(this.studentService.searchStudents(this.searchSubject$), { initialValue: [] });
 
   onInputChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;

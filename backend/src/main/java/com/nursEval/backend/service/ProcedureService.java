@@ -146,7 +146,7 @@ public class ProcedureService {
   public Procedure finalizeEvaluation(String id, FinalizeEvaluationRequest evaluation) {
 
     Procedure procedure = getProcedureById(id);
-    procedure.setState("evaluated");
+    procedure.setState("Evaluado");
     procedure.setComment(evaluation.getComment());
     
     if (procedure.getGlobalMetrics() == null) {

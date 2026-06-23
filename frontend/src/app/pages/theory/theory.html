@@ -7,7 +7,7 @@
   <div class="md:col-span-2">
     <p class="font-semibold text-slate-500 mb-4">Selecciona el tipo de vendaje:</p>
     <div class="flex flex-wrap gap-3">
-    @for (key of protocolkeys(); track key) {
+    @for (key of protocolService.protocolkeys(); track key) {
         <button 
         (click)="selectedKey.set(key)"
         [class]="selectedKey() === key ? 'bg-aqua-blue text-white border-aqua-blue shadow-md scale-105' : 'bg-white text-aqua-blue border-slate-200 hover:border-aqua-blue'"
