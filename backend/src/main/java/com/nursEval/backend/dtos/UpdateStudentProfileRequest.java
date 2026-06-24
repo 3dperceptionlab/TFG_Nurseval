@@ -11,7 +11,7 @@ public class UpdateStudentProfileRequest {
   @NotBlank(message = "El apellido no puede estar vacío")
   private String surname;
 
-  private Integer course;
+  private String course;
 
-  private Integer group;
+  private String group;
 }

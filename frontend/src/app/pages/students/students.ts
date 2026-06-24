@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ALUMNOS } from '../../models/procedimientos.model';
@@ -6,6 +6,8 @@ import { PageSelector } from "../../shared/page-selector/page-selector";
 import { AddStudentModal } from "./add-student-modal/add-student-modal";
 import { StudentsTable } from "./students-table/students-table";
 import { Filters } from "./filters/filters";
+import { StudentService } from '../../services/students.service';
+import { FilterParams, Student } from '../../models/student.model';
 
 @Component({
   selector: 'app-students',
@@ -16,8 +18,25 @@ import { Filters } from "./filters/filters";
 export class Students {
   icons = { faPlus};
   
-  alumnos = signal(ALUMNOS);
+  studentService = inject(StudentService);
+
+  students = signal<Student[]>([]);
   showModal = signal(false);
+  
+  ngOnInit() {
+    this.onFiltersChange({ query: '', course: '', group: '' });
+  }
 
+  onFiltersChange(params: FilterParams) {
+    this.studentService.getMyStudents({
+      query: params.query,
+      course: params.course || null,
+      group: params.group || null,
+    }).subscribe(data => this.students.set(data));
+  }
 
+  onStudentsInvited() {
+    this.showModal.set(false);
+    this.onFiltersChange({ query: '', course: '', group: '' }); 
+  }
 }

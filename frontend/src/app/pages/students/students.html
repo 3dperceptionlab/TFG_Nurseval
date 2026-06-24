@@ -10,12 +10,12 @@
   </button>
 </div>
 
-<app-filters></app-filters>
+<app-filters (filtersChange)="onFiltersChange($event)"></app-filters>
 
-<app-students-table [students]="alumnos()"></app-students-table>
+<app-students-table (studentUnlinked)="onFiltersChange({ query: '', course: '', group: '' }); " [students]="students()"></app-students-table>
 
-<app-page-selector [actualPage]="1" [elementsPerPage]="6" [totalElements]="35"></app-page-selector>
+<app-page-selector [actualPage]="1" [elementsPerPage]="6" [totalElements]="students.length"></app-page-selector>
 
 @if(showModal()){
-  <app-add-student-modal (closeModal)="this.showModal.set(!this.showModal())" ></app-add-student-modal>
+  <app-add-student-modal (studentsInvited)="onStudentsInvited()" (closeModal)="this.showModal.set(!this.showModal())" ></app-add-student-modal>
 }

@@ -6,10 +6,11 @@ import { LoginData } from '../../models/forms.model';
 import { Auth } from '../../services/auth.service';
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { faEye, faEyeSlash, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { WarningMessage } from '../../shared/warning-message/warning-message';
 
 @Component({
   selector: 'app-login',
-  imports: [Header, RouterLink, FormField, FaIconComponent],
+  imports: [Header, RouterLink, FormField, FaIconComponent, WarningMessage],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

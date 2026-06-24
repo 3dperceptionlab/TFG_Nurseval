@@ -1,28 +1,5 @@
 @if (warningMessage().show) {
-  <div class="fixed top-5 left-1/2 -translate-x-1/2 z-50 max-w-md w-11/12 sm:w-full animate-fade-in-down rounded-lg p-4 border-t-2 shadow-lg transition-all duration-300"
-  [class]="warningMessage().type === 'success' 
-    ? 'bg-green-50 border-green-800 text-green-800 ' 
-    : 'bg-red-50 border-red-800 text-red-800'" role="alert">
-  <div class="flex">
-    <div class="shrink-0">
-      <span class="inline-flex justify-center items-center size-8 rounded-full">
-        @if (warningMessage().type === 'success') {
-          <fa-icon [icon]="icons.faCheck" [size]="'lg'" ></fa-icon>
-        } @else {
-          <fa-icon [icon]="icons.faXmark" [size]="'lg'" ></fa-icon>
-        }
-      </span>
-    </div>
-    <div class="ms-3">
-      <h3 class="font-semibold ">
-        {{ warningMessage().title }}
-      </h3>
-      <p class="text-sm opacity-90 text-slate-800">
-        {{ warningMessage().message }}
-      </p>
-    </div>
-  </div>
-  </div>
+  <app-warning-message [warningMessage]="warningMessage()"></app-warning-message>
 }
 <div class="bg-background text-slate-800 h-dvh w-full flex flex-col overflow-hidden">
   

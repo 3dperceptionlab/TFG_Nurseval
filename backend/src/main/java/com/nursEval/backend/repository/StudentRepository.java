@@ -20,14 +20,14 @@ public interface StudentRepository extends MongoRepository<Student, String>{
 
   @Query("{ '$or': [ " +
   "{ 'name': { '$regex': ?0, '$options': 'i' } }, " +
-  "{ 'surnames': { '$regex': ?0, '$options': 'i' } }, " +
+  "{ 'surname': { '$regex': ?0, '$options': 'i' } }, " +
   "{ 'email': { '$regex': ?0, '$options': 'i' } } " + "] }")
   List<Student> searchAllByField(String query);
 
   // Si quieres buscar SOLO entre los alumnos de un profesor específico
-  @Query("{ 'professor': ?0, '$or': [ " +
+  @Query("{ 'professor': ObjectId(?0), '$or': [ " +
   "{ 'name': { '$regex': ?1, '$options': 'i' } }, " +
-  "{ 'surnames': { '$regex': ?1, '$options': 'i' } }, " +
+  "{ 'surname': { '$regex': ?1, '$options': 'i' } }, " +
   "{ 'email': { '$regex': ?1, '$options': 'i' } } " + "] }")
   List<Student> searchWithinProfessorByField(String professorId, String query);
 }

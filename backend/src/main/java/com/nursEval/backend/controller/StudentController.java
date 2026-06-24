@@ -1,5 +1,6 @@
 package com.nursEval.backend.controller;
 
+import com.nursEval.backend.repository.ProfessorRepository;
 import java.security.Principal;
 import java.util.List;
 
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nursEval.backend.dtos.StudentResponse;
 import com.nursEval.backend.dtos.UpdateStudentProfileRequest;
+import com.nursEval.backend.model.Professor;
 import com.nursEval.backend.model.Student;
+import com.nursEval.backend.service.ProcedureService;
+import com.nursEval.backend.service.ProfessorService;
 import com.nursEval.backend.service.StudentService;
 
 import jakarta.validation.Valid;
@@ -26,10 +30,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudentController {
   
+  private final ProfessorService professorService;
   private final StudentService studentService;
+  private final ProcedureService procedureService;
 
   private StudentResponse convertToStudentResponse(Student student) {
     String profName = (student.getProfessor() != null)  ? student.getProfessor().getName() + " " + student.getProfessor().getSurname() : "Sin profesor asignado"; 
+    int nPractices = procedureService.countByStudentId(student.getId());
 
     return StudentResponse.builder()
       .id(student.getId())
@@ -39,6 +46,9 @@ public class StudentController {
       .course(student.getCourse())
       .group(student.getGroup())
       .professorName(profName) 
+      .lastLogin(student.getLastLogin())
+      .nPractices(nPractices)
+      .avgMark(student.getAvgMark())
       .build();
   }
 
@@ -62,8 +72,8 @@ public class StudentController {
   @GetMapping
   public ResponseEntity<List<StudentResponse>> getGlobalStudents(
     @RequestParam(required = false) String query,
-    @RequestParam(required = false) Integer course, 
-    @RequestParam(required = false) Integer group) 
+    @RequestParam(required = false) String course, 
+    @RequestParam(required = false) String group) 
   {
     List<StudentResponse> filteredStudents = studentService.getAllStudents(query, course, group).stream()
       .map(this::convertToStudentResponse)
@@ -73,24 +83,41 @@ public class StudentController {
   }
 
   // Obtener los alumnos asociados a un profesor específico
-  @GetMapping("/professor/{professorId}")
+  @GetMapping("/my-students")
   public ResponseEntity<List<StudentResponse>> getMyStudents(
-    @PathVariable String professorId, 
+    Principal principal, 
     @RequestParam(required = false) String query,
-    @RequestParam(required = false) Integer course,  
-    @RequestParam(required = false) Integer group) { 
+    @RequestParam(required = false) String course,  
+    @RequestParam(required = false) String group) { 
+    
+    String professorId = principal.getName();
+    Professor professor = professorService.getProfessorById(professorId);
 
-    List<StudentResponse> filteredStudents = studentService.getStudentsFromProfessor(professorId, query, course, group).stream()
+    List<StudentResponse> filteredStudents = studentService.getStudentsFromProfessor(professor.getId(), query, course, group).stream()
       .map(this::convertToStudentResponse)
       .toList();
 
     return ResponseEntity.ok(filteredStudents);
   }
 
+  @PutMapping("/{studentId}/professor")
+  public ResponseEntity<Void> assignProfessor(
+    @PathVariable String studentId,
+    Principal principal) {
+    String professorId = principal.getName();
+    Professor professor = professorService.getProfessorById(professorId);
+
+    studentService.assignProfessorToStudent(studentId, professor.getId());
+    return ResponseEntity.noContent().build();
+  }
+
   // Desvincular a un estudiante de un profesor
-  @DeleteMapping("/{studentId}/professor/{professorId}")
-  public ResponseEntity<Void> removeStudentFromProfessor( @PathVariable String studentId, @PathVariable String professorId) {
-    studentService.removeStudentFromProfessor(studentId, professorId);
+  @DeleteMapping("/{studentId}/professor")
+  public ResponseEntity<Void> removeStudentFromProfessor(Principal principal, @PathVariable String studentId) {
+    String professorId = principal.getName();
+    Professor professor = professorService.getProfessorById(professorId);
+
+    studentService.removeStudentFromProfessor(studentId, professor.getId());
     return ResponseEntity.noContent().build(); 
   }
 }

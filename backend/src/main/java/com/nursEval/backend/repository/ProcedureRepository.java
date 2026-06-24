@@ -12,4 +12,6 @@ public interface ProcedureRepository extends MongoRepository<Procedure, String>{
   List<Procedure> findByProtocol(String protocolName) ;
  
   List<Procedure> findByState(String state);
+
+  Integer countByStudentId(String id);
 }

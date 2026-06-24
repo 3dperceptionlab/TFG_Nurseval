@@ -41,6 +41,10 @@ public class ProcedureService {
     procedure.getGlobalMetrics().setErrorCount((int) totalErrors);
 
   }
+
+  public Integer countByStudentId(String id){
+    return procedureRepository.countByStudentId(id);
+  }
   
   // filtrado dinámico reutilizable
   public List<Procedure> searchProcedures(String studentId, String professorId, String state, String protocolName) {

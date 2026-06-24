@@ -9,4 +9,5 @@ export interface User {
   email: string;
   surname: string;
   role: string; 
+  lastLogin: Date;
 }

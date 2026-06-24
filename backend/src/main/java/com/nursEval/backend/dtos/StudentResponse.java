@@ -1,5 +1,7 @@
 package com.nursEval.backend.dtos;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +16,10 @@ public class StudentResponse {
   private String name;
   private String surname;
   private String email;
-  private Integer course;
-  private Integer group;
+  private String course;
+  private String group;
   private String professorName;
+  private LocalDateTime lastLogin;
+  private Double avgMark;
+  private Integer nPractices;
 }

@@ -41,6 +41,6 @@ public class RegisterRequest {
   private String role;
   
   private String position;      // profesores
-  private Integer student_group; // estudiantes
-  private Integer student_course; // estudiantes
+  private String student_group; // estudiantes
+  private String student_course; // estudiantes
 }

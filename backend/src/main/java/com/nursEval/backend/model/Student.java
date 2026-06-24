@@ -26,8 +26,8 @@ public class Student {
   private String password;
   private double avgMark;
   private LocalDateTime lastLogin;
-  private int course;
-  private int group;
+  private String course;
+  private String group;
   private boolean active;
   @DocumentReference
   private Professor professor; // referencia al id de Professor

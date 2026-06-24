@@ -9,10 +9,11 @@ import { firstValueFrom } from 'rxjs';
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGraduationCap, faBook, faEye, faEyeSlash, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { WarningMessage } from '../../shared/warning-message/warning-message';
 
 @Component({
   selector: 'app-register',
-  imports: [Header, RouterLink, CommonModule, FormField, FaIconComponent, FontAwesomeModule],
+  imports: [Header, RouterLink, CommonModule, FormField, FaIconComponent, FontAwesomeModule, WarningMessage],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

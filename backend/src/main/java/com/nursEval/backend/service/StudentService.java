@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.nursEval.backend.dtos.UpdateStudentProfileRequest;
 import com.nursEval.backend.exceptions.ResourceNotFoundException;
+import com.nursEval.backend.model.Professor;
 import com.nursEval.backend.model.Student;
 import com.nursEval.backend.repository.StudentRepository;
 
@@ -15,8 +16,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudentService {
   private final StudentRepository studentRepository;
+  private final ProfessorService professorService;
 
-  public List<Student> getAllStudents(String query, Integer course, Integer group) {
+  public List<Student> getAllStudents(String query, String course, String group) {
     List<Student> students;
 
     if (query != null && !query.trim().isEmpty()) {
@@ -48,16 +50,14 @@ public class StudentService {
     return studentRepository.findByName(name).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado"));
   }
 
-  public List<Student> getStudentsFromProfessor(String professorId, String query, Integer course, Integer group) {
-    List<Student> students = studentRepository.findByProfessor(professorId);
-
+  public List<Student> getStudentsFromProfessor(String professorId, String query, String course, String group) {
+    List<Student> students;
+    
     if (query != null && !query.trim().isEmpty()) {
-        String lowerQuery = query.toLowerCase().trim();
-        students = students.stream()
-        .filter(s -> (s.getName() != null && s.getName().toLowerCase().contains(lowerQuery)) ||
-                      (s.getSurname() != null && s.getSurname().toLowerCase().contains(lowerQuery)) ||
-                      (s.getEmail() != null && s.getEmail().toLowerCase().contains(lowerQuery)))
-        .toList();
+        students = studentRepository.searchWithinProfessorByField(professorId, query.trim());
+    } else {
+        // Si no hay texto, traemos todos los del profesor
+        students = studentRepository.findByProfessor(professorId);
     }
     
     if (course != null) {
@@ -71,10 +71,15 @@ public class StudentService {
   }
 
   public List<Student> searchStudentsGlobal(String query) {
+    
     return studentRepository.searchAllByField(query);
   }
 
   public List<Student> searchMyStudents(String professorId, String query) {
+    if (query == null || query.trim().isEmpty()) {
+        return studentRepository.findByProfessor(professorId); 
+    }
+    
     return studentRepository.searchWithinProfessorByField(professorId, query);
   }
 
@@ -99,4 +104,13 @@ public class StudentService {
 
     return studentRepository.save(student);
   }
+
+  public void assignProfessorToStudent(String studentId, String professorId) {
+    Student student = getStudentById(studentId);
+    Professor professor = professorService.getProfessorById(professorId);
+    
+    student.setProfessor(professor);
+
+    studentRepository.save(student);
+}
 }

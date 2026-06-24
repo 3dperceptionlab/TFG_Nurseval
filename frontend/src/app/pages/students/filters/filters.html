@@ -4,10 +4,10 @@
     <p class="text-slate-700 font-medium mb-2.5 text-sm">Filtrar por:</p>
     
     <div class="w-fit">
-      <select id="student_course" 
-              class="pl-3 py-2.5 text-sm text-slate-900 rounded-lg bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue  bg-no-repeat">
+      <select id="student_course" [value]="courseFilter()" (change)="onFilterChange(courseFilter, $event)"
+        class="pl-3 py-2.5 text-sm text-slate-800 rounded-lg bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue  bg-no-repeat">
         <option value="" disabled selected hidden>Curso</option>
-        <option value="0">Todos</option>
+        <option value="">Todos</option>
         <option value="1">Primero</option>
         <option value="2">Segundo</option>
         <option value="3">Tercero</option>
@@ -16,33 +16,38 @@
     </div>
     
     <div class="w-fit">
-      <select id="student_group" 
-              class="pl-3 py-2.5 text-sm text-slate-900 rounded-lg bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue bg-no-repeat">
+      <select id="student_group"  [value]="groupFilter()" (change)="onFilterChange(groupFilter, $event)"
+              class="pl-3 py-2.5 text-sm text-slate-800 rounded-lg bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue bg-no-repeat">
         <option value="" disabled selected hidden>Grupo</option>
-        <option value="0">Todos</option>
-        <option value="uno">Grupo 1</option>
-        <option value="dos">Grupo 2</option>
-        <option value="tres">Grupo 3</option>
-        <option value="cuatro">Grupo 4</option>
+        <option value="">Todos</option>
+        <option value="1">Grupo 1</option>
+        <option value="2">Grupo 2</option>
+        <option value="3">Grupo 3</option>
+        <option value="4">Grupo 4</option>
       </select>
     </div>
 
-    <button class=" text-sm text-dark-blue cursor-pointer mb-2.5 space-x-0.9">
+    <button (click)="onClear()" class=" text-sm text-dark-blue cursor-pointer mb-2.5 space-x-0.9">
       <fa-icon [icon]="icons.faEraser"/>
       Limpiar
     </button>
   </div>
-  <form class="w-1/3" role="search">
-   <div
-      class="flex items-center gap-2.5 px-3 py-2.5 relative rounded-md bg-white  outline-1 -outline-offset-1 outline-slate-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-aqua-blue">
+  <form class="w-1/3" role="search" (ngSubmit)="onSearch($event)">
+   <div class="flex items-center gap-2.5 px-3 py-2.5 relative rounded-md bg-white outline-1 -outline-offset-1 outline-slate-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-aqua-blue">
       <label for="search" class="sr-only">Buscar</label>
-      <input type="search" id="search" placeholder="Buscar..." required
-         class="text-sm text-slate-900 w-full outline-none pr-10" />
+      
+      <input type="search" 
+         id="search" 
+         name="query"
+         placeholder="Buscar..." 
+         required  
+         [(ngModel)]="query"
+         class="text-sm text-slate-800 w-full outline-none pr-10" />
 
       <button type="submit" aria-label="Search"
          class="absolute right-0 h-full px-3 flex items-center justify-center text-white bg-dark-blue rounded-r-md cursor-pointer">
         <fa-icon [icon]="icons.faSearch" class="w-fit"/>
       </button>
    </div>
-  </form>
+</form>
 </div>
