@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -59,18 +60,6 @@ public class ProcedureController {
       .build();
   }
 
-  @GetMapping("/my-history")
-  public ResponseEntity<List<ProcedureResponse>> getMyHistory(Principal principal, @RequestParam(required = false) String protocolName) { 
-    String id = principal.getName();
-    Student student = studentService.getStudentById(id);
-
-    List<ProcedureResponse> history = procedureService.searchProcedures(student.getId(), null, null, protocolName).stream()
-      .map(this::convertToProcedureResponse)
-      .toList();
-
-    return ResponseEntity.ok(history);
-  }
-
   @GetMapping
   public ResponseEntity<List<ProcedureResponse>> getAll(
     @RequestParam(required = false) String state,
@@ -88,10 +77,26 @@ public class ProcedureController {
     return ResponseEntity.ok(procedureService.getProcedureById(id));
   }
 
+  @GetMapping("/my-history")
+  @PreAuthorize("hasRole('STUDENT')")  // pre verificar que quien llama es un alumno
+  public ResponseEntity<List<ProcedureResponse>> getMyHistory(Principal principal) {
+    String studentId = principal.getName();
+    Student student = studentService.getStudentById(studentId);
+
+    List<ProcedureResponse> history = procedureService
+      .searchProcedures(student.getId(), null, null, null).stream()
+      .map(this::convertToProcedureResponse)
+      .toList();
+
+    return ResponseEntity.ok(history);
+  }
+
   @GetMapping("/student/{studentId}")
-  public ResponseEntity<List<ProcedureResponse>> getStudentHistory( @PathVariable String studentId, @RequestParam(required = false) String protocolName) {
-      
-    List<ProcedureResponse> history = procedureService.searchProcedures(studentId, null, null, protocolName).stream()
+  @PreAuthorize("hasRole('PROFESSOR')") // pre verificar que quien llama es un profesor
+  public ResponseEntity<List<ProcedureResponse>> getStudentHistory(@PathVariable String studentId, @RequestParam(required = false) String protocolName) {
+    Student student = studentService.getStudentById(studentId);
+    List<ProcedureResponse> history = procedureService
+      .searchProcedures(student.getId(), null, null, protocolName).stream()
       .map(this::convertToProcedureResponse)
       .toList();
 
@@ -99,6 +104,7 @@ public class ProcedureController {
   }
 
   @GetMapping("/pending")
+  @PreAuthorize("hasRole('PROFESSOR')") // pre verificar que quien llama es un profesor
   public ResponseEntity<List<ProcedureResponse>> getPendingProcedures(Principal principal, @RequestParam(required = false) String protocolName) {
     String professorId = principal.getName();
     Professor professor = professorService.getProfessorById(professorId);

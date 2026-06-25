@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,6 +81,13 @@ public class StudentController {
       .toList();
 
     return ResponseEntity.ok(filteredStudents);
+  }
+
+  @GetMapping("/{studentId}")
+  @PreAuthorize("hasRole('PROFESSOR')")
+  public ResponseEntity<StudentResponse> getStudentById(@PathVariable String studentId) {
+    Student student = studentService.getStudentById(studentId);
+    return ResponseEntity.ok(convertToStudentResponse(student));
   }
 
   // Obtener los alumnos asociados a un profesor específico

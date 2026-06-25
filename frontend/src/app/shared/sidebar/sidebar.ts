@@ -26,7 +26,7 @@ export class Sidebar {
       return [
         { label: 'Mi Perfil', icon: faUser, route: '/app/profile' },
         { label: 'Teoría', icon: faBook, route: '/app/theory' },
-        { label: 'Historial', icon: faHistory, route: `/app/procedures/:studentId` },
+        { label: 'Historial', icon: faHistory, route: `/app/record` },
       ];
     } else {
       return [

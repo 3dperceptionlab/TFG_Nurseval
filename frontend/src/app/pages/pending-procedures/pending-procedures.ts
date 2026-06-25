@@ -16,7 +16,7 @@ import { ProtocolService } from '../../services/protocol.service';
 export class PendingProcedures {
   icons = {faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft, faFaceFrownOpen}
 
-  selectedKey = signal<string>('Capelina');
+  selectedKey = signal<string>('Todo');
 
   procedureService = inject(ProcedureService);
   protocolService = inject(ProtocolService);

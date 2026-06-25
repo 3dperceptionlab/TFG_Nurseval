@@ -10,8 +10,11 @@ export class StudentService {
   private baseUrl = `${environment.apiUrl}/students`;
   
   studentsResource = httpResource(() => this.baseUrl);
-  // myStudentsResource = httpResource(() => `${this.baseUrl}/my-students`);
   
+  getStudentById(id: string): Observable<Student> {
+    return this.http.get<Student>(`${this.baseUrl}/${id}`);
+  }
+
   getMyStudents(filters: { query: string; course: string | null; group: string | null }): Observable<Student[]> {
     const params = new URLSearchParams();
 

@@ -1,25 +1,45 @@
 <div class="mb-8">
+  <!-- breadcrumb -->
+  @if (isTeacherView) {
+  <nav class="text-sm mb-8 flex items-center gap-2">
+    <a routerLink="/app/students" class="text-dark-blue hover:text-slate-600 transition-colors underline">
+      Alumnos
+    </a>
+    <fa-icon [icon]="icons.faAngleRight" class="text-xs"/>
+    @if (studentName()) {
+      <span class="text-slate-600 font-medium">{{ studentName() }}</span>
+    } @else {
+      <span class="w-32 h-4 bg-slate-200 rounded animate-pulse"></span>
+    }
+  </nav>
+}
+
   <h1 class="text-4xl font-extrabold text-slate-800 mb-2">Historial de procedimientos</h1>
-  <p class="text-slate-500 mt-1">Listado de todas tus prácticas realizadas.</p>
+  @if(authService.userRole() === "professor"){
+    <p class="text-slate-500 mt-1">Listado de todas las prácticas realizadas por el alumno.</p>
+
+  }@else {
+    <p class="text-slate-500 mt-1">Listado de todas tus prácticas realizadas.</p>
+  }
 </div>
 <div class="mb-5 flex gap-8 items-center">
-    <p class="font-semibold text-slate-500">Filtrar por:</p>
-    <div class="flex flex-wrap gap-3">
+  <p class="font-semibold text-slate-500">Filtrar por:</p>
+  <div class="flex flex-wrap gap-3">
+    <button 
+    (click)="selectedKey.set('Todo')"
+    [class]="selectedKey() === 'Todo' ? 'bg-aqua-blue text-white border-aqua-blue shadow-md scale-105' : 'bg-white text-aqua-blue border-slate-200 hover:border-aqua-blue'"
+    class="px-4 py-2 rounded-lg border text-sm font-medium transition-all capitalize cursor-pointer">
+    Todo
+  </button>
+  @for (key of protocolService.protocolkeys(); track key) {
       <button 
-      (click)="selectedKey.set('Todo')"
-      [class]="selectedKey() === 'Todo' ? 'bg-aqua-blue text-white border-aqua-blue shadow-md scale-105' : 'bg-white text-aqua-blue border-slate-200 hover:border-aqua-blue'"
+      (click)="selectedKey.set(key)"
+      [class]="selectedKey() === key ? 'bg-aqua-blue text-white border-aqua-blue shadow-md scale-105' : 'bg-white text-aqua-blue border-slate-200 hover:border-aqua-blue'"
       class="px-4 py-2 rounded-lg border text-sm font-medium transition-all capitalize cursor-pointer">
-      Todo
-    </button>
-    @for (key of protocolService.protocolkeys(); track key) {
-        <button 
-        (click)="selectedKey.set(key)"
-        [class]="selectedKey() === key ? 'bg-aqua-blue text-white border-aqua-blue shadow-md scale-105' : 'bg-white text-aqua-blue border-slate-200 hover:border-aqua-blue'"
-        class="px-4 py-2 rounded-lg border text-sm font-medium transition-all capitalize cursor-pointer">
-          {{ key }}
-        </button>
-    }
-    </div>      
+        {{ key }}
+      </button>
+  }
+  </div>      
 </div>
 
 @if(filteredProcedures()?.length === 0){
@@ -33,7 +53,7 @@
   </div>  
 }@else {
   <app-procedures-list [procedures]="filteredProcedures()"></app-procedures-list>
-  <app-page-selector [actualPage]="1" [elementsPerPage]="4" [totalElements]="myProcedures.length"></app-page-selector>
+  <app-page-selector [actualPage]="1" [elementsPerPage]="4" [totalElements]="filteredProcedures.length"></app-page-selector>
 }
 
   

@@ -33,8 +33,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/theory/theory').then(m => m.Theory) 
       },
       { 
-        path: 'procedures/:studentId', 
-        canActivate: [authGuard(['professor', 'student'])],
+        path: 'record/', 
+        canActivate: [authGuard(['student'])],
+        loadComponent: () => import('./pages/student-record/student-record').then(m => m.StudentRecord) 
+      },
+      { 
+        path: 'record/:studentId', 
+        canActivate: [authGuard(['professor'])],
         loadComponent: () => import('./pages/student-record/student-record').then(m => m.StudentRecord) 
       },
       { 
