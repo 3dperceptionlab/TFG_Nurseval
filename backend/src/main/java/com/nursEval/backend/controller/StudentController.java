@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nursEval.backend.dtos.StudentResponse;
+import com.nursEval.backend.dtos.StudentStatsResponse;
 import com.nursEval.backend.dtos.UpdateStudentProfileRequest;
 import com.nursEval.backend.model.Professor;
 import com.nursEval.backend.model.Student;
@@ -56,8 +57,8 @@ public class StudentController {
 
   @GetMapping("/profile")
   public ResponseEntity<StudentResponse> getMyProfile(Principal principal) {
-    String email = principal.getName(); // Extrae el email del token
-    return ResponseEntity.ok(convertToStudentResponse(studentService.getStudentByEmail(email)));
+    String id = principal.getName();
+    return ResponseEntity.ok(convertToStudentResponse(studentService.getStudentById(id)));
   }
 
   @PutMapping("/profile")
@@ -65,8 +66,8 @@ public class StudentController {
     Principal principal, 
     @Valid @RequestBody UpdateStudentProfileRequest request) {
       
-    String email = principal.getName(); //  desde el JWT
-    studentService.updateProfile(email, request);
+    String id = principal.getName(); //  desde el JWT
+    studentService.updateProfile(id, request);
     return ResponseEntity.noContent().build();
   }
 
@@ -92,6 +93,7 @@ public class StudentController {
 
   // Obtener los alumnos asociados a un profesor específico
   @GetMapping("/my-students")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<List<StudentResponse>> getMyStudents(
     Principal principal, 
     @RequestParam(required = false) String query,
@@ -102,13 +104,30 @@ public class StudentController {
     Professor professor = professorService.getProfessorById(professorId);
 
     List<StudentResponse> filteredStudents = studentService.getStudentsFromProfessor(professor.getId(), query, course, group).stream()
-      .map(this::convertToStudentResponse)
-      .toList();
+    .map(this::convertToStudentResponse)
+    .toList();
 
     return ResponseEntity.ok(filteredStudents);
   }
 
+    // para el estudiante autenticado
+  @GetMapping("/my-stats")
+  @PreAuthorize("hasRole('STUDENT')")
+  public ResponseEntity<StudentStatsResponse> getMyStats(Principal principal) {
+    Student student = studentService.getStudentById(principal.getName());
+    return ResponseEntity.ok(studentService.getStats(student.getId()));
+  }
+
+  // para el profesor viendo un alumno concreto(?)
+  @GetMapping("/{studentId}/stats")
+  @PreAuthorize("hasRole('PROFESSOR')")
+  public ResponseEntity<StudentStatsResponse> getStudentStats(@PathVariable String studentId) {
+    return ResponseEntity.ok(studentService.getStats(studentId));
+  }
+
+  // vincular estudainte a un profesor
   @PutMapping("/{studentId}/professor")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<Void> assignProfessor(
     @PathVariable String studentId,
     Principal principal) {
@@ -121,6 +140,7 @@ public class StudentController {
 
   // Desvincular a un estudiante de un profesor
   @DeleteMapping("/{studentId}/professor")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<Void> removeStudentFromProfessor(Principal principal, @PathVariable String studentId) {
     String professorId = principal.getName();
     Professor professor = professorService.getProfessorById(professorId);

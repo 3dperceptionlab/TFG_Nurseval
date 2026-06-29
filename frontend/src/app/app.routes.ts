@@ -33,7 +33,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/theory/theory').then(m => m.Theory) 
       },
       { 
-        path: 'record/', 
+        path: 'record', 
         canActivate: [authGuard(['student'])],
         loadComponent: () => import('./pages/student-record/student-record').then(m => m.StudentRecord) 
       },

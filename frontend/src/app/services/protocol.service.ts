@@ -20,6 +20,4 @@ export class ProtocolService {
     return this.selectedProtocolId() ? `${this.baseUrl}/${this.selectedProtocolId()}` : undefined; 
   });
   
-
-
 }

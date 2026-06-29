@@ -1,7 +1,10 @@
 package com.nursEval.backend.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -10,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.nursEval.backend.dtos.FinalizeEvaluationRequest;
+import com.nursEval.backend.dtos.StudentStatsResponse;
 import com.nursEval.backend.exceptions.ResourceNotFoundException;
 import com.nursEval.backend.model.Procedure;
 import com.nursEval.backend.model.Student;

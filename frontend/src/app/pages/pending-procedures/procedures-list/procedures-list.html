@@ -23,25 +23,25 @@
       <div class="flex flex-row items-center gap-15 text-slate-500 text-sm justify-center">
         <div class="flex flex-col gap-1 items-center text-center">
           <fa-icon [icon]="icons.faClock"/>
-          <span >Tiempo</span>
+          <span class="uppercase">Tiempo</span>
           <span class="text-dark-blue font-semibold">{{p.globalMetrics.duration}} min</span>
         </div>
   
         <div class="flex flex-col gap-1 items-center text-center">
           <fa-icon [icon]="icons.faWarning" />
-          <span >Errores</span>
+          <span class="uppercase">Errores</span>
           <span class="text-dark-blue font-semibold">{{p.globalMetrics.errorCount}}</span>
         </div>
   
         <div class="flex flex-col gap-1 items-center text-center">
           <fa-icon [icon]="icons.faSquareCheck"/>
-          <span>Estado</span>
+          <span class="uppercase">Estado</span>
           <span class="green-tag uppercase">{{p.state}}</span>
         </div>
   
         <div class="flex flex-col gap-1 items-center text-center">
           <fa-icon [icon]="icons.faChartSimple"/>
-          <span >Puntuación</span>
+          <span class="uppercase">Puntuación</span>
           <span class="text-dark-blue font-semibold">{{p.globalMetrics.mark}}</span>
         </div>
       </div>

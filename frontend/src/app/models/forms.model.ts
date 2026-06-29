@@ -15,13 +15,10 @@ export interface LoginData {
   password: string;
 }
 
-export interface profileData {
-  email: string;
-  password: string;
-  repassword: string;
-  name:string;
+export interface EditProfileData {
+  name: string;
   surname: string;
-  position:string;
-  student_group?: number;
-  student_course?: string;
+  currentpassword: string;
+  newpassword: string;     
+  repassword: string;
 }

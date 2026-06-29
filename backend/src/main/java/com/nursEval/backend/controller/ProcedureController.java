@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nursEval.backend.dtos.FinalizeEvaluationRequest;
 import com.nursEval.backend.dtos.ProcedureResponse;
 import com.nursEval.backend.dtos.StudentResponse;
+import com.nursEval.backend.dtos.StudentStatsResponse;
 import com.nursEval.backend.dtos.auth.UserProfileResponse;
 import com.nursEval.backend.model.Procedure;
 import com.nursEval.backend.model.Professor;
 import com.nursEval.backend.model.Student;
 import com.nursEval.backend.model.embedded.Annotation;
+import com.nursEval.backend.model.embedded.GlobalMetrics;
 import com.nursEval.backend.service.ProcedureService;
 import com.nursEval.backend.service.ProfessorService;
 import com.nursEval.backend.service.StudentService;
@@ -42,22 +44,30 @@ public class ProcedureController {
   private final ProfessorService professorService;
 
   private ProcedureResponse convertToProcedureResponse(Procedure procedure) {
-    UserProfileResponse student = UserProfileResponse.builder()
+    UserProfileResponse studentRes = null;
+    if (procedure.getStudent() != null) {
+      studentRes = UserProfileResponse.builder()
       .id(procedure.getStudent().getId())
       .name(procedure.getStudent().getName())
       .surname(procedure.getStudent().getSurname())
       .email(procedure.getStudent().getEmail())
       .role(procedure.getStudent().getRole())
       .build();
+    }
 
+     String protocolName = (procedure.getProtocol() != null) ? procedure.getProtocol().getTitle() : "No especificado";
+
+    if (procedure.getGlobalMetrics() == null) {
+        procedure.setGlobalMetrics(new GlobalMetrics());
+    }
     return ProcedureResponse.builder()
-      .id(procedure.getId())
-      .student(student)
-      .protocolName(procedure.getProtocol().getTitle())
-      .date(procedure.getDate())
-      .state(procedure.getState())
-      .globalMetrics(procedure.getGlobalMetrics())
-      .build();
+    .id(procedure.getId())
+    .student(studentRes)
+    .protocolName(protocolName)
+    .date(procedure.getDate())
+    .state(procedure.getState())
+    .globalMetrics(procedure.getGlobalMetrics())
+    .build();
   }
 
   @GetMapping
