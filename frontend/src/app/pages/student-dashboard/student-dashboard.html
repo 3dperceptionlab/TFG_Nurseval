@@ -1,24 +1,81 @@
+@if (warningMessage().show) {
+  <app-warning-message [warningMessage]="warningMessage()"></app-warning-message>
+}
 <div class="mb-8 relative">
-      <span class="absolute z-30 top-3 right-0 w-fit px-5 py-2 bg-light-blue text-dark-blue rounded-lg font-bold uppercase flex items-center gap-2 transition-all whitespace-nowrap">
-        <fa-icon [icon]="icons.faCheck"></fa-icon>
-        Evaluado
+    <!-- breadcrumb -->
+
+    <nav class="text-sm mb-8 flex items-center gap-2">
+      @if(authService.userRole() === "professor"){
+        <a [routerLink]="'/app/record/'+ procedure()?.studentId" class="text-dark-blue hover:text-slate-600 transition-colors underline">
+          {{procedure()?.studentName }} {{procedure()?.studentSurname}}
+        </a>
+      }@else {
+        <a routerLink="/app/record/" class="text-dark-blue hover:text-slate-600 transition-colors underline">
+          Historial
+        </a>
+      }
+      
+      <fa-icon [icon]="icons.faAngleRight" class="text-xs"/>
+      <span class="text-slate-600 font-medium"> {{procedure()?.protocol?.title}} {{procedure()?.date | date:'dd/MM/yyyy' }}</span>
+
+    </nav>
+  
+  <span class="absolute z-30 top-3 right-0 w-fit px-5 py-2 bg-light-blue text-dark-blue rounded-lg font-bold uppercase flex items-center gap-2 transition-all whitespace-nowrap">
+    @if(procedure()?.state === 'Evaluado'){
+      <fa-icon [icon]="icons.faCheck"></fa-icon>
+      Evaluado
+    }@else {
+      <fa-icon [icon]="icons.faHourglassHalf"></fa-icon>
+      Pendiente
+    }
+   
+  </span>
+  <div class="mb-8">
+    <h1 class="text-4xl font-extrabold text-slate-800 mb-2">Evaluación del procedimiento</h1>
+    <p class="text-slate-500 mt-1">Descubre cómo te desenvuelves durante la práctica realizada con las Hololens y consulta la evaluación de tu profesor.</p>
+  </div>
+    <div class="mt-5 flex items-center gap-2 text-slate-800 mb-6">
+      <span class="py-1 text-2xl font-bold border-l-4 border-aqua-blue pl-4">
+        {{ procedure()?.protocol?.title }}:
       </span>
-      <div class="mb-8">
-        <h1 class="text-4xl font-extrabold text-slate-800 mb-2">Evaluación del procedimiento</h1>
-        <p class="text-slate-500 mt-1">Descubre cómo te desenvuelves durante la práctica realizada con las Hololens y consulta la evaluación de tu profesor.</p>
-      </div>
-      <div class="mt-5 flex items-center gap-2 text-slate-800 mb-6">
-        <span class="py-1 text-2xl font-bold border-l-4 border-aqua-blue pl-4">
-          {{ evaluation().evaluacion.procedimiento }}:
-        </span>
-        <span class="text-slate-500 py-1 text-2xl">{{ evaluation().evaluacion.fecha }}</span>
-      </div>
+      <span class="text-slate-500 py-1 text-2xl">{{ procedure()?.date | date:'dd/MM/yyyy' }}</span>
     </div>
 
-    <app-evaluation [evaluation]="evaluation()"></app-evaluation>
+</div>
 
-    <app-video-section></app-video-section>
+<app-evaluation (onChangeMark)="onChangeMark($event)" [globalMetrics]="procedure()?.globalMetrics!"></app-evaluation>
 
-    <app-comments [evaluation]="evaluation()"></app-comments>
+<app-video-section
+  [videoUrl]="procedure()?.video"
+  [hololens]="procedure()?.hololens"
+  [seekTo]="seekTarget()"
+  (timeUpdate)="onTimeUpdate($event)">
+</app-video-section>
 
-    <app-general-feedback></app-general-feedback>
+<app-comments 
+  [procedureId]="procedure()?.id" 
+  [duration]="procedure()?.globalMetrics?.duration" 
+  [annotations]="procedure()?.annotations" 
+  [currentTime]="currentTime()"
+  (onChanged)="reloadProcedure()" 
+  (onShowWarning)="showWarningMessage($event.title, $event.message, $event.type)"
+  (seekRequest)="onSeekRequest($event)">
+</app-comments>
+
+<app-general-feedback 
+  [(comment)]="finalEval().comment"
+  [professorName]="procedure()?.professor"
+  [procedureComment]="procedure()?.comment">
+</app-general-feedback>
+
+@if (authService.userRole() === 'professor') {
+  <div class="fixed bottom-8 right-10 z-50">
+    <button 
+      type="button"
+      (click)="finalizeEvaluation()"
+      class="flex items-center gap-2 px-6 py-3.5 bg-aqua-blue hover:bg-dark-blue text-white font-bold rounded-lg shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+      <fa-icon [icon]="icons.faCheck" />
+      <span>Finalizar Evaluación</span>
+    </button>
+  </div>
+}

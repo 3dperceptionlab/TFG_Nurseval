@@ -4,7 +4,8 @@ import { faUser, faImage, faLightbulb, faPlay, faXmark, faVideo, faExpand} from 
 import { VideoModal } from "./video-modal/video-modal";
 import { Steps } from './steps/steps';
 import { ProtocolService } from '../../services/protocol.service';
-import { Protocol } from '../../models/protocolos-data';
+import { Protocol } from '../../models/protocols.model';
+
 @Component({
   selector: 'app-theory',
   imports: [FontAwesomeModule, VideoModal, Steps],

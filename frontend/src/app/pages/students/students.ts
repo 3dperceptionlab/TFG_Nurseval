@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ALUMNOS } from '../../models/procedimientos.model';
 import { PageSelector } from "../../shared/page-selector/page-selector";
 import { AddStudentModal } from "./add-student-modal/add-student-modal";
 import { StudentsTable } from "./students-table/students-table";

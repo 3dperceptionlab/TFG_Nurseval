@@ -1,18 +1,18 @@
 <div class="mb-8">
   <!-- breadcrumb -->
   @if (isTeacherView) {
-  <nav class="text-sm mb-8 flex items-center gap-2">
-    <a routerLink="/app/students" class="text-dark-blue hover:text-slate-600 transition-colors underline">
-      Alumnos
-    </a>
-    <fa-icon [icon]="icons.faAngleRight" class="text-xs"/>
-    @if (studentName()) {
-      <span class="text-slate-600 font-medium">{{ studentName() }}</span>
-    } @else {
-      <span class="w-32 h-4 bg-slate-200 rounded animate-pulse"></span>
-    }
-  </nav>
-}
+    <nav class="text-sm mb-8 flex items-center gap-2">
+      <a routerLink="/app/students" class="text-dark-blue hover:text-slate-600 transition-colors underline">
+        Alumnos
+      </a>
+      <fa-icon [icon]="icons.faAngleRight" class="text-xs"/>
+      @if (studentName()) {
+        <span class="text-slate-600 font-medium">{{ studentName() }}</span>
+      } @else {
+        <span class="w-32 h-4 bg-slate-200 rounded animate-pulse"></span>
+      }
+    </nav>
+  }
 
   <h1 class="text-4xl font-extrabold text-slate-800 mb-2">Historial de procedimientos</h1>
   @if(authService.userRole() === "professor"){

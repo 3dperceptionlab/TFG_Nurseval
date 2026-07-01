@@ -1,12 +1,12 @@
 package com.nursEval.backend.dtos;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
-
-import com.nursEval.backend.dtos.auth.UserProfileResponse;
+import com.nursEval.backend.model.Hololens;
+import com.nursEval.backend.model.Protocol;
 import com.nursEval.backend.model.Student;
+import com.nursEval.backend.model.embedded.Annotation;
 import com.nursEval.backend.model.embedded.GlobalMetrics;
 
 import lombok.AllArgsConstructor;
@@ -19,15 +19,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProcedureResponse {
-  @Id
   private String id;
-
-  @DocumentReference
-  private UserProfileResponse student; 
-
-  private String protocolName;
-  
+  private String studentId; 
+  private String studentName; 
+  private String studentSurname; 
+  private String professor; 
+  private Protocol protocol;   
   private LocalDate date;
   private String state;
+  private String video;
   private GlobalMetrics globalMetrics;
+  private List<Annotation> annotations;
+  private String comment;
+  private Hololens hololens;  
 }

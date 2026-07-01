@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.nursEval.backend.dtos.FinalizeEvaluationRequest;
+import com.nursEval.backend.dtos.ProcedureResponse;
 import com.nursEval.backend.dtos.StudentStatsResponse;
 import com.nursEval.backend.exceptions.ResourceNotFoundException;
 import com.nursEval.backend.model.Procedure;
@@ -94,12 +95,30 @@ public class ProcedureService {
     return procedureRepository.findAll();
   }
 
-  public Procedure getProcedureById( String id) {
-    return procedureRepository.findById(id).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
+
+
+  public ProcedureResponse getProcedureById( String id) {
+    Procedure procedure = procedureRepository.findById(id).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
+    
+    return new ProcedureResponse(
+      procedure.getId(),
+      procedure.getStudent().getId(),
+      procedure.getStudent().getName(),
+      procedure.getStudent().getSurname(),
+      procedure.getStudent().getProfessor().getName(),
+      procedure.getProtocol(),
+      procedure.getDate(),
+      procedure.getState(),
+      procedure.getVideo(),
+      procedure.getGlobalMetrics(),
+      procedure.getAnnotations(),
+      procedure.getComment(),
+      procedure.getHololens()
+    );
   }
 
   public Annotation addAnnotation(String procedureId, Annotation annotation) {
-    Procedure procedure = getProcedureById(procedureId);
+    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
 
     if (procedure.getAnnotations() == null) {
         procedure.setAnnotations(new ArrayList<>());
@@ -115,7 +134,11 @@ public class ProcedureService {
 
 
   public Annotation editAnnotation(String procedureId, String annotationId, Annotation data) {
-    Procedure procedure = getProcedureById(procedureId);
+    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
+    
+    if (procedure.getAnnotations() == null) {
+      throw new ResourceNotFoundException("Anotación no encontrada");
+    }
 
     Annotation annotation = procedure.getAnnotations().stream()
       .filter(a -> a.getId().equals(annotationId))
@@ -137,8 +160,12 @@ public class ProcedureService {
 
 
   public void deleteAnnotation(String procedureId, String annotationId) {
-    Procedure procedure = getProcedureById(procedureId);
+    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
     
+    if (procedure.getAnnotations() == null) {
+      throw new ResourceNotFoundException("No se pudo eliminar, anotación no encontrada.");
+    }
+
     boolean removed = procedure.getAnnotations().removeIf(a -> a.getId().equals(annotationId));
     
     if (!removed) {
@@ -151,9 +178,9 @@ public class ProcedureService {
   }
 
 
-  public Procedure finalizeEvaluation(String id, FinalizeEvaluationRequest evaluation) {
+  public Procedure finalizeEvaluation(String procedureId, FinalizeEvaluationRequest evaluation) {
 
-    Procedure procedure = getProcedureById(id);
+    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
     procedure.setState("Evaluado");
     procedure.setComment(evaluation.getComment());
     

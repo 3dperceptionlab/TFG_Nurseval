@@ -22,3 +22,8 @@ export interface EditProfileData {
   newpassword: string;     
   repassword: string;
 }
+
+export interface EvaluationData { 
+  mark: number; 
+  comment: string 
+}

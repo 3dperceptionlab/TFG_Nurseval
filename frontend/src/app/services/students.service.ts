@@ -27,8 +27,8 @@ export class StudentService {
   });
 
 
-  getStudentById(id: string): Observable<Profesor> {
-    return this.http.get<Profesor>(`${this.baseUrl}/${id}`);
+  getStudentById(id: string): Observable<Student> {
+    return this.http.get<Student>(`${this.baseUrl}/${id}`);
   }
 
   getMyStudents(filters: { query: string; course: string | null; group: string | null }): Observable<Student[]> {

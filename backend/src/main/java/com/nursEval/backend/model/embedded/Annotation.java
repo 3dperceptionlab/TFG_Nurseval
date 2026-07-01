@@ -27,6 +27,5 @@ public class Annotation {
   @NotBlank(message = "El tipo es obligatorio")
   private String type;
 
-  @NotBlank(message = "El consejo clínico (tip) no puede estar vacío")
   private String tip;
 }

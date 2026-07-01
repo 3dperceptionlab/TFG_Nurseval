@@ -1,7 +1,7 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
 import { environment } from '../environment/environment';
-import { Protocol } from '../models/protocolos-data';
+import { Protocol } from '../models/protocols.model';
 
 @Service()
 export class ProtocolService {

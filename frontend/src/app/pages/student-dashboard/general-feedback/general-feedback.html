@@ -3,23 +3,32 @@
     <fa-icon [icon]="icons.faPenToSquare" class="text-aqua-blue text-lg" />
     <h3 class="font-bold text-lg">Feedback general</h3>
   </div>
-  
-  <form class="space-y-6">
-    <div>
-      <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Observaciones y comentarios generales</label>
-      <textarea 
-        rows="4" 
-        class="w-full p-4 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 bg-slate-50/50 focus:bg-white focus:border-aqua-blue focus:outline-none transition-all text-sm leading-relaxed"
-        placeholder="Escribe aquí la retroalimentación cualitativa para el alumno sobre su desempeño en el procedimiento."></textarea>
-    </div>
 
-    <div class="flex justify-end gap-3 pt-2">
-      <button type="button" class="px-5 py-2.5 border border-slate-200 text-slate-500 font-bold rounded-lg text-sm hover:bg-slate-50 transition-colors cursor-pointer">
-        Cancelar
-      </button>
-      <button type="submit" class="px-5 py-2.5 bg-aqua-blue text-white font-bold rounded-lg text-sm hover:bg-dark-blue transition-colors shadow-sm cursor-pointer">
-        Guardar Evaluación
-      </button>
+  @if(authService.userRole() === 'professor'){
+    <div class="space-y-6">
+      <div>
+        <label class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">
+          Observaciones y comentarios generales
+        </label>
+        <textarea 
+          [(ngModel)]="comment"
+          [value]="procedureComment()"
+          rows="4" 
+          class="w-full p-4 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 bg-slate-50/50 focus:bg-white focus:border-aqua-blue focus:outline-none transition-all text-sm leading-relaxed"
+          placeholder="Escribe aquí la retroalimentación cualitativa para el alumno sobre su desempeño en el procedimiento."></textarea>
+      </div>
     </div>
-  </form>
+  }
+
+  @if(procedureComment() && authService.userRole() === 'student') {
+    <div class="w-full p-4 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 bg-slate-50/50 leading-relaxed mt-6">
+      <div class="flex items-center space-x-4 ">
+        <div class="rounded-full w-8 h-8 bg-light-blue ring-4 ring-slate-50"></div>
+        <div>
+          <h3 class="font-medium"> {{professorName()}} (profesor):</h3>
+        </div>
+      </div>
+      <p class="mt-2 text-gray-800">{{ procedureComment() }}</p>
+    </div>
+  }
 </div>

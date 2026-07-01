@@ -3,7 +3,8 @@ import { inject, Service, signal } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { environment } from '../environment/environment';
 import { Auth } from './auth.service';
-import { procedureSummary } from '../models/procedure.model';
+import { ProcedureDetail, procedureSummary } from '../models/procedure.model';
+import { EvaluationData } from '../models/forms.model';
 
 @Service()
 export class ProcedureService {
@@ -11,17 +12,15 @@ export class ProcedureService {
   private baseUrl = `${environment.apiUrl}/procedures`;
 
   authService = inject(Auth);
-  selectedProcedureId = signal<string | null>(null);
-  
-  procedureResource = httpResource(() => {
-    const id = this.selectedProcedureId();
-    return id ? `${this.baseUrl}/${id}` : undefined; 
-  });
 
   myStudentProceduresResource = httpResource(() => {
-    return `${this.baseUrl}/pending`; 
+    return this.authService.userRole() === 'professor' ? `${this.baseUrl}/pending` : undefined; 
   });
   
+  getProcedureById(id: string): Observable<ProcedureDetail> {
+    return this.http.get<ProcedureDetail>(`${this.baseUrl}/${id}`);
+  }
+
   getMyHistory(): Observable<procedureSummary[]> {
     return this.http.get<procedureSummary[]>(`${this.baseUrl}/my-history`);
   }
@@ -32,9 +31,7 @@ export class ProcedureService {
 
     // POST añadir anotacion
   addAnnotation(procedureId: string, annotation: any) {
-    return firstValueFrom(
-      this.http.post(`${this.baseUrl}/${procedureId}/annotations`, annotation)
-    );
+    return this.http.post(`${this.baseUrl}/${procedureId}/annotations`, annotation);
   }
 
   // PUT Editar anotacion
@@ -43,7 +40,12 @@ export class ProcedureService {
   }
 
   // DELETE Eliminar anotacion
-  eliminarAnotacion(procedureId: string, annotationId: string) {
+  deleteAnnotation(procedureId: string, annotationId: string) {
     return this.http.delete(`${this.baseUrl}/${procedureId}/annotations/${annotationId}`);
+  }
+
+  // POST: añadir nota y comentario final de avalaución
+  finalizeEvaluation(procedureId: string, evaluation: EvaluationData): Observable<EvaluationData>{
+    return this.http.patch<any>(`${this.baseUrl}/${procedureId}/finalize`, evaluation)
   }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nursEval.backend.dtos.FinalizeEvaluationRequest;
 import com.nursEval.backend.dtos.ProcedureResponse;
+import com.nursEval.backend.dtos.SummaryProcedureResponse;
 import com.nursEval.backend.dtos.StudentResponse;
 import com.nursEval.backend.dtos.StudentStatsResponse;
 import com.nursEval.backend.dtos.auth.UserProfileResponse;
@@ -43,7 +44,7 @@ public class ProcedureController {
   private final StudentService studentService;
   private final ProfessorService professorService;
 
-  private ProcedureResponse convertToProcedureResponse(Procedure procedure) {
+  private SummaryProcedureResponse convertToSummaryProcedureResponse(Procedure procedure) {
     UserProfileResponse studentRes = null;
     if (procedure.getStudent() != null) {
       studentRes = UserProfileResponse.builder()
@@ -60,7 +61,7 @@ public class ProcedureController {
     if (procedure.getGlobalMetrics() == null) {
         procedure.setGlobalMetrics(new GlobalMetrics());
     }
-    return ProcedureResponse.builder()
+    return SummaryProcedureResponse.builder()
     .id(procedure.getId())
     .student(studentRes)
     .protocolName(protocolName)
@@ -71,31 +72,31 @@ public class ProcedureController {
   }
 
   @GetMapping
-  public ResponseEntity<List<ProcedureResponse>> getAll(
+  public ResponseEntity<List<SummaryProcedureResponse>> getAll(
     @RequestParam(required = false) String state,
     @RequestParam(required = false) String protocolName) {
     
-    List<ProcedureResponse> procedures = procedureService.searchProcedures(null, null, state, protocolName).stream()
-      .map(this::convertToProcedureResponse)
+    List<SummaryProcedureResponse> procedures = procedureService.searchProcedures(null, null, state, protocolName).stream()
+      .map(this::convertToSummaryProcedureResponse)
       .toList();
       
     return ResponseEntity.ok(procedures);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Procedure> getById(@PathVariable String id) {
+  public ResponseEntity<ProcedureResponse> getById(@PathVariable String id) {
     return ResponseEntity.ok(procedureService.getProcedureById(id));
   }
 
   @GetMapping("/my-history")
   @PreAuthorize("hasRole('STUDENT')")  // pre verificar que quien llama es un alumno
-  public ResponseEntity<List<ProcedureResponse>> getMyHistory(Principal principal) {
+  public ResponseEntity<List<SummaryProcedureResponse>> getMyHistory(Principal principal) {
     String studentId = principal.getName();
     Student student = studentService.getStudentById(studentId);
 
-    List<ProcedureResponse> history = procedureService
+    List<SummaryProcedureResponse> history = procedureService
       .searchProcedures(student.getId(), null, null, null).stream()
-      .map(this::convertToProcedureResponse)
+      .map(this::convertToSummaryProcedureResponse)
       .toList();
 
     return ResponseEntity.ok(history);
@@ -103,11 +104,11 @@ public class ProcedureController {
 
   @GetMapping("/student/{studentId}")
   @PreAuthorize("hasRole('PROFESSOR')") // pre verificar que quien llama es un profesor
-  public ResponseEntity<List<ProcedureResponse>> getStudentHistory(@PathVariable String studentId, @RequestParam(required = false) String protocolName) {
+  public ResponseEntity<List<SummaryProcedureResponse>> getStudentHistory(@PathVariable String studentId, @RequestParam(required = false) String protocolName) {
     Student student = studentService.getStudentById(studentId);
-    List<ProcedureResponse> history = procedureService
+    List<SummaryProcedureResponse> history = procedureService
       .searchProcedures(student.getId(), null, null, protocolName).stream()
-      .map(this::convertToProcedureResponse)
+      .map(this::convertToSummaryProcedureResponse)
       .toList();
 
     return ResponseEntity.ok(history);
@@ -115,12 +116,12 @@ public class ProcedureController {
 
   @GetMapping("/pending")
   @PreAuthorize("hasRole('PROFESSOR')") // pre verificar que quien llama es un profesor
-  public ResponseEntity<List<ProcedureResponse>> getPendingProcedures(Principal principal, @RequestParam(required = false) String protocolName) {
+  public ResponseEntity<List<SummaryProcedureResponse>> getPendingProcedures(Principal principal, @RequestParam(required = false) String protocolName) {
     String professorId = principal.getName();
     Professor professor = professorService.getProfessorById(professorId);
       
-    List<ProcedureResponse> history = procedureService.searchProcedures(null, professor.getId(), "Pendiente", protocolName).stream()
-      .map(this::convertToProcedureResponse)
+    List<SummaryProcedureResponse> history = procedureService.searchProcedures(null, professor.getId(), "Pendiente", protocolName).stream()
+      .map(this::convertToSummaryProcedureResponse)
       .toList();
 
     return ResponseEntity.ok(history);
@@ -128,6 +129,7 @@ public class ProcedureController {
 
   // Añadir anotación (error, tip, etc.) a un procedimiento
   @PostMapping("/{procedureId}/annotations")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<Annotation> addAnnotation(@PathVariable String procedureId, @Valid @RequestBody Annotation annotation) {
     Annotation savedAnnotation = procedureService.addAnnotation(procedureId, annotation);
     return ResponseEntity.ok(savedAnnotation);
@@ -135,6 +137,7 @@ public class ProcedureController {
 
   // Editar anotación existente
   @PutMapping("/{procedureId}/annotations/{annotationId}")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<Annotation> editAnnotation(@PathVariable String procedureId, @PathVariable String annotationId, @Valid @RequestBody Annotation annotationData) {
 
     Annotation updatedAnnotation = procedureService.editAnnotation(procedureId, annotationId, annotationData);
@@ -143,6 +146,7 @@ public class ProcedureController {
 
   // Eliminar anotación
   @DeleteMapping("/{procedureId}/annotations/{annotationId}")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<Void> deleteAnnotation(
     @PathVariable String procedureId,
     @PathVariable String annotationId) {
@@ -153,11 +157,12 @@ public class ProcedureController {
 
   // Cerrar evaluación, poner nota y comentarios globales
   @PatchMapping("/{id}/finalize")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<String> finalizeEvaluation(
     @PathVariable String id,
     @Valid @RequestBody FinalizeEvaluationRequest request) {
 
     procedureService.finalizeEvaluation(id, request);
-    return ResponseEntity.status(HttpStatus.OK).body("success");
+    return ResponseEntity.noContent().build();
   }
 }
