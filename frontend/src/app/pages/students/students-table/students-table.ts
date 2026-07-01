@@ -5,10 +5,11 @@ import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Student } from '../../../models/student.model';
 import { StudentService } from '../../../services/students.service';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-students-table',
-  imports: [FontAwesomeModule, DatePipe, RouterLink],
+  imports: [FontAwesomeModule, DatePipe, RouterLink, DecimalPipe],
   templateUrl: './students-table.html',
   styleUrl: './students-table.css',
 })

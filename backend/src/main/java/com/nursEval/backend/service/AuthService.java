@@ -1,5 +1,6 @@
 package com.nursEval.backend.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -50,9 +51,13 @@ public class AuthService {
     // buscar en ambas colecciones
     Optional<Professor> prof = professorRepository.findByEmail(request.getEmail());
     if (prof.isPresent() && passwordEncoder.matches(request.getPassword(), prof.get().getPassword())) {
-      
-      if(!prof.get().isActive())
+      Professor professor = prof.get(); 
+
+      if(!professor.isActive())
         throw new AccountInactiveException();
+      
+      professor.setLastLogin(LocalDateTime.now());
+      professorRepository.save(professor);
 
       String token = jwtService.generateToken(prof.get().getId(), prof.get().getName(), "professor");
       return new LoginResponse(token);
@@ -60,9 +65,13 @@ public class AuthService {
 
     Optional<Student> stu = studentRepository.findByEmail(request.getEmail());
     if (stu.isPresent() && passwordEncoder.matches(request.getPassword(), stu.get().getPassword())) {
+      Student student = stu.get(); 
 
       if(!stu.get().isActive())
         throw new AccountInactiveException();
+
+      student.setLastLogin(LocalDateTime.now());
+      studentRepository.save(student);
 
       String token = jwtService.generateToken(stu.get().getId(), stu.get().getName(), "student");
       return new LoginResponse(token);

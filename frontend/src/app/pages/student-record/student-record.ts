@@ -27,7 +27,7 @@ export class StudentRecord {
   route = inject(ActivatedRoute);
 
   isTeacherView = false;
-  selectedKey = signal<string>('Capelina');
+  selectedKey = signal<string>('Todo');
   studentProcedures = signal<procedureSummary[]>([]);
   studentName = signal('');
 

@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.naming.NameNotFoundException;
+
 import org.bson.types.ObjectId;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -45,6 +48,28 @@ public class ProcedureService {
     }
     procedure.getGlobalMetrics().setErrorCount((int) totalErrors);
 
+  }
+
+  private void updateAvgMark(String studentId) {
+    Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado."));
+    List<Procedure> procedures = searchProcedures(student.getId(), null, null, null);
+
+    if (procedures == null || procedures.isEmpty()) {
+      student.setAvgMark(0.0);
+      studentRepository.save(student);
+      return;
+    }
+
+    double sum = 0.0; // acumulamos las notas
+    for (Procedure procedure : procedures) {
+      if (procedure.getGlobalMetrics() != null) {
+        sum += procedure.getGlobalMetrics().getMark(); // Aquí sumamos el double directamente
+      }
+    }
+
+    double finalAvg = sum / procedures.size();
+    student.setAvgMark(finalAvg);
+    studentRepository.save(student);
   }
 
   public Integer countByStudentId(String id){
@@ -98,7 +123,7 @@ public class ProcedureService {
 
 
   public ProcedureResponse getProcedureById( String id) {
-    Procedure procedure = procedureRepository.findById(id).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
+    Procedure procedure = procedureRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Procedimiento no encontrado."));
     
     return new ProcedureResponse(
       procedure.getId(),
@@ -118,7 +143,7 @@ public class ProcedureService {
   }
 
   public Annotation addAnnotation(String procedureId, Annotation annotation) {
-    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
+    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new ResourceNotFoundException("Procedimiento no encontrado."));
 
     if (procedure.getAnnotations() == null) {
         procedure.setAnnotations(new ArrayList<>());
@@ -160,7 +185,7 @@ public class ProcedureService {
 
 
   public void deleteAnnotation(String procedureId, String annotationId) {
-    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
+    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new ResourceNotFoundException("Procedimiento no encontrado."));
     
     if (procedure.getAnnotations() == null) {
       throw new ResourceNotFoundException("No se pudo eliminar, anotación no encontrada.");
@@ -180,7 +205,7 @@ public class ProcedureService {
 
   public Procedure finalizeEvaluation(String procedureId, FinalizeEvaluationRequest evaluation) {
 
-    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
+    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new ResourceNotFoundException("Procedimiento no encontrado."));
     procedure.setState("Evaluado");
     procedure.setComment(evaluation.getComment());
     
@@ -188,6 +213,8 @@ public class ProcedureService {
       procedure.setGlobalMetrics(new com.nursEval.backend.model.embedded.GlobalMetrics());
     }
     procedure.getGlobalMetrics().setMark(evaluation.getMark());
+    // actualizar la nota media del alumno
+    updateAvgMark(procedure.getStudent().getId());
 
     return procedureRepository.save(procedure);
   }
