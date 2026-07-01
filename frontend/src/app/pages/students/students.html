@@ -12,10 +12,24 @@
 
 <app-filters (filtersChange)="onFiltersChange($event)"></app-filters>
 
-<app-students-table (studentUnlinked)="onFiltersChange({ query: '', course: '', group: '' }); " [students]="students()"></app-students-table>
 
-<app-page-selector [actualPage]="1" [elementsPerPage]="6" [totalElements]="students.length"></app-page-selector>
+<div class="relative min-h-100">
+  
+  <div [class.opacity-40]="isLoading()" [class.pointer-events-none]="isLoading()" class="transition-opacity duration-300">
+    <app-students-table (studentUnlinked)="onFiltersChange({ query: '', course: '', group: '' }); " [students]="students()"></app-students-table>
+    <app-page-selector [actualPage]="1" [elementsPerPage]="6" [totalElements]="students.length"></app-page-selector>
+  </div>
 
+  <!-- Spinner -->
+  @if (isLoading()) {
+    <div class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-xs transition-opacity duration-300 z-10">
+      <div role="status" class="relative w-12 h-12 animate-spin">
+        <div class="absolute top-0 left-0 bg-aqua-blue w-4 h-4 rounded-full"></div>
+        <div class="absolute top-1/2 right-0 bg-dark-blue w-4 h-4 rounded-full"></div>
+      </div>
+    </div>
+  }
+</div>
 @if(showModal()){
   <app-add-student-modal (studentsInvited)="onStudentsInvited()" (closeModal)="this.showModal.set(!this.showModal())" ></app-add-student-modal>
 }

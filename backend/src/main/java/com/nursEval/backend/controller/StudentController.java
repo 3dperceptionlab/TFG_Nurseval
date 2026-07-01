@@ -39,6 +39,7 @@ public class StudentController {
   private StudentResponse convertToStudentResponse(Student student) {
     String profName = (student.getProfessor() != null)  ? student.getProfessor().getName() + " " + student.getProfessor().getSurname() : "Sin profesor asignado"; 
     int nPractices = procedureService.countByStudentId(student.getId());
+    procedureService.updateAvgMark(student.getId());
 
     return StudentResponse.builder()
       .id(student.getId())

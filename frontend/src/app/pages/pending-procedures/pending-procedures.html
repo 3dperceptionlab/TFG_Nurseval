@@ -22,20 +22,32 @@
   </div>      
 </div>
 
-@if(filteredProcedures()?.length === 0){
-  <div class="w-full h-2/3 flex flex-col items-center justify-center text-center text-slate-500 ">
-    <fa-icon [icon]="icons.faFaceFrownOpen" [size]="'6x'"></fa-icon>
-    <h2 class="mt-6 text-2xl font-bold ">No hay resultados</h2>
+<div class="relative min-h-100">
 
-    <p class="mt-4 text-pretty ">
-      Actualmente no hay elementos que mostrar. Cuando tus alumnos realicen una práctica nueva
-    </p>
-  </div>  
-}@else {
-  <app-procedures-list [procedures]="filteredProcedures()"></app-procedures-list>
-  <app-page-selector [actualPage]="1" [elementsPerPage]="4" [totalElements]="filteredProcedures.length"></app-page-selector>
-}
-  
+  <div [class.opacity-40]="isLoading()" [class.pointer-events-none]="isLoading()" class="transition-opacity duration-300">
+    @if(filteredProcedures()?.length === 0){
+      <div class="w-full h-2/3 flex flex-col items-center justify-center text-center text-slate-500 pt-10">
+        <fa-icon [icon]="icons.faFaceFrownOpen" [size]="'6x'"></fa-icon>
+        <h2 class="mt-6 text-2xl font-bold ">No hay resultados</h2>
+        <p class="mt-4 text-pretty ">
+          Actualmente no hay elementos que mostrar. Cuando tus alumnos realicen una práctica nueva
+        </p>
+      </div>  
+    }@else {
+      <app-procedures-list [procedures]="filteredProcedures()"></app-procedures-list>
+      <app-page-selector [actualPage]="1" [elementsPerPage]="4" [totalElements]="filteredProcedures.length"></app-page-selector>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-xs transition-opacity duration-300 z-10">
+      <div role="status" class="relative w-12 h-12 animate-spin">
+        <div class="absolute top-0 left-0 bg-aqua-blue w-4 h-4 rounded-full"></div>
+        <div class="absolute top-1/2 right-0 bg-dark-blue w-4 h-4 rounded-full"></div>
+      </div>
+    </div>
+  }
+</div>
         
 
 

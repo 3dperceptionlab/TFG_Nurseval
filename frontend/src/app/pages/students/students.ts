@@ -19,6 +19,7 @@ export class Students {
   
   studentService = inject(StudentService);
 
+  isLoading = signal<boolean>(false);
   students = signal<Student[]>([]);
   showModal = signal(false);
   
@@ -27,11 +28,15 @@ export class Students {
   }
 
   onFiltersChange(params: FilterParams) {
+    this.isLoading.set(true);
     this.studentService.getMyStudents({
       query: params.query,
       course: params.course || null,
       group: params.group || null,
-    }).subscribe(data => this.students.set(data));
+    }).subscribe(data => {
+      this.isLoading.set(false);
+      this.students.set(data)
+    });
   }
 
   onStudentsInvited() {

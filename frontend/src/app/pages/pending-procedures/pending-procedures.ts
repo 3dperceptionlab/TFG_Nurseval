@@ -26,4 +26,5 @@ export class PendingProcedures {
     if(this.selectedKey() === "Todo") return this.myStudentsProcedures();
     return this.myStudentsProcedures().filter((p) => p.protocolName === this.selectedKey());
   });
+  isLoading = computed(() => this.procedureService.myStudentProceduresResource.isLoading());
 }

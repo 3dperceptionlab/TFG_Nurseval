@@ -50,7 +50,7 @@ public class ProcedureService {
 
   }
 
-  private void updateAvgMark(String studentId) {
+  public void updateAvgMark(String studentId) {
     Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado."));
     List<Procedure> procedures = searchProcedures(student.getId(), null, null, null);
 

@@ -30,6 +30,7 @@ export class StudentRecord {
   selectedKey = signal<string>('Todo');
   studentProcedures = signal<procedureSummary[]>([]);
   studentName = signal('');
+  isLoading = signal<boolean>(false);
 
   filteredProcedures = computed(() => {
     if(this.selectedKey() === "Todo") return this.studentProcedures();
@@ -39,6 +40,7 @@ export class StudentRecord {
   ngOnInit() {
     const routeId = this.route.snapshot.paramMap.get('studentId');
     this.isTeacherView = !!routeId;
+    this.isLoading.set(true);
 
     const call$ = routeId
       ? this.procedureService.getStudentProcedures(routeId) // profesor
@@ -50,6 +52,14 @@ export class StudentRecord {
         });
       }
 
-    call$.subscribe({ next: (data) => this.studentProcedures.set(data) });
+    call$.subscribe({ 
+      next: (data) => {
+        this.isLoading.set(false);
+        this.studentProcedures.set(data)
+      },
+      error: (err) => {
+        this.isLoading.set(false); 
+      }
+    });
 }
 }
