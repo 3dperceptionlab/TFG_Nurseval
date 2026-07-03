@@ -77,7 +77,14 @@ export class Profile {
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        scales: { x: { grid: { display: false }, 
+        ticks: {
+            // truncar etiquetas largas
+            callback: function(this: any, value: any, index: number, values: any): string {
+              const label = this.getLabelForValue(value) as string;
+              return label.length > 15 ? label.substring(0, 15) + '...' : label;
+            }
+        } }, y: { beginAtZero: true, ticks: { stepSize: 1 } } }
       }
     };
   });
@@ -96,6 +103,15 @@ export class Profile {
       chartOptions: this.getMixedChartOptions('Prácticas', 'Nota')
     };
   });
+
+
+  ngOnInit() {
+    if (this.authService.userRole() === 'professor') {
+      this.professorService.myStatsResource.reload();
+    } else if (this.authService.userRole() === 'student') {
+      this.studentService.myStatsResource.reload();
+    }
+  }
 
   getProtocolChart(protocolName: string, colorIndex: number) {
     const byMonth = this.stats()?.byMonth ?? [];

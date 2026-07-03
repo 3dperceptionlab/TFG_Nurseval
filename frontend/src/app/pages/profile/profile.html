@@ -3,8 +3,13 @@
 }
 
 <div class="mb-8">
-  <h1 class="text-4xl font-extrabold text-slate-800 mb-2">Perfil</h1>
-  <p class="text-slate-500 mt-1">Consulta tus datos y estadísticas analíticas.</p>
+  <h1 class="text-4xl font-extrabold text-slate-800 mb-2">Perfil y estadísticas</h1>
+  @if(authService.userRole() === 'professor'){
+    <p class="text-slate-500 mt-1">Consulta tus datos y las estadísticas de tus alumnos.</p>
+  }@else {
+    <p class="text-slate-500 mt-1">Consulta tus datos y estadísticas analíticas.</p>
+  }
+ 
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">

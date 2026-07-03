@@ -11,7 +11,7 @@
         routerLinkActive="bg-aqua-blue hover:bg-dark-blue text-white"
         #rla="routerLinkActive"
         [class]="rla.isActive  ? '' : 'bg-white text-dark-blue border-slate-200 hover:bg-slate-50'"
-        class="w-full px-8 py-3 border rounded-lg font-bold flex justify-center items-center gap-2 transition-all cursor-pointer">
+        class="w-full px-5 py-3 border rounded-lg font-bold flex justify-center items-center gap-2 transition-all cursor-pointer">
         <fa-icon [icon]="item.icon" />
         <p>{{ item.label }}</p>
       </a>
@@ -19,7 +19,7 @@
     </nav>
 
     <div class="p-8 border-t border-slate-100 flex flex-col gap-4">
-      <div class="flex items-center gap-3 mb-4">
+      <a class="flex items-center gap-3 mb-4" [routerLink]="'/app/profile'">
         <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
           <fa-icon size="xl" [icon]="icons.faUserCircle" />
         </div>
@@ -29,7 +29,7 @@
           <p class="text-xs text-aqua-blue">{{this.authService.currentUser()?.role === "student" ? 'Estudiante' : 'Docente'}}</p>
         </div>
         }
-      </div>
+      </a>
       
       <button (click)="logout()" class="cursor-pointer w-full flex items-center gap-3 text-slate-500 hover:text-red-500 transition-colors text-sm font-medium">
         <fa-icon [icon]="icons.faSignOut" />

@@ -38,7 +38,7 @@
   </div>
 
   <div class="px-4 py-4">
-  @for (paso of currentProtocol()?.steps; track paso.title; let i = $index; let last = $last) {
+  @for (step of currentProtocol()?.steps; track step.title; let i = $index; let last = $last) {
     <div class="grid md:grid-cols-3 mb-12 relative">
       <div class="md:col-span-2">
         <div class="flex items-start gap-6 pr-8 relative">
@@ -55,29 +55,28 @@
           </div>
 
           <div class="space-y-4 pt-1 pb-4">
-            <h3 class="text-xl font-bold text-dark-blue">{{ paso.title }}</h3>
-            <p class="text-slate-500 leading-relaxed">{{ paso.description }}</p>
+            <h3 class="text-xl font-bold text-dark-blue">{{ step.title }}</h3>
+            <p class="text-slate-500 leading-relaxed">{{ step.description }}</p>
 
-            <!-- @if (paso.notas && paso.notas.length > 0) {
             <div class="space-y-3 pt-2">
-                @for (nota of paso.notas; track nota) {
-                <div class="flex items-start gap-3 p-4 rounded-lg bg-background border text-dark-blue border-slate-100">
-                    <fa-icon [icon]="icons.faLightbulb" />
-                    <p class="text-sm ">
-                        <span class="font-bold text-dark-blue">Tip: </span> <span class=" text-slate-500 italic">{{ nota }}</span>
-                    </p>
-                </div>
-                }
+              @if(step.tip) {
+              <div class="flex items-start gap-3 p-4 rounded-lg bg-background border text-dark-blue border-slate-100">
+                <fa-icon [icon]="icons.faLightbulb" />
+                <p class="text-sm ">
+                  <span class="font-bold text-dark-blue">Tip: </span> <span class=" text-slate-500 italic">{{ step.tip }}</span>
+                </p>
+              </div>
+              }
             </div>
-            } -->
+            
           </div>
         </div>
       </div>
 
       <div class="flex items-center justify-center">
         <div class="bg-white w-full aspect-video rounded-lg border border-slate-200 shadow-sm flex items-center justify-center overflow-hidden">
-        @if (paso.image) {
-          <img [src]="paso.image" class="w-full h-full object-cover">
+        @if (step.image) {
+          <img [src]="step.image" class="w-full h-full object-cover">
         } @else {
           <div class="flex flex-col items-center text-slate-200">
           <fa-icon [icon]="icons.faImage" />

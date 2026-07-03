@@ -24,13 +24,13 @@ export class Sidebar {
 
     if (isStudent) {
       return [
-        { label: 'Mi Perfil', icon: faUser, route: '/app/profile' },
+        { label: 'Perfil y Estadísticas', icon: faUser, route: '/app/profile' },
         { label: 'Teoría', icon: faBook, route: '/app/theory' },
         { label: 'Historial', icon: faHistory, route: `/app/record` },
       ];
     } else {
       return [
-        { label: 'Mi Perfil', icon: faUser, route: '/app/profile' },
+        { label: 'Perfil y Estadísticas', icon: faUser, route: '/app/profile' },
         { label: 'Teoría', icon: faBook, route: '/app/theory' },
         { label: 'Mis alumnos', icon: faUserGraduate, route: '/app/students' },
         { label: 'Por evaluar', icon: faHourglass, route: '/app/pending' },
