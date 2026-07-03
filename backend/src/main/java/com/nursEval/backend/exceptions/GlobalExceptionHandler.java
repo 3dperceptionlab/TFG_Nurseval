@@ -62,6 +62,30 @@ public class GlobalExceptionHandler {
       .build();
   }
   
+
+  // --------- ERRORES 401 - UNAUTHORIZED ---------
+
+  @ExceptionHandler(InvalidRefreshTokenException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public ApiErrorResponse handleInvalidRefreshToken(InvalidRefreshTokenException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.UNAUTHORIZED.value())
+      .message("Tu sesión ha expirado. Por favor, inicia sesión de nuevo.")
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
+
+  @ExceptionHandler(InvalidCredentialsException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public ApiErrorResponse handleInvalidCredentials(InvalidCredentialsException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.UNAUTHORIZED.value())
+      .message(ex.getMessage())
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
   // --------- ERRORES 403 - FORBIDDEN --------- 
 
   @ExceptionHandler(AccountInactiveException.class)

@@ -43,7 +43,8 @@ export class Sidebar {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigateByUrl('/login');
+    this.authService.logout().subscribe(() => {
+      this.router.navigateByUrl('/login');
+    });
   }
 }

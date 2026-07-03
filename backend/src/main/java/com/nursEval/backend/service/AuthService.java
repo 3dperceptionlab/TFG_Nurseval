@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.nursEval.backend.dtos.auth.AuthTokens;
 import com.nursEval.backend.dtos.auth.LoginRequest;
-import com.nursEval.backend.dtos.auth.LoginResponse;
 import com.nursEval.backend.dtos.auth.RegisterRequest;
 import com.nursEval.backend.dtos.auth.UserProfileResponse;
 import com.nursEval.backend.exceptions.AccountInactiveException;
@@ -16,6 +16,7 @@ import com.nursEval.backend.exceptions.InvalidCredentialsException;
 import com.nursEval.backend.exceptions.PasswordsDoNotMatchException;
 import com.nursEval.backend.exceptions.ResourceNotFoundException;
 import com.nursEval.backend.model.Professor;
+import com.nursEval.backend.model.RefreshToken;
 import com.nursEval.backend.model.Student;
 import com.nursEval.backend.repository.ProfessorRepository;
 import com.nursEval.backend.repository.StudentRepository;
@@ -30,7 +31,21 @@ public class AuthService {
   private final ProfessorRepository professorRepository;
   private final BCryptPasswordEncoder passwordEncoder;
   private final JwtService jwtService;
+  private final RefreshTokenService refreshTokenService;
 
+  private AuthTokens buildAuthTokens(String id, String name, String surname, String email, String role) {
+    String accessToken = jwtService.generateToken(id, name, role);
+    var issued = refreshTokenService.issue(id, role);
+
+    UserProfileResponse profile = new UserProfileResponse(id, name, surname, email, role);
+
+    return AuthTokens.builder()
+      .accessToken(accessToken)
+      .refreshToken(issued.rawToken())
+      .profile(profile)
+      .build();
+  }
+  
   public UserProfileResponse getData(String id) {
     Optional<Student> stu = studentRepository.findById(id);
 
@@ -47,7 +62,7 @@ public class AuthService {
     throw new ResourceNotFoundException("Usuario no encontrado.");
   }
 
-  public LoginResponse authenticate(LoginRequest request) {
+  public AuthTokens authenticate(LoginRequest request) {
     // buscar en ambas colecciones
     Optional<Professor> prof = professorRepository.findByEmail(request.getEmail());
     if (prof.isPresent() && passwordEncoder.matches(request.getPassword(), prof.get().getPassword())) {
@@ -59,25 +74,47 @@ public class AuthService {
       professor.setLastLogin(LocalDateTime.now());
       professorRepository.save(professor);
 
-      String token = jwtService.generateToken(prof.get().getId(), prof.get().getName(), "professor");
-      return new LoginResponse(token);
+      return buildAuthTokens(professor.getId(), professor.getName(), professor.getSurname(),
+        professor.getEmail(), "professor");
     }
 
     Optional<Student> stu = studentRepository.findByEmail(request.getEmail());
     if (stu.isPresent() && passwordEncoder.matches(request.getPassword(), stu.get().getPassword())) {
       Student student = stu.get(); 
 
-      if(!stu.get().isActive())
+      if(!student.isActive())
         throw new AccountInactiveException();
 
       student.setLastLogin(LocalDateTime.now());
       studentRepository.save(student);
 
-      String token = jwtService.generateToken(stu.get().getId(), stu.get().getName(), "student");
-      return new LoginResponse(token);
+      return buildAuthTokens(student.getId(), student.getName(), student.getSurname(),
+        student.getEmail(), "student");
     }
 
     throw new InvalidCredentialsException("Credenciales inválidas.");
+  }
+
+
+  // Valida el refresh token (rotándolo) y emite un nuevo par de tokens para el mismo usuario.
+  public AuthTokens refreshAccessToken(String rawRefreshToken) {
+    RefreshToken stored = refreshTokenService.validateAndConsume(rawRefreshToken);
+    UserProfileResponse profile = getData(stored.getUserId());
+
+    String accessToken = jwtService.generateToken(profile.getId(), profile.getName(), stored.getRole());
+    var issued = refreshTokenService.issue(stored.getUserId(), stored.getRole());
+
+    return AuthTokens.builder()
+      .accessToken(accessToken)
+      .refreshToken(issued.rawToken())
+      .profile(profile)
+      .build();
+  }
+
+  public void logout(String rawRefreshToken) {
+    if (rawRefreshToken != null) {
+      refreshTokenService.revokeByRawToken(rawRefreshToken);
+    }
   }
 
   public void createUser(RegisterRequest request) {

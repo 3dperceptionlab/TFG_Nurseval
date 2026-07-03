@@ -1,76 +1,99 @@
-import { HttpClient, HttpHeaders, httpResource } from '@angular/common/http';
-import { computed, inject, Service, signal } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../environment/environment';
-import {  firstValueFrom, tap } from 'rxjs';
-import { LoginResponse, User } from '../models/auth.model';
+import { catchError, firstValueFrom, of, switchMap, tap } from 'rxjs';
+import { User } from '../models/auth.model';
+import { Router } from '@angular/router';
 
-@Service()
+@Injectable({ providedIn: 'root' })
 export class Auth {
   private http = inject(HttpClient);
+  router = inject(Router);
   private baseUrl = `${environment.apiUrl}/auth`;
 
-  private tokenSignal = signal<string | null>(localStorage.getItem('accessToken'));
+  private authenticated = signal<boolean>(false);
+  private user = signal<User | null>(null);
 
-  currentUser = computed(() => this.profileResource.value() ?? null);
-  isLoading = computed(() => this.profileResource.isLoading());
-  isAuthenticated = computed(() => this.tokenSignal() !== null);
+  isAuthenticated = computed(() => this.authenticated());
+  currentUser = computed(() => this.user());
 
   userRole = computed<string>(() => {
-    if (!this.tokenSignal()) {
-      return 'guest';
-    }
-
     const user = this.currentUser();
     return user && 'role' in user ? user.role : 'guest';
   });
 
-  profileResource = httpResource<User>(() => {
-    return this.tokenSignal() ? `${this.baseUrl}/me` : undefined;
+  meResource = httpResource<User>(() => {
+    return this.authenticated() ? `${this.baseUrl}/me` : undefined;
   });
 
-  async init(): Promise<void> {
-    if (!this.tokenSignal()) return;
+  isLoading = computed(() => this.meResource.isLoading());
 
+  // Al arrancar para saber si hay sesion valida
+  async init(): Promise<void> {
     try {
-      await firstValueFrom(
-        this.http.get<User>(`${this.baseUrl}/me`).pipe(
-          tap(user => this.profileResource.set(user)) 
-        )
+      const user = await firstValueFrom(
+        this.http.get<User>(`${this.baseUrl}/me`, { withCredentials: true })
       );
+      this.setSession(user);
     } catch {
-      this.logout();
+      // El access token pudo expirar -> probamos a refrescar con el refresh token.
+      try {
+        const user = await firstValueFrom(
+          this.http.post<User>(`${this.baseUrl}/refresh`, {}, { withCredentials: true })
+        );
+        this.setSession(user);
+      } catch {
+        this.clearSession();
+      }
     }
   }
 
-  // statsResource = httpResource(() => {
-  //   return this.tokenSignal() ? `${this.baseUrl}/me/stats` : undefined;
-  // });
-  
   checkEmail(email: string) {
     return this.http.get<boolean>(`${this.baseUrl}/check-email?email=${email}`);
   }
 
-  // POST login 
+  // POST login: backend fija las cookies httpOnly 
   login(credentials: any) {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, credentials).pipe(
-      tap(response => {
-        localStorage.setItem('accessToken', response.accessToken);
-        this.tokenSignal.set(response.accessToken);
-      })
+    return this.http.post<User>(`${this.baseUrl}/login`, credentials, { withCredentials: true }).pipe(
+      tap(user => this.setSession(user))
     );
   }
 
   // POST register
   register(userData: any) {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
     return this.http.post<User>(`${this.baseUrl}/register`, userData);
   }
 
+  // Usado por el interceptor cuando una petición devuelve 401.
+  refreshSession() {
+    return this.http.post<User>(`${this.baseUrl}/refresh`, {}, { withCredentials: true }).pipe(
+      tap(user => this.setSession(user)),
+      catchError(err => {
+        this.clearSession();
+        this.router.navigateByUrl('/login');
+        throw err;
+      })
+    );
+  }
+
   logout() {
-    localStorage.removeItem('accessToken');
-    this.tokenSignal.set(null); 
+    return this.http.post(`${this.baseUrl}/logout`, {}, { withCredentials: true }).pipe(
+      switchMap(() => of(void 0)),
+      tap(() => this.clearSession()),
+      catchError(() => {
+        this.clearSession();
+        return of(void 0);
+      })
+    );
+  }
+
+  private setSession(user: User) {
+    this.user.set(user);
+    this.authenticated.set(true);
+  }
+
+  private clearSession() {
+    this.user.set(null);
+    this.authenticated.set(false);
   }
 }

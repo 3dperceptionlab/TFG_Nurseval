@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,9 +34,20 @@ public class SecurityConfig {
       .sessionManagement(session -> session
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       )
+      .exceptionHandling(exceptions -> exceptions
+        .authenticationEntryPoint((request, response, authException) ->
+          response.sendError(HttpStatus.UNAUTHORIZED.value(), "No autenticado"))
+        .accessDeniedHandler((request, response, accessDeniedException) ->
+          response.sendError(HttpStatus.FORBIDDEN.value(), "Acceso denegado"))
+      )
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/check-email").permitAll()
+        .requestMatchers(
+          "/api/auth/login", 
+          "/api/auth/register", 
+          "/api/auth/check-email",
+          "/api/auth/refresh", 
+          "/api/auth/logout").permitAll()
         .anyRequest().authenticated()
       )
     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,7 +1,3 @@
-export interface LoginResponse {
-  accessToken: string;
-  tokenType: string; 
-}
 
 export interface User {
   id: string;
@@ -9,5 +5,4 @@ export interface User {
   email: string;
   surname: string;
   role: string; 
-  lastLogin: Date;
 }
