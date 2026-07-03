@@ -17,6 +17,8 @@ export class PendingProcedures {
   icons = {faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft, faFaceFrownOpen}
 
   selectedKey = signal<string>('Todo');
+  currentPage = signal<number>(1);
+  itemsPerPage = 4;
 
   procedureService = inject(ProcedureService);
   protocolService = inject(ProtocolService);
@@ -26,5 +28,12 @@ export class PendingProcedures {
     if(this.selectedKey() === "Todo") return this.myStudentsProcedures();
     return this.myStudentsProcedures().filter((p) => p.protocolName === this.selectedKey());
   });
+
+  paginatedProcedures = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.filteredProcedures().slice(startIndex, endIndex);
+  });
+  
   isLoading = computed(() => this.procedureService.myStudentProceduresResource.isLoading());
 }

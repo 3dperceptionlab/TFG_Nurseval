@@ -12,16 +12,22 @@
     <div class="aspect-video bg-slate-800 relative group overflow-hidden">
   
       @if (isBrowser()) {
+        <!-- Video real, visible con normalidad -->
         <video #videoPlayer
           [src]="videoUrl()"
+          crossorigin="anonymous"
           preload="auto" 
           (timeupdate)="onTimeUpdate()"
           (loadedmetadata)="onLoadedMetadata()"
           (play)="onPlay()"
           (pause)="onPause()"
-          class="w-full h-full object-contain"
-          preload="metadata">
+          class="absolute inset-0 w-full h-full object-contain">
         </video>
+
+        <!-- Overlay transparente: pinta las manchas/puntos de dónde está mirando el alumno -->
+        <canvas #gazeCanvas
+          class="absolute inset-0 w-full h-full pointer-events-none">
+        </canvas>
 
         <!-- Overlay de Play/Pausa -->
         <div class="absolute inset-0 flex items-center justify-center cursor-pointer" (click)="togglePlay()">

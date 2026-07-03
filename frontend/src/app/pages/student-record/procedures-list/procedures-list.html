@@ -2,14 +2,14 @@
   <h2 class="text-slate-800 text-2xl font-bold mb-6">
       Resultados
   </h2>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-2">
     @for(p of procedures(); track p.id) {
       <div class="bg-white rounded-lg py-6 px-8 border border-slate-200 shadow-sm grid grid-cols-[1fr_2fr_auto] items-center text-sm gap-4">
   
       <div class="flex flex-row items-center gap-6">
         <div class="flex flex-col w-fit gap-2 items-center px-5 text-dark-blue border-r border-slate-300">
           <fa-icon [icon]="icons.faCalendar" class="w-fit"/>
-          <span>{{p.date}}</span>
+          <span>{{p.date | date:'dd/MM/yyyy'}}</span>
         </div>
         <div class="flex flex-col gap-1 items-start text-slate-500">
           <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Protocolo</span>

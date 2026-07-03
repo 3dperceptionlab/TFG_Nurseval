@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, model, output, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, model, output, signal, viewChild } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCheck, faPlus, faTriangleExclamation, faPen, faAngleDown,faLightbulb, faTrash, faXmark} from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from '@angular/router';
@@ -26,6 +26,11 @@ export class Comments {
   showAnnotationForm = signal(false);
   isEditingAnnotation = signal(false);
 
+  isDraggingCursor = signal(false);
+  private dragTime = signal<number | null>(null);
+
+  timelineRef = viewChild<ElementRef<HTMLDivElement>>('timeline');
+
   annotations = input<Annotation[]>();
   duration = input<number>();
   procedureId =input<string>();
@@ -47,9 +52,13 @@ export class Comments {
     tip: ''
   });
 
+  displayedTime = computed(() =>
+    this.isDraggingCursor() ? (this.dragTime() ?? this.currentTime()) : this.currentTime()
+  );
+
   minutesInput = computed(() => Math.floor(this.annotationFormModel().minute / 60));
   secondsInput = computed(() => Math.floor(this.annotationFormModel().minute % 60));
-  
+
   annotationForm = form(this.annotationFormModel, (path) => {
     required(path.title, { message: 'El título es obligatorio.' });
     minLength(path.title, 3, { message: 'El título debe tener al menos 3 caracteres.' });
@@ -126,6 +135,49 @@ export class Comments {
 
   onTimelineMouseLeave() {
     this.hoverTime.set(null);
+  }
+
+  onCursorMouseDown(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation(); // evita que dispare onTimelineClick
+
+    if (!this.duration()) return;
+
+    this.isDraggingCursor.set(true);
+    this.dragTime.set(this.currentTime());
+    document.addEventListener('mousemove', this.onDocumentMouseMove);
+    document.addEventListener('mouseup', this.onDocumentMouseUp);
+  }
+
+  private onDocumentMouseMove = (event: MouseEvent) => {
+    const total = this.duration();
+    const timeline = this.timelineRef()?.nativeElement;
+    if (!total || !timeline) return;
+
+    const rect = timeline.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const percentage = Math.min(1, Math.max(0, x / rect.width));
+    this.dragTime.set(Math.round(percentage * total));
+  };
+
+  private onDocumentMouseUp = () => {
+    if (!this.isDraggingCursor()) return;
+
+    document.removeEventListener('mousemove', this.onDocumentMouseMove);
+    document.removeEventListener('mouseup', this.onDocumentMouseUp);
+
+    const finalTime = this.dragTime();
+    this.isDraggingCursor.set(false);
+    this.dragTime.set(null);
+
+    if (finalTime !== null) {
+      this.seekRequest.emit(finalTime);
+    }
+  };
+
+  ngOnDestroy() {
+    document.removeEventListener('mousemove', this.onDocumentMouseMove);
+    document.removeEventListener('mouseup', this.onDocumentMouseUp);
   }
 
   // --------------------------------------- funciones de formulario

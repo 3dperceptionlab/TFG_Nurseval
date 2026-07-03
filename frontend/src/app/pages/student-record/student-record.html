@@ -43,10 +43,9 @@
 </div>
 
 <div class="relative min-h-100">
-
   <div [class.opacity-40]="isLoading()" [class.pointer-events-none]="isLoading()" class="transition-opacity duration-300">
     @if(filteredProcedures()?.length === 0){
-      <div class="w-full h-2/3 flex flex-col items-center justify-center text-center text-slate-500 pt-10">
+      <div class="w-full h-100 flex flex-col items-center justify-center text-center text-slate-500 pt-10">
         <fa-icon [icon]="icons.faFaceFrownOpen" [size]="'6x'"></fa-icon>
         <h2 class="mt-6 text-2xl font-bold ">No hay resultados</h2>
         <p class="mt-4 text-pretty ">
@@ -54,8 +53,8 @@
         </p>
       </div>  
     }@else {
-      <app-procedures-list [procedures]="filteredProcedures()"></app-procedures-list>
-      <app-page-selector [actualPage]="1" [elementsPerPage]="4" [totalElements]="filteredProcedures.length"></app-page-selector>
+      <app-procedures-list [procedures]="paginatedProcedures()"></app-procedures-list>
+      <app-page-selector [actualPage]="currentPage()" [elementsPerPage]="itemsPerPage" [totalElements]="filteredProcedures().length" (changePage)="currentPage.set($event)"></app-page-selector>
     }
   </div>
 

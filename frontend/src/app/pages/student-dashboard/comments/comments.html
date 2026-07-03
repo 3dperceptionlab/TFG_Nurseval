@@ -90,7 +90,7 @@
   </form>
   }
   <!-- Línea temporal -->
-  <div class="relative h-4 bg-slate-100 rounded-full mb-12 cursor-pointer"
+  <div #timeline class="relative h-4 bg-slate-100 rounded-full mb-12 cursor-pointer"
     (click)="onTimelineClick($event)"
     (mousemove)="onTimelineMouseMove($event)"
     (mouseleave)="onTimelineMouseLeave()">
@@ -111,7 +111,21 @@
         (mouseleave)="hideTooltip()">
       </a>
     }
-
+    @if (duration()) {
+      <div 
+        class="absolute -top-1.5 h-7 w-0.5 bg-dark-blue z-100 -translate-x-1/2"
+        [class.pointer-events-none]="false"
+        [style.left]="getNotePosition(displayedTime())">
+        <div 
+          (mousedown)="onCursorMouseDown($event)"
+          (click)="$event.stopPropagation()"
+          [class.cursor-grabbing]="isDraggingCursor()"
+          [class.cursor-grab]="!isDraggingCursor()"
+          [class.scale-125]="isDraggingCursor()"
+          class="absolute -top-1 left-1/2 -translate-x-1/2 w-4 h-4 bg-dark-blue rounded-full shadow-sm transition-transform">
+        </div>
+      </div>
+    }
     <!-- tooltip de hover siguiendo el ratón -->
     @if (hoverTime() !== null && !activeTooltip()) {
       <div class="absolute -top-10 bg-dark-blue text-white text-xs font-mono px-2 py-1 rounded shadow-lg z-10 -translate-x-1/2 pointer-events-none"

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSimple, faAngleRight, faAngleLeft, faFaceFrownOpen } from '@fortawesome/free-solid-svg-icons';
 import { PageSelector } from "../../shared/page-selector/page-selector";
@@ -26,6 +26,8 @@ export class StudentRecord {
   authService = inject(Auth);
   route = inject(ActivatedRoute);
 
+  currentPage = signal<number>(1);
+  itemsPerPage = 4;
   isTeacherView = false;
   selectedKey = signal<string>('Todo');
   studentProcedures = signal<procedureSummary[]>([]);
@@ -36,6 +38,19 @@ export class StudentRecord {
     if(this.selectedKey() === "Todo") return this.studentProcedures();
     return this.studentProcedures().filter((p) => p.protocolName === this.selectedKey());
   });
+
+  paginatedProcedures = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.filteredProcedures().slice(startIndex, endIndex);
+  });
+
+  constructor() {
+    effect(() => {
+      this.selectedKey(); 
+      this.currentPage.set(1);
+    });
+  }
 
   ngOnInit() {
     const routeId = this.route.snapshot.paramMap.get('studentId');

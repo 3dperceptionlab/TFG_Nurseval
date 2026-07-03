@@ -4,10 +4,11 @@ import { faArrowRight, faCalendar, faClock, faWarning, faSquareCheck, faChartSim
 import { RouterLink } from '@angular/router';
 import { procedureSummary } from '../../../models/procedure.model';
 import { DecimalPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-procedures-list',
-  imports: [FontAwesomeModule, RouterLink, DecimalPipe],
+  imports: [FontAwesomeModule, RouterLink, DecimalPipe, DatePipe],
   templateUrl: './procedures-list.html',
   styleUrl: './procedures-list.css',
 })

@@ -34,6 +34,7 @@ export class StudentDashboard {
   isLoading = signal(true);
 
   currentTime = signal(0);
+  videoDuration = signal<number | undefined>(undefined);
   seekTarget = signal<number | null>(null);
 
   finalEval = signal({
@@ -71,6 +72,10 @@ export class StudentDashboard {
         next: (data) => this.procedure.set(data)
       });
     }
+  }
+  
+  onDurationChange(duration: number) {
+    this.videoDuration.set(duration);
   }
 
   onChangeMark(newMark: number) {

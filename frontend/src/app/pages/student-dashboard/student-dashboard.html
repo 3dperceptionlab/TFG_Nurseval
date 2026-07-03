@@ -49,12 +49,13 @@
   [videoUrl]="procedure()?.video"
   [hololens]="procedure()?.hololens"
   [seekTo]="seekTarget()"
-  (timeUpdate)="onTimeUpdate($event)">
+  (timeUpdate)="onTimeUpdate($event)"
+  (durationChange)="onDurationChange($event)">
 </app-video-section>
 
 <app-comments 
   [procedureId]="procedure()?.id" 
-  [duration]="procedure()?.globalMetrics?.duration" 
+  [duration]="videoDuration() ?? procedure()?.globalMetrics?.duration" 
   [annotations]="procedure()?.annotations" 
   [currentTime]="currentTime()"
   (onChanged)="reloadProcedure()" 

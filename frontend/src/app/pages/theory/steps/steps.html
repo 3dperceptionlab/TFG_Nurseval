@@ -3,11 +3,11 @@
     Vendaje de {{ currentProtocol()?.title }}
   </h2>
   <div class="flex gap-8 items-start mb-6">
-    <div class="relative bg-white border border-slate-200 rounded-2xl overflow-hidden flex items-center justify-center h-50 w-fit">
+    <div class="relative bg-white border border-slate-200 rounded-2xl overflow-hidden flex items-center justify-center w-100 min-w-100 max-w-100 aspect-auto">
         @if (currentProtocol()?.image) {
-            <img src="images/{{currentProtocol()?.image ?? ''}}"
+            <img [src]="currentProtocol()?.image"
                 [alt]="currentProtocol()?.title"
-                class="w-auto h-full object-contain transition-all duration-500 animate-in zoom-in-95 fade-in">
+                class="w-full h-auto object-cover transition-all duration-500 animate-in zoom-in-95 fade-in">
         } @else {
             <div class="flex flex-col items-center py-8 text-slate-300">
                 <fa-icon [icon]="icons.faImage" />
