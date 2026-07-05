@@ -72,7 +72,9 @@ public class StudentController {
     return ResponseEntity.noContent().build();
   }
 
+
   @GetMapping
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<List<StudentResponse>> getGlobalStudents(
     @RequestParam(required = false) String query,
     @RequestParam(required = false) String course, 
@@ -85,10 +87,12 @@ public class StudentController {
     return ResponseEntity.ok(filteredStudents);
   }
 
+  // Profesor solo puede ver estadisticas de sus alumonos
   @GetMapping("/{studentId}")
   @PreAuthorize("hasRole('PROFESSOR')")
-  public ResponseEntity<StudentResponse> getStudentById(@PathVariable String studentId) {
-    Student student = studentService.getStudentById(studentId);
+  public ResponseEntity<StudentResponse> getStudentById(Principal principal, @PathVariable String studentId) {
+    String professorId = principal.getName();
+    Student student = studentService.getStudentByIdForProfessor(studentId, professorId);
     return ResponseEntity.ok(convertToStudentResponse(student));
   }
 
@@ -119,11 +123,12 @@ public class StudentController {
     return ResponseEntity.ok(studentService.getStats(student.getId()));
   }
 
-  // para el profesor viendo un alumno concreto(?)
   @GetMapping("/{studentId}/stats")
   @PreAuthorize("hasRole('PROFESSOR')")
-  public ResponseEntity<StudentStatsResponse> getStudentStats(@PathVariable String studentId) {
-    return ResponseEntity.ok(studentService.getStats(studentId));
+  public ResponseEntity<StudentStatsResponse> getStudentStats(Principal principal, @PathVariable String studentId) {
+    String professorId = principal.getName();
+    Student student = studentService.getStudentByIdForProfessor(studentId, professorId);
+    return ResponseEntity.ok(studentService.getStats(student.getId()));
   }
 
   // vincular estudainte a un profesor

@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
       .status("KO")
       .statusCode(HttpStatus.BAD_REQUEST.value())
       .message("Validación de campos fallida.")
-      .errors(detalles) // Pasamos la lista limpia
+      .errors(detalles)
       .timestamp(LocalDateTime.now())
       .build();
   }
@@ -62,6 +62,16 @@ public class GlobalExceptionHandler {
       .build();
   }
   
+  @ExceptionHandler(IllegalArgumentException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiErrorResponse handleIllegalArgument(IllegalArgumentException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.BAD_REQUEST.value())
+      .message(ex.getMessage())
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
 
   // --------- ERRORES 401 - UNAUTHORIZED ---------
 
@@ -95,6 +105,17 @@ public class GlobalExceptionHandler {
       .status("KO")
       .statusCode(HttpStatus.FORBIDDEN.value())
       .message("Lo sentimos, su cuenta se encuentra inactiva")
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
+
+  @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ApiErrorResponse handleAccessDenied(org.springframework.security.access.AccessDeniedException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.FORBIDDEN.value())
+      .message("No tienes permisos para realizar esta acción.")
       .timestamp(LocalDateTime.now())
       .build();
   }
@@ -140,17 +161,16 @@ public class GlobalExceptionHandler {
 
   // --------- ERRORES 409 - CONFLICT ---------
 
-  @ExceptionHandler(EmailAlreadyExistsException.class)
+  @ExceptionHandler(org.springframework.dao.DuplicateKeyException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
-  public ApiErrorResponse handleEmailConflict(EmailAlreadyExistsException ex) {
+  public ApiErrorResponse handleDuplicateKey(org.springframework.dao.DuplicateKeyException ex) {
     return ApiErrorResponse.builder()
-    .status("KO")
-    .statusCode(HttpStatus.CONFLICT.value())
-    .message(ex.getMessage())
-    .timestamp(LocalDateTime.now())
-    .build();
+      .status("KO")
+      .statusCode(HttpStatus.CONFLICT.value())
+      .message("El email ya está registrado")
+      .timestamp(LocalDateTime.now())
+      .build();
   }
-
 
   // --------- ERRORES 500 - INTERNAL SERVER ERROR ---------
 

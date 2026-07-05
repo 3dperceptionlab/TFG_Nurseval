@@ -36,6 +36,13 @@ public class ProcedureService {
   private final StudentRepository studentRepository;
   private final MongoTemplate mongoTemplate;
 
+  private ObjectId toObjectId(String id) {
+    if (!ObjectId.isValid(id)) {
+      throw new IllegalArgumentException("El identificador '" + id + "' no es válido.");
+    }
+    return new ObjectId(id);
+  }
+
   private void updateErrorCount(Procedure procedure) {
     if (procedure.getAnnotations() == null) return;
 
@@ -96,7 +103,7 @@ public class ProcedureService {
     List<Criteria> criteriaList = new ArrayList<>();
 
     if (studentId != null && !studentId.trim().isEmpty()) {
-      criteriaList.add(Criteria.where("student").is(new ObjectId(studentId)));
+      criteriaList.add(Criteria.where("student").is(toObjectId(studentId)));
     }
     if (professorId != null && !professorId.trim().isEmpty()) {
       // Buscamos los alumnos que pertenecen a este profesor
@@ -106,7 +113,7 @@ public class ProcedureService {
         return new ArrayList<>();
       }
       
-      List<ObjectId> studentIds = myStudents.stream().map(s -> new ObjectId(s.getId())).toList();
+      List<ObjectId> studentIds = myStudents.stream().map(s -> toObjectId(s.getId())).toList();
       criteriaList.add(Criteria.where("student").in(studentIds));
     }
     if (state != null && !state.trim().isEmpty()) {
@@ -138,13 +145,21 @@ public class ProcedureService {
 
   public ProcedureResponse getProcedureById( String id) {
     Procedure procedure = procedureRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Procedimiento no encontrado."));
-    
+
+    Student student = procedure.getStudent();
+    String studentId = (student != null) ? student.getId() : null;
+    String studentName = (student != null) ? student.getName() : null;
+    String studentSurname = (student != null) ? student.getSurname() : null;
+    String professorName = (student != null && student.getProfessor() != null)
+      ? student.getProfessor().getName()
+      : "Sin profesor asignado";
+
     return new ProcedureResponse(
       procedure.getId(),
-      procedure.getStudent().getId(),
-      procedure.getStudent().getName(),
-      procedure.getStudent().getSurname(),
-      procedure.getStudent().getProfessor().getName(),
+      studentId,
+      studentName,
+      studentSurname,
+      professorName,
       procedure.getProtocol(),
       procedure.getDate(),
       procedure.getState(),
@@ -174,7 +189,8 @@ public class ProcedureService {
 
 
   public Annotation editAnnotation(String procedureId, String annotationId, Annotation data) {
-    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new RuntimeException("Procedimiento no encontrado"));
+
+    Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new ResourceNotFoundException("Procedimiento no encontrado."));
     
     if (procedure.getAnnotations() == null) {
       throw new ResourceNotFoundException("Anotación no encontrada");
@@ -223,6 +239,11 @@ public class ProcedureService {
   public Procedure finalizeEvaluation(String procedureId, FinalizeEvaluationRequest evaluation) {
 
     Procedure procedure = procedureRepository.findById(procedureId).orElseThrow(() -> new ResourceNotFoundException("Procedimiento no encontrado."));
+
+    if (evaluation.getMark() < 0 || evaluation.getMark() > 10) {
+      throw new IllegalArgumentException("La nota debe estar entre 0 y 10.");
+    }
+
     procedure.setState("Evaluado");
     procedure.setComment(evaluation.getComment());
     

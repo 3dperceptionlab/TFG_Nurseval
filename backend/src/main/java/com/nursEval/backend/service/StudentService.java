@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,16 @@ public class StudentService {
 
   public Student getStudentById(String id) {
     return studentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado"));
+  }
+
+  public Student getStudentByIdForProfessor(String studentId, String professorId) {
+    Student student = getStudentById(studentId);
+
+    if (student.getProfessor() == null || !professorId.equals(student.getProfessor().getId())) {
+      throw new AccessDeniedException("No tienes acceso a este alumno");
+    }
+
+    return student;
   }
 
   public Student getStudentByEmail(String email) {

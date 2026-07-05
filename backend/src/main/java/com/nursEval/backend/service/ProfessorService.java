@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -60,9 +61,13 @@ public class ProfessorService {
     List<Student> students;
 
     if (studentId != null && !studentId.isBlank()) {
-      procedures = procedureService.searchProcedures(studentId, null, null, null);
-      
       Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado"));
+
+      if (student.getProfessor() == null || !professorId.equals(student.getProfessor().getId())) {
+        throw new AccessDeniedException("No tienes acceso a las estadísticas de este alumno");
+      }
+
+      procedures = procedureService.searchProcedures(studentId, null, null, null);
       students = List.of(student); 
       
     } else {

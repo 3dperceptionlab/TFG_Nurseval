@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nursEval.backend.dtos.ProfessorResponse;
 import com.nursEval.backend.dtos.ProfessorStatsResponse;
 import com.nursEval.backend.dtos.UpdateProfessorProfileRquest;
 import com.nursEval.backend.model.Professor;
@@ -25,20 +26,33 @@ import lombok.RequiredArgsConstructor;
 public class ProfessorController {
   private final ProfessorService professorService;
 
-  @GetMapping("/profile")
-  public ResponseEntity<Professor> getMyProfile(Principal principal) {
-    String id = principal.getName();
-    return ResponseEntity.ok(professorService.getProfessorById(id));
+  private ProfessorResponse convertToResponse(Professor professor) {
+    return ProfessorResponse.builder()
+      .id(professor.getId())
+      .name(professor.getName())
+      .surname(professor.getSurname())
+      .email(professor.getEmail())
+      .position(professor.getPosition())
+      .role(professor.getRole())
+      .active(professor.isActive())
+      .lastLogin(professor.getLastLogin())
+      .build();
   }
 
+  @GetMapping("/profile")
+  public ResponseEntity<ProfessorResponse> getMyProfile(Principal principal) {
+    String id = principal.getName();
+    return ResponseEntity.ok(convertToResponse(professorService.getProfessorById(id)));
+  }
+ 
   @PutMapping("/profile")
-  public ResponseEntity<Professor> updateMyProfile(
+  public ResponseEntity<ProfessorResponse> updateMyProfile(
     Principal principal, 
     @Valid @RequestBody UpdateProfessorProfileRquest request) {
       
     String id = principal.getName(); //  desde el JWT
     Professor updated = professorService.updateProfile(id, request);
-    return ResponseEntity.ok(updated);
+    return ResponseEntity.ok(convertToResponse(updated));
   }
 
   @GetMapping("/my-stats")

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +73,7 @@ public class ProcedureController {
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<List<SummaryProcedureResponse>> getAll(
     @RequestParam(required = false) String state,
     @RequestParam(required = false) String protocolName) {
@@ -84,12 +86,31 @@ public class ProcedureController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProcedureResponse> getById(@PathVariable String id) {
-    return ResponseEntity.ok(procedureService.getProcedureById(id));
+  public ResponseEntity<ProcedureResponse> getById(@PathVariable String id, Principal principal) {
+    ProcedureResponse response = procedureService.getProcedureById(id);
+
+    String callerId = principal.getName();
+    boolean isOwnerStudent = callerId.equals(response.getStudentId());
+    boolean isOwnerProfessor = false;
+
+    if (!isOwnerStudent) {
+      try {
+        studentService.getStudentByIdForProfessor(response.getStudentId(), callerId);
+        isOwnerProfessor = true;
+      } catch (AccessDeniedException e) {
+        isOwnerProfessor = false;
+      }
+    }
+
+    if (!isOwnerStudent && !isOwnerProfessor) {
+      throw new AccessDeniedException("No tienes acceso a este procedimiento");
+    }
+
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping("/my-history")
-  @PreAuthorize("hasRole('STUDENT')")  // pre verificar que quien llama es un alumno
+  @PreAuthorize("hasRole('STUDENT')")  
   public ResponseEntity<List<SummaryProcedureResponse>> getMyHistory(Principal principal) {
     String studentId = principal.getName();
     Student student = studentService.getStudentById(studentId);
@@ -103,9 +124,11 @@ public class ProcedureController {
   }
 
   @GetMapping("/student/{studentId}")
-  @PreAuthorize("hasRole('PROFESSOR')") // pre verificar que quien llama es un profesor
-  public ResponseEntity<List<SummaryProcedureResponse>> getStudentHistory(@PathVariable String studentId, @RequestParam(required = false) String protocolName) {
-    Student student = studentService.getStudentById(studentId);
+  @PreAuthorize("hasRole('PROFESSOR')")
+  public ResponseEntity<List<SummaryProcedureResponse>> getStudentHistory(
+    Principal principal, @PathVariable String studentId, @RequestParam(required = false) String protocolName) {
+
+    Student student = studentService.getStudentByIdForProfessor(studentId, principal.getName());
     List<SummaryProcedureResponse> history = procedureService
       .searchProcedures(student.getId(), null, null, protocolName).stream()
       .map(this::convertToSummaryProcedureResponse)
@@ -115,7 +138,7 @@ public class ProcedureController {
   }
 
   @GetMapping("/pending")
-  @PreAuthorize("hasRole('PROFESSOR')") // pre verificar que quien llama es un profesor
+  @PreAuthorize("hasRole('PROFESSOR')") 
   public ResponseEntity<List<SummaryProcedureResponse>> getPendingProcedures(Principal principal, @RequestParam(required = false) String protocolName) {
     String professorId = principal.getName();
     Professor professor = professorService.getProfessorById(professorId);
