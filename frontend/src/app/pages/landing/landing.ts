@@ -1,16 +1,24 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUser, faArrowRight, faBrain, faUserGraduate, faHandHoldingMedical, faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 import { Header } from "../../shared/header/header";
+import { RouterLink } from "@angular/router";
+import { Auth } from '../../services/auth.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-landing',
-  imports: [FontAwesomeModule, Header],
+  imports: [FontAwesomeModule, Header, RouterLink],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
 })
 export class Landing {
-    readonly icons = { faUser, faArrowRight, faBrain, faUserGraduate, faHandHoldingMedical };
+  readonly icons = { faUser, faArrowRight, faBrain, faUserGraduate, faHandHoldingMedical };
+
+  authService = inject(Auth);
+  private sanitizer = inject(DomSanitizer);
+
+  demoVideoUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://player.mediadelivery.net/play/695560/40b83402-d03c-45c0-b698-c4fcb9ae6443');
 
   features = [
     {
@@ -29,4 +37,11 @@ export class Landing {
       icon: faUserGraduate
     }
   ];
+
+  scrollToVideo() {
+    const videoSection = document.getElementById('demo-video');
+    if (videoSection) {
+      videoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }

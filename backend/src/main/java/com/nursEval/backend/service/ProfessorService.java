@@ -77,7 +77,7 @@ public class ProfessorService {
     int pending = total - nEvaluated;
 
     double avgMark = evaluated.stream().mapToDouble(p -> p.getGlobalMetrics().getMark()).average().orElse(0);
-    double avgAttention = evaluated.stream().mapToDouble(p -> p.getGlobalMetrics().getAttentionPercent()).average().orElse(0);
+    double avgImprov = evaluated.stream().mapToDouble(p -> p.getGlobalMetrics().getImprovementsCount()).average().orElse(0);
     double avgErrors = evaluated.stream().mapToDouble(p -> p.getGlobalMetrics().getErrorCount()).average().orElse(0);
 
     // Por protocolo
@@ -88,7 +88,7 @@ public class ProfessorService {
       List<Procedure> eval = group.stream().filter(p -> "Evaluado".equals(p.getState()) && p.getGlobalMetrics() != null).toList();
 
       double avg = eval.stream().mapToDouble(p -> p.getGlobalMetrics().getMark()).average().orElse(0);
-      double attention = eval.stream().mapToDouble(p -> p.getGlobalMetrics().getAttentionPercent()).average().orElse(0);
+      double improv = eval.stream().mapToDouble(p -> p.getGlobalMetrics().getImprovementsCount()).average().orElse(0);
       double errors = eval.stream().mapToDouble(p -> p.getGlobalMetrics().getErrorCount()).average().orElse(0);
       int passed = (int) eval.stream().filter(p -> p.getGlobalMetrics().getMark() >= 5).count();
       
@@ -98,7 +98,7 @@ public class ProfessorService {
         .passed(passed)
         .failed(eval.size() - passed)
         .avgMark(Math.round(avg * 10.0) / 10.0)
-        .avgAttention(Math.round(attention * 10.0) / 10.0)
+        .avgAttention(Math.round(improv * 10.0) / 10.0)
         .avgErrors(Math.round(errors * 10.0) / 10.0)
         .build();
     }).toList();
@@ -171,7 +171,7 @@ public class ProfessorService {
       .evaluatedProcedures(nEvaluated)
       .pendingProcedures(pending)
       .avgMark(Math.round(avgMark * 10.0) / 10.0)
-      .avgAttention(Math.round(avgAttention * 10.0) / 10.0)
+      .avgAttention(Math.round(avgImprov * 10.0) / 10.0)
       .avgErrors(Math.round(avgErrors * 10.0) / 10.0)
       .byProtocol(byProtocol)
       .byMonth(byMonth)

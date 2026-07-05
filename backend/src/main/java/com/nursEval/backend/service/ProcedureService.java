@@ -50,6 +50,20 @@ public class ProcedureService {
 
   }
 
+  private void updateImprovCount(Procedure procedure) {
+    if (procedure.getAnnotations() == null) return;
+
+     long totalImprov = procedure.getAnnotations().stream()
+      .filter(a -> a.getType() != null && a.getType().equalsIgnoreCase("mejora"))
+      .count();
+
+    if (procedure.getGlobalMetrics() == null) {
+      procedure.setGlobalMetrics(new GlobalMetrics());
+    }
+    procedure.getGlobalMetrics().setImprovementsCount((int) totalImprov);
+
+  }
+
   public void updateAvgMark(String studentId) {
     Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Estudiante no encontrado."));
     List<Procedure> procedures = searchProcedures(student.getId(), null, null, null);
@@ -152,6 +166,7 @@ public class ProcedureService {
     annotation.setId(new ObjectId().toHexString());
     procedure.getAnnotations().add(annotation);
     updateErrorCount(procedure);
+    updateImprovCount(procedure);
 
     procedureRepository.save(procedure);
     return annotation;
@@ -178,6 +193,7 @@ public class ProcedureService {
     annotation.setTip(data.getTip());
     // actualizar conteo
     updateErrorCount(procedure);
+    updateImprovCount(procedure);
 
     procedureRepository.save(procedure);
     return annotation;
@@ -199,6 +215,7 @@ public class ProcedureService {
 
     // actualizar conteo
     updateErrorCount(procedure);
+    updateImprovCount(procedure);
     procedureRepository.save(procedure);
   }
 

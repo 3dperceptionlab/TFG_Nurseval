@@ -9,7 +9,7 @@ export interface procedureSummary {
   globalMetrics: {
     duration: number;
     errorCount: number;
-    attentionPercent: number;
+    improvCount: number;
     mark: number;
   };
 }
@@ -70,7 +70,7 @@ export interface Annotation {
 export interface GlobalMetrics {
   duration: number;
   errorCount: number;
-  attentionPercent: number;
+  ImprovementsCount: number;
   mark: number;
 }
 

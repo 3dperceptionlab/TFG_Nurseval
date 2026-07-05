@@ -20,12 +20,12 @@
   </div>
 
   <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm flex items-center gap-4">
-    <div class="w-12 h-12 rounded-full bg-light-blue flex items-center justify-center text-aqua-blue">
+    <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700">
       <fa-icon [icon]="icons.faEye" />
     </div>
     <div>
-      <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Atención</p>
-      <p class="text-xl font-bold text-slate-800">{{ globalMetrics()?.attentionPercent ?? 100 }}%</p>
+      <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Optimizaciones</p>
+      <p class="text-xl font-bold text-slate-800">{{ globalMetrics()?.ImprovementsCount ?? 0 }}</p>
     </div>
   </div>
 

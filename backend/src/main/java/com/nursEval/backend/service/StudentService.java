@@ -144,7 +144,7 @@ public class StudentService {
       .filter(p -> p.getGlobalMetrics() != null && "Evaluado".equals(p.getState())).toList();
 
     double avgMark = withMetrics.stream().mapToDouble(p -> p.getGlobalMetrics().getMark()).average().orElse(0);
-    double avgAttention = withMetrics.stream().mapToDouble(p -> p.getGlobalMetrics().getAttentionPercent()).average().orElse(0);
+    double avgImprov = withMetrics.stream().mapToDouble(p -> p.getGlobalMetrics().getImprovementsCount()).average().orElse(0);
     double avgErrors = withMetrics.stream().mapToDouble(p -> p.getGlobalMetrics().getErrorCount()).average().orElse(0);
 
     // Por protocolo
@@ -206,7 +206,7 @@ public class StudentService {
       .evaluatedProcedures(evaluated)
       .pendingProcedures(pending)
       .avgMark(Math.round(avgMark * 10.0) / 10.0)
-      .avgAttention(Math.round(avgAttention * 10.0) / 10.0)
+      .avgImprov(Math.round(avgImprov * 10.0) / 10.0)
       .avgErrors(Math.round(avgErrors * 10.0) / 10.0)
       .byProtocol(protocolStats)
       .byMonth(monthStats)

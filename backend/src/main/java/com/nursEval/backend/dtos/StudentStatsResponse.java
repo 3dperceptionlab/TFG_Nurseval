@@ -16,7 +16,7 @@ public class StudentStatsResponse {
   private int evaluatedProcedures;
   private int pendingProcedures;
   private double avgMark;
-  private double avgAttention;
+  private double avgImprov;
   private double avgErrors;
   private List<ProtocolStats> byProtocol;
   private List<MonthStats> byMonth;

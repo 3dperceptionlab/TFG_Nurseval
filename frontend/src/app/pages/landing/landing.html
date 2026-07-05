@@ -13,10 +13,10 @@
         NurseEval combina la potencia de las HoloLens con analítica de datos para ofrecer una plataforma de evaluación objetiva, permitiendo a los estudiantes perfeccionar sus habilidades clínicas.
       </p>
       <div class="flex gap-4">
-        <button class="px-8 py-3 bg-aqua-blue text-white rounded-lg font-bold flex items-center gap-2 hover:bg-dark-blue transition-all shadow-lg shadow-blue-shadow">
+        <button [routerLink]="authService.userRole() === 'professor' ? '/app/students' : '/app/record'" class="px-8 py-3 bg-aqua-blue cursor-pointer text-white rounded-lg font-bold flex items-center gap-2 hover:bg-dark-blue transition-all shadow-lg shadow-blue-shadow">
           Comenzar Evaluación <fa-icon [icon]="icons.faArrowRight" />
         </button>
-        <button class="px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-all">
+        <button (click)="scrollToVideo()" class="px-8 py-3 cursor-pointer bg-white border border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-all">
           Ver Demo
         </button>
       </div>
@@ -51,14 +51,74 @@
       </div>
     </div>
   </section>
+  <section id="demo-video" class="py-20 bg-slate-50 border-b border-slate-200 relative overflow-hidden scroll-mt-10">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-blue-100/40 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        
+      <header class="text-center max-w-2xl mx-auto mb-16">
+        <span class="inline-block px-4 py-1.5 bg-light-blue text-dark-blue rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+          Descubre la experiencia
+        </span>
+        <h2 class="text-3xl  text-slate-800 font-extrabold mb-4">
+          Obsérvalo con tus <span class="text-aqua-blue">propios ojos</span>
+        </h2>
+        <p class="text-slate-600 leading-relaxed">
+          Te mostramos NursEval de inicio a fin pasando por cada una de sus pantallas para docentes y alumnos.
+        </p>
+      </header>
 
-  <section class="max-w-5xl mx-auto px-6 py-20 text-center">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center max-w-7xl mx-auto">
+        <div class="relative lg:col-span-7 xl:col-span-8 group z-10">
+          <div class="absolute -inset-2 bg-linear-to-r from-aqua-blue to-dark-blue rounded-lg blur-xl opacity-20 group-hover:opacity-35 transition-opacity duration-500"></div>
+          <div class="relative bg-slate-800 rounded-lg shadow-2xl border border-slate-200/80 overflow-hidden aspect-video">
+            <iframe
+            src="https://player.mediadelivery.net/play/695560/40b83402-d03c-45c0-b698-c4fcb9ae6443"
+            loading="lazy"
+            style="border:0; position:absolute; top:0; left:0; width:100%; height:100%;"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            allowfullscreen="true">
+          </iframe>
+          </div>
+        </div>
+        <div class="flex flex-col gap-4 lg:col-span-5 xl:col-span-4 lg:-ml-14 relative z-20">
+          <div class="p-5 bg-white/90 backdrop-blur-md rounded-lg shadow-xl border border-slate-100 transform hover:-translate-y-1 lg:translate-x-4 transition-all duration-300">
+            <div class="text-dark-blue font-bold mb-1.5 flex items-center gap-2">
+              <span class="w-2 h-2  rounded-full bg-dark-blue"></span>
+              Guía teórica de los protocolos
+            </div>
+            <p class="text-sm text-slate-500 leading-relaxed">
+              Desglose en pasos de cada uno de los protocolos de vendaje.
+            </p>
+          </div>
+          <div class="p-5 bg-white/90 backdrop-blur-md rounded-lg shadow-xl border border-slate-100 transform hover:-translate-y-1 transition-all duration-300">
+            <div class="text-aqua-blue font-bold mb-1.5 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-aqua-blue"></span>
+              Panel de evaluación
+            </div>
+            <p class="text-sm text-slate-500 leading-relaxed">
+              Sección de la práctica realizada con los datos telemétricos, el video en primera persona y los comentarios del profesor.
+            </p>
+          </div>
+          <div class="p-5 bg-white/90 backdrop-blur-md rounded-lg shadow-xl border border-slate-100 transform hover:-translate-y-1 lg:translate-x-4  transition-all duration-300">
+            <div class="text-slate-700 font-bold mb-1.5 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-700"></span>
+              Datos estadísticos
+            </div>
+            <p class="text-sm text-slate-500 leading-relaxed">
+              Métricas y gráficas que muestran la evolución en el tiempo de las prácticas realizadas.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class=" bg-white max-w-5xl mx-auto px-6 py-20 text-center">
     <div class="bg-aqua-blue rounded-3xl p-12 text-white relative overflow-hidden">
       <div class="relative z-10">
-        <h2 class="text-4xl font-bold mb-6">¿Listo para mejorar tu técnica?</h2>
+        <h2 class="text-3xl font-bold mb-6">¿Listo para mejorar tu técnica?</h2>
         <p class="text-white mb-10 text-lg max-w-xl mx-auto">Únete y empieza a perfeccionar tus habilidades como futuro enfermero profesional.</p>
-        <button class="bg-white text-aqua-blue px-10 py-4 rounded-lg text-lg font-bold tracking-wider hover:scale-105 transition-transform">
-          Acceder al Panel de Estudiante
+        <button [routerLink]="authService.userRole() === 'student' ? '/app/profile' : '/app/record'" class="bg-white text-aqua-blue cursor-pointer px-10 py-4 rounded-lg text-lg font-bold tracking-wider hover:scale-105 transition-transform">
+          {{ authService.userRole() === 'student' ||  authService.userRole() === 'professor' ? 'Ver mis estadísticas' : 'Quiero vivir la experiencia'}}
         </button>
       </div>
       <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
@@ -67,18 +127,15 @@
   </section>
 </div>
 <footer class="flex flex-col md:flex-row gap-3 items-center justify-around w-full py-4 text-sm border-t border-slate-300 bg-slate-800 text-white/70">
-    <p>Copyright © 2026 Belén Sempere González.</p>
-    <div class="flex items-center gap-4">
-        <a href="#" class="hover:text-white transition-all">
-            Universidad de Alicante
-        </a>
-        <div class="h-8 w-px bg-white/20"></div>
-        <a href="#" class="hover:text-white transition-all">
-            Linkedin
-        </a>
-        <div class="h-8 w-px bg-white/20"></div>
-        <a href="#" class="hover:text-white transition-all">
-            Github
-        </a>
-    </div>
+  <p>Copyright © 2026 Belén Sempere González.</p>
+  <div class="flex items-center gap-4">
+    <a href="#" class="hover:text-white transition-all">
+        Universidad de Alicante
+    </a>
+    <div class="h-8 w-px bg-white/20"></div>
+    <div class="h-8 w-px bg-white/20"></div>
+    <a href="#" class="hover:text-white transition-all">
+        Github
+    </a>
+  </div>
 </footer>

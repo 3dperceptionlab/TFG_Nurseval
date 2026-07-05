@@ -17,15 +17,11 @@
         @for(s of students(); track s.email) {
           <tr>
             <td class="px-3 py-4 font-medium text-slate-900 whitespace-nowrap">
-              <div class="flex items-center gap-3">
-                @if (s.image) {
-                  <img src="" [alt]="'Foto de ' + s.name"
-                  class="w-9 h-9 rounded-full shrink-0" />
-                } @else {
-                  <div class="w-9 h-9 flex rounded-full shrink-0 bg-slate-300 justify-center items-center">
-                    <fa-icon class="text-white" [icon]="icons.faImage" [size]="'xl'"></fa-icon>
-                  </div>
-                }
+              <div class="flex items-center gap-3 ml-3">
+                <div class="w-9 h-9 flex rounded-full shrink-0 bg-light-blue justify-center items-center">
+                  {{s.name[0]}}{{s.surname[0]}}
+                </div>
+                
                 <div class="flex flex-col">
                   <span class="text-sm font-semibold leading-relaxed">{{s.name + ' '+ s.surname }}</span>
                   <span class="text-xs text-slate-400 font-normal">{{s.email}}</span>

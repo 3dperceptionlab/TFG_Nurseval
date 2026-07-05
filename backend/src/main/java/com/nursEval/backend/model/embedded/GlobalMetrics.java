@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class GlobalMetrics {
   private double duration;
   private int errorCount;
-  private double attentionPercent;
+  private int ImprovementsCount;
   private double mark;
 }

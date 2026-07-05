@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faPen, faGraduationCap, faUserGroup, faChartLine, faTriangleExclamation, faBullseye } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faGraduationCap, faUserGroup, faChartLine, faTriangleExclamation, faBullseye, faEye } from '@fortawesome/free-solid-svg-icons';
 import { BaseChartDirective } from 'ng2-charts';
 import { StudentService } from '../../services/students.service';
 import { Auth } from '../../services/auth.service';
@@ -15,7 +15,7 @@ import { ProtocolService } from '../../services/protocol.service';
   styleUrl: './profile.css',
 })
 export class Profile {
-  icons = { faPen, faGraduationCap, faUserGroup, faChartLine, faTriangleExclamation, faBullseye };
+  icons = { faPen, faGraduationCap, faUserGroup, faChartLine, faTriangleExclamation, faBullseye, faEye };
   
   studentService = inject(StudentService);
   professorService = inject(ProfessorService);
@@ -44,7 +44,7 @@ export class Profile {
     const s = this.stats();
     return [
       { label: 'Nota Media', value: s.avgMark ?? 0, icon: this.icons.faChartLine, color: 'text-blue-600', bg: 'bg-blue-50' },
-      { label: 'Atención Media', value: (s.avgAttention ?? 0) + '%', icon: this.icons.faBullseye, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+      { label: 'Optimizaciones Media', value: (s.avgAttention ?? 0), icon: this.icons.faEye, color: 'text-emerald-600', bg: 'bg-emerald-50' },
       { label: 'Errores Medios', value: s.avgErrors ?? 0, icon: this.icons.faTriangleExclamation, color: 'text-amber-600', bg: 'bg-amber-50' },
     ];
   });

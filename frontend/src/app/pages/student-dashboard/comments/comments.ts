@@ -30,6 +30,7 @@ export class Comments {
   private dragTime = signal<number | null>(null);
 
   timelineRef = viewChild<ElementRef<HTMLDivElement>>('timeline');
+  formTargetRef = viewChild<ElementRef<HTMLDivElement>>('formTarget');
 
   annotations = input<Annotation[]>();
   duration = input<number>();
@@ -211,7 +212,12 @@ export class Comments {
     this.annotationFormModel.set({ ...annotation });
     this.isEditingAnnotation.set(true);
     this.showAnnotationForm.set(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      this.formTargetRef()?.nativeElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    }, 100);
   }
 
   cancelAnnotationForm() {
