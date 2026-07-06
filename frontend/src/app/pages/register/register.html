@@ -36,7 +36,7 @@
           <div class="grid gap-6 lg:grid-cols-2 space-y-6 w-full">
             <div class="space-y-3">
               <div>
-                <label for="name" class="mb-2 text-slate-800 inline-block">Nombre</label>
+                <label for="name" class="mb-2 text-slate-800 inline-block">Nombre <span class="text-red-500">*</span></label>
                 <input type="text" id="name" placeholder="María" [formField]="registerForm.name" novalidate
                     class="px-3 py-2.5 text-sm text-slate-800 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue" />
                 @if(registerForm.name().touched() && registerForm.name().invalid()){ 
@@ -46,7 +46,7 @@
                 }
               </div>
               <div>
-                <label for="email" class="mb-2 text-slate-800 inline-block">Email</label>
+                <label for="email" class="mb-2 text-slate-800 inline-block">Email <span class="text-red-500">*</span></label>
                 <input type="email" id="email" placeholder="maria@example.com" [formField]="registerForm.email" novalidate
                     class="px-3 py-2.5 text-sm text-slate-800 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue" />
                 @if(registerForm.email().touched() && (registerForm.email().invalid())){ 
@@ -56,7 +56,7 @@
                 }  
               </div>
               <div class="relative w-full">
-                <label for="password" class="mb-2 text-slate-900 inline-block font-medium">Contraseña</label>
+                <label for="password" class="mb-2 text-slate-900 inline-block font-medium">Contraseña <span class="text-red-500">*</span></label>
                 <input type="password" id="password" [type]="hidePassword() ? 'password' : 'text'" placeholder="••••••••" [formField]="registerForm.password"
                   class="pl-3 pr-10 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue" />
                 
@@ -77,7 +77,7 @@
 
             <div class="space-y-3">
               <div>
-                <label for="surname" class="mb-2 text-slate-800 inline-block">Apellidos</label>
+                <label for="surname" class="mb-2 text-slate-800 inline-block">Apellidos <span class="text-red-500">*</span></label>
                 <input type="text" id="surname" placeholder="González Serna" [formField]="registerForm.surname" novalidate
                     class="px-3 py-2.5 text-sm text-slate-800 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue" />
                 @if(registerForm.surname().touched() && registerForm.surname().invalid()){ 
@@ -122,7 +122,7 @@
                 </div>
               }
               <div class="relative w-full">
-                <label for="repassword" class="mb-2 text-slate-900 inline-block font-medium">Repetir contraseña</label>
+                <label for="repassword" class="mb-2 text-slate-900 inline-block font-medium">Repetir contraseña <span class="text-red-500">*</span></label>
                 <input type="repassword" id="repassword" [type]="hidePassword() ? 'password' : 'text'" placeholder="••••••••" [formField]="registerForm.repassword"
                   class="pl-3 pr-10 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue" />
                 

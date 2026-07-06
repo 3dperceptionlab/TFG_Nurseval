@@ -1,4 +1,4 @@
-import { HttpClient, httpResource } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../environment/environment';
 import { catchError, firstValueFrom, of, switchMap, tap } from 'rxjs';
@@ -14,22 +14,20 @@ export class Auth {
   private authenticated = signal<boolean>(false);
   private user = signal<User | null>(null);
 
+  private loading = signal<boolean>(true);
+
   isAuthenticated = computed(() => this.authenticated());
   currentUser = computed(() => this.user());
+  isLoading = computed(() => this.loading());
 
   userRole = computed<string>(() => {
     const user = this.currentUser();
     return user && 'role' in user ? user.role : 'guest';
   });
 
-  meResource = httpResource<User>(() => {
-    return this.authenticated() ? `${this.baseUrl}/me` : undefined;
-  });
-
-  isLoading = computed(() => this.meResource.isLoading());
-
   // Al arrancar para saber si hay sesion valida
   async init(): Promise<void> {
+    this.loading.set(true);
     try {
       const user = await firstValueFrom(
         this.http.get<User>(`${this.baseUrl}/me`, { withCredentials: true })
@@ -45,6 +43,8 @@ export class Auth {
       } catch {
         this.clearSession();
       }
+    } finally {
+      this.loading.set(false);
     }
   }
 

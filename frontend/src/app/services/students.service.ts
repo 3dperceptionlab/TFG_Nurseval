@@ -14,7 +14,6 @@ export class StudentService {
 
   private baseUrl = `${environment.apiUrl}/students`;
   
-  studentsResource = httpResource(() => this.baseUrl);
   profileResource = httpResource(() => {
     return this.authService.userRole() === 'student' 
       ? `${this.baseUrl}/profile` 

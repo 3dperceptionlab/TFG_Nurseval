@@ -34,7 +34,7 @@
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div class="md:col-span-6 flex flex-col gap-2">
-          <label for="noteName" class="text-sm font-bold text-slate-700">Nombre</label>
+          <label for="noteName" class="text-sm font-bold text-slate-700">Nombre <span class="text-red-500">*</span></label>
           <input 
             id="title"
             type="text" 
@@ -44,7 +44,7 @@
         </div>
         <!-- desplegable de tipo -->
         <div class="md:col-span-3 flex flex-col gap-2">
-          <label class="text-sm font-bold text-slate-700">Tipo</label>
+          <label class="text-sm font-bold text-slate-700">Tipo </label>
           <div   class="relative flex items-center">
             <!-- Indicador visual de color para el tipo de nota -->
             <span class="absolute left-4 w-2.5 h-2.5 rounded-full " 
@@ -74,7 +74,7 @@
       </div>
       <!-- textareas descripcion y tip opcional -->
       <div class="flex flex-col gap-2">
-        <label for="noteDescription" for="description" class="text-sm font-bold text-slate-700">Descripción</label>
+        <label for="noteDescription" for="description" class="text-sm font-bold text-slate-700">Descripción <span class="text-red-500">*</span></label>
         <textarea id="description" rows="3" [formField]="annotationForm.description"
           class="w-full p-4 border border-slate-200 rounded-lg text-slate-700 placeholder-slate-400 bg-white focus:border-aqua-blue focus:outline-none transition-all text-sm leading-relaxed"
           placeholder="En el paso 3 ..."></textarea>

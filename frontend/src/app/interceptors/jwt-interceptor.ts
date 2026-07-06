@@ -5,7 +5,9 @@ import { Auth } from '../services/auth.service';
 
 // Evita disparar varios /refresh.
 let isRefreshing = false;
-const refreshDone$ = new BehaviorSubject<boolean>(false);
+
+
+const refreshDone$ = new BehaviorSubject<boolean | null>(null);
 
 const AUTH_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/logout'];
 
@@ -24,16 +26,16 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (isRefreshing) {
-        // Espera a que termine el refresh en curso y reintenta.
+
         return refreshDone$.pipe(
-          filter(done => done),
+          filter(result => result !== null),
           take(1),
-          switchMap(() => next(withCreds))
+          switchMap(success => success ? next(withCreds) : throwError(() => error))
         );
       }
 
       isRefreshing = true;
-      refreshDone$.next(false);
+      refreshDone$.next(null);
 
       return auth.refreshSession().pipe(
         switchMap(() => {
@@ -43,7 +45,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
         }),
         catchError(refreshError => {
           isRefreshing = false;
-          refreshDone$.next(true);
+          refreshDone$.next(false);
           return throwError(() => refreshError);
         })
       );
