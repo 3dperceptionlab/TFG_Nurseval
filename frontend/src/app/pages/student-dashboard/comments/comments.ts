@@ -118,7 +118,7 @@ export class Comments {
       this.openNewAnnotationForm();
     }
 
-    this.annotationFormModel.update(a => ({ ...a, minute: selectedSecond }));
+    this.openNewAnnotationForm(selectedSecond);
   }
 
   onTimelineMouseMove(event: MouseEvent) {
@@ -194,11 +194,10 @@ export class Comments {
     this.annotationFormModel.update(a => ({ ...a, minute: mins * 60 + secs }));
   }
 
-  openNewAnnotationForm() {
-    this.annotationFormModel.set(
-    {
+  openNewAnnotationForm(timeToSet: number = 0) { 
+    this.annotationFormModel.set({
       id: '',
-      minute: 0,
+      minute: timeToSet, 
       title: '',
       description: '',
       type: 'error',

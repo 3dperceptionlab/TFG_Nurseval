@@ -16,8 +16,8 @@
 <div class="relative min-h-100">
   
   <div [class.opacity-40]="isLoading()" [class.pointer-events-none]="isLoading()" class="transition-opacity duration-300">
-    <app-students-table (studentUnlinked)="onFiltersChange({ query: '', course: '', group: '' }); " [students]="students()"></app-students-table>
-    <app-page-selector [actualPage]="1" [elementsPerPage]="6" [totalElements]="students.length"></app-page-selector>
+    <app-students-table (studentUnlinked)="onFiltersChange({ query: '', course: '', group: '' }); " [students]="paginatedStudents()"></app-students-table>
+    <app-page-selector [actualPage]="currentPage()" [elementsPerPage]="itemsPerPage" [totalElements]="students().length" (changePage)="currentPage.set($event)"></app-page-selector>
   </div>
 
   <!-- Spinner -->

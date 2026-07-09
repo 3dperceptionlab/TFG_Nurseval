@@ -35,8 +35,14 @@ export class StudentRecord {
   isLoading = signal<boolean>(false);
 
   filteredProcedures = computed(() => {
-    if(this.selectedKey() === "Todo") return this.studentProcedures();
-    return this.studentProcedures().filter((p) => p.protocolName === this.selectedKey());
+    const list = this.studentProcedures();
+
+    const sorted = [...list].sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+
+    if (this.selectedKey() === "Todo") return sorted;
+    return sorted.filter((p) => p.protocolName === this.selectedKey());
   });
 
   paginatedProcedures = computed(() => {
@@ -76,5 +82,5 @@ export class StudentRecord {
         this.isLoading.set(false); 
       }
     });
-}
+  }
 }

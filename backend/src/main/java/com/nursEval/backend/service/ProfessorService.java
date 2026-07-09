@@ -37,11 +37,15 @@ public class ProfessorService {
   }
 
   public Professor updateProfile(String id, UpdateProfessorProfileRquest data) {
-    Professor professor = professorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Profesor no encontrado"));
+    Professor professor = professorRepository.findById(id)
+      .orElseThrow(() -> new ResourceNotFoundException("Profesor no encontrado"));
 
-    professor.setName(data.getName());
-    professor.setSurname(data.getSurname());
-    professor.setPosition(data.getPosition());
+    if (data.getName() != null && !data.getName().isBlank()) 
+      professor.setName(data.getName());
+    if (data.getSurname() != null && !data.getSurname().isBlank()) 
+      professor.setSurname(data.getSurname());
+    if (data.getPosition() != null && !data.getPosition().isBlank()) 
+      professor.setPosition(data.getPosition());
 
     if (data.getNewpassword() != null && !data.getNewpassword().isBlank()) {
       if (!passwordEncoder.matches(data.getCurrentpassword(), professor.getPassword())) {

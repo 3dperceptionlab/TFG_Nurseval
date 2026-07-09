@@ -36,7 +36,7 @@
         <div class="flex flex-col gap-1 items-center text-center">
           <fa-icon [icon]="icons.faSquareCheck"/>
           <span class="uppercase">Estado</span>
-          <span class="green-tag uppercase">{{p.state}}</span>
+          <span class="font-semibold uppercase" [class.green-tag]="p.state === 'Evaluado'" [class.orange-tag]="p.state === 'Pendiente'">{{p.state}}</span>
         </div>
   
         <div class="flex flex-col gap-1 items-center text-center">

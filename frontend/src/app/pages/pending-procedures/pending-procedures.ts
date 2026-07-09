@@ -25,8 +25,14 @@ export class PendingProcedures {
 
   myStudentsProcedures = computed<procedureSummary[]>(() => (this.procedureService.myStudentProceduresResource.value() as procedureSummary[]) ?? [])
   filteredProcedures = computed(() => {
-    if(this.selectedKey() === "Todo") return this.myStudentsProcedures();
-    return this.myStudentsProcedures().filter((p) => p.protocolName === this.selectedKey());
+    const list = this.myStudentsProcedures();
+
+    const sorted = [...list].sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+
+    if (this.selectedKey() === "Todo") return sorted;
+    return sorted.filter((p) => p.protocolName === this.selectedKey());
   });
 
   paginatedProcedures = computed(() => {

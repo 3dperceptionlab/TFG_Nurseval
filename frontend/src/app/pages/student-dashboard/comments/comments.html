@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center mb-6">
     <h3 class="font-bold text-lg text-slate-800">Línea temporal</h3>
     @if(authService.userRole() === "professor" && !showAnnotationForm()){
-    <button (click)="openNewAnnotationForm()" class="bg-aqua-blue text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-dark-blue transition-colors cursor-pointer">
+    <button (click)="openNewAnnotationForm(currentTime())" class="bg-aqua-blue text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-dark-blue transition-colors cursor-pointer">
       <fa-icon [icon]="icons.faPlus"></fa-icon>
       Nueva nota
     </button>
@@ -113,7 +113,7 @@
     }
     @if (duration()) {
       <div 
-        class="absolute -top-1.5 h-7 w-0.5 bg-dark-blue z-100 -translate-x-1/2"
+        class="absolute -top-1.5 h-7 w-0.5 bg-dark-blue z-50 -translate-x-1/2"
         [class.pointer-events-none]="false"
         [style.left]="getNotePosition(displayedTime())">
         <div 

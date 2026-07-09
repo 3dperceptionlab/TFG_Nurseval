@@ -24,7 +24,6 @@ public interface StudentRepository extends MongoRepository<Student, String>{
   "{ 'email': { '$regex': ?0, '$options': 'i' } } " + "] }")
   List<Student> searchAllByField(String query);
 
-  // Si quieres buscar SOLO entre los alumnos de un profesor específico
   @Query("{ 'professor': ObjectId(?0), '$or': [ " +
   "{ 'name': { '$regex': ?1, '$options': 'i' } }, " +
   "{ 'surname': { '$regex': ?1, '$options': 'i' } }, " +

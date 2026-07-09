@@ -22,6 +22,14 @@ export class Students {
   isLoading = signal<boolean>(false);
   students = signal<Student[]>([]);
   showModal = signal(false);
+  currentPage = signal<number>(1);
+  itemsPerPage = 4;
+
+  paginatedStudents = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.students().slice(startIndex, endIndex);
+  });
   
   ngOnInit() {
     this.onFiltersChange({ query: '', course: '', group: '' });
