@@ -12,17 +12,20 @@ export class ProfessorService {
   
   private baseUrl = `${environment.apiUrl}/professors`;
 
+  // GET perfil profesor
   profileResource = httpResource(() => {
     return this.authService.userRole() === 'professor' 
       ? `${this.baseUrl}/profile` 
       : undefined; 
   });
+  // GET estadisticas profesor
   myStatsResource = httpResource<ProfessorStats>(() => {
     return this.authService.userRole() === 'professor' 
       ? `${this.baseUrl}/my-stats` 
       : undefined; 
   });
 
+  // PUT actualizar perfil profesor
   updateProfile(data: any): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/profile`, data);
   }

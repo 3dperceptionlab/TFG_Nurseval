@@ -12,24 +12,25 @@ export class ProcedureService {
   private baseUrl = `${environment.apiUrl}/procedures`;
 
   authService = inject(Auth);
-
-  myStudentProceduresResource = httpResource(() => {
+  // GET prácticas pendeintes de evaluar
+  pendingProceduresResource = httpResource(() => {
     return this.authService.userRole() === 'professor' ? `${this.baseUrl}/pending` : undefined; 
   });
   
+  // GET de una prácticas
   getProcedureById(id: string): Observable<ProcedureDetail> {
     return this.http.get<ProcedureDetail>(`${this.baseUrl}/${id}`);
   }
-
+  // GET mis prácticas
   getMyHistory(): Observable<procedureSummary[]> {
     return this.http.get<procedureSummary[]>(`${this.baseUrl}/my-history`);
   }
-  
+  // GET prácticas del estudiante
   getStudentProcedures(studentId: string): Observable<procedureSummary[]> {
     return this.http.get<procedureSummary[]>(`${this.baseUrl}/student/` + studentId);
   }
 
-    // POST añadir anotacion
+  // POST añadir anotacion
   addAnnotation(procedureId: string, annotation: any) {
     return this.http.post(`${this.baseUrl}/${procedureId}/annotations`, annotation);
   }

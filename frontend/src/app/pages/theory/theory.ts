@@ -21,7 +21,7 @@ export class Theory {
   selectedKey = signal<string>('Capelina');
   
   currentProtocol = computed<Protocol | undefined>(() => {
-    const all = this.protocolService.protocols();
+    const all = this.protocolService.protocols() ?? [];
     if (all.length === 0) return undefined;
 
     const encontrado = all.find(p => p.title === this.selectedKey());

@@ -3,7 +3,6 @@ package com.nursEval.backend.controller;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nursEval.backend.dtos.FinalizeEvaluationRequest;
 import com.nursEval.backend.dtos.ProcedureResponse;
 import com.nursEval.backend.dtos.SummaryProcedureResponse;
-import com.nursEval.backend.dtos.StudentResponse;
-import com.nursEval.backend.dtos.StudentStatsResponse;
 import com.nursEval.backend.dtos.auth.UserProfileResponse;
 import com.nursEval.backend.model.Procedure;
 import com.nursEval.backend.model.Professor;

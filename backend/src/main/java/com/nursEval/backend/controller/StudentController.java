@@ -57,12 +57,14 @@ public class StudentController {
 
 
   @GetMapping("/profile")
+  @PreAuthorize("hasRole('STUDENT')")
   public ResponseEntity<StudentResponse> getMyProfile(Principal principal) {
     String id = principal.getName();
     return ResponseEntity.ok(convertToStudentResponse(studentService.getStudentById(id)));
   }
 
   @PutMapping("/profile")
+  @PreAuthorize("hasRole('STUDENT')")
   public ResponseEntity<Void> updateMyProfile(
     Principal principal, 
     @Valid @RequestBody UpdateStudentProfileRequest request) {

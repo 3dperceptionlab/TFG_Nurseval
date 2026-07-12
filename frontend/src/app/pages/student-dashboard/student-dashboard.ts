@@ -12,7 +12,7 @@ import { DatePipe } from '@angular/common';
 import { Auth } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
 import { single } from 'rxjs';
-import { warningMessage } from '../../models/modals.model';
+import { warningMessage } from '../../models/warning.model';
 import { EvaluationData } from '../../models/forms.model';
 import { WarningMessage } from "../../shared/warning-message/warning-message";
 

@@ -8,34 +8,38 @@ let isRefreshing = false;
 
 
 const refreshDone$ = new BehaviorSubject<boolean | null>(null);
-
+// Rutas que no deben ser interceptadas
 const AUTH_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/logout'];
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(Auth);
 
-  // para qeu sepa que en la peticiondebe incluir las cookies.
+  // antes de enviar la peticion, le emte las cookies. Se lo aplica a todas, pero el backend ignorara a los que no tiene en su filtro (publicas)
   const withCreds = req.clone({ withCredentials: true });
 
+  // se disprara  la peticion y a la vuelta el pipe lo intercepta
   return next(withCreds).pipe(
     catchError((error: HttpErrorResponse) => {
+      // Verificamos si el error ocurrió en una ruta de autenticación.
       const isAuthEndpoint = AUTH_ENDPOINTS.some(path => req.url.includes(path));
 
+      // Si el error NO es un 401 (token caducado) o si estamos intentando hacer login/refresh, no intervenimos.
       if (error.status !== 401 || isAuthEndpoint) {
         return throwError(() => error);
       }
-
+      // Si otra petición ya disparó el refresco, pausamos esta petición
       if (isRefreshing) {
-
         return refreshDone$.pipe(
           filter(result => result !== null),
+          // Cuando deje de ser null, tomamos el valor  y cerramos la suscripción
           take(1),
+          // Si fue exitoso (true), reintentamos la petición original. Si falló (false), devolvemos error.
           switchMap(success => success ? next(withCreds) : throwError(() => error))
         );
       }
-
+      // primera peticion
       isRefreshing = true;
-      refreshDone$.next(null);
+      refreshDone$.next(null);//reiniiciar la espera
 
       return auth.refreshSession().pipe(
         switchMap(() => {

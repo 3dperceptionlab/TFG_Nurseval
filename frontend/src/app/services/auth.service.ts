@@ -14,47 +14,35 @@ export class Auth {
   private authenticated = signal<boolean>(false);
   private user = signal<User | null>(null);
 
-  private loading = signal<boolean>(true);
-
   isAuthenticated = computed(() => this.authenticated());
   currentUser = computed(() => this.user());
-  isLoading = computed(() => this.loading());
 
   userRole = computed<string>(() => {
     const user = this.currentUser();
     return user && 'role' in user ? user.role : 'guest';
   });
 
-  // Al arrancar para saber si hay sesion valida
+  // El withCredentials realmente ya lo mete ele interceptor
+
+  // Al arrancar para saber si hay sesion valida. Unico sitio con promesas
   async init(): Promise<void> {
-    this.loading.set(true);
     try {
-      const user = await firstValueFrom(
-        this.http.get<User>(`${this.baseUrl}/me`, { withCredentials: true })
-      );
+      const user = await firstValueFrom(this.http.get<User>(`${this.baseUrl}/me`));
       this.setSession(user);
     } catch {
       // El access token pudo expirar -> probamos a refrescar con el refresh token.
-      try {
-        const user = await firstValueFrom(
-          this.http.post<User>(`${this.baseUrl}/refresh`, {}, { withCredentials: true })
-        );
-        this.setSession(user);
-      } catch {
         this.clearSession();
-      }
-    } finally {
-      this.loading.set(false);
     }
   }
 
+  //GET existe email
   checkEmail(email: string) {
     return this.http.get<boolean>(`${this.baseUrl}/check-email?email=${email}`);
   }
 
   // POST login: backend fija las cookies httpOnly 
   login(credentials: any) {
-    return this.http.post<User>(`${this.baseUrl}/login`, credentials, { withCredentials: true }).pipe(
+    return this.http.post<User>(`${this.baseUrl}/login`, credentials).pipe(
       tap(user => this.setSession(user))
     );
   }
@@ -66,7 +54,7 @@ export class Auth {
 
   // Usado por el interceptor cuando una petición devuelve 401.
   refreshSession() {
-    return this.http.post<User>(`${this.baseUrl}/refresh`, {}, { withCredentials: true }).pipe(
+    return this.http.post<User>(`${this.baseUrl}/refresh`, {}).pipe(
       tap(user => this.setSession(user)),
       catchError(err => {
         this.clearSession();
@@ -75,10 +63,10 @@ export class Auth {
       })
     );
   }
-
+  
   logout() {
-    return this.http.post(`${this.baseUrl}/logout`, {}, { withCredentials: true }).pipe(
-      switchMap(() => of(void 0)),
+    return this.http.post(`${this.baseUrl}/logout`, {}).pipe(
+      switchMap(() => of(void 0)), // ignora la respuesta y devuelve un "undefeined", tambien se puede map(() => undefined)
       tap(() => this.clearSession()),
       catchError(() => {
         this.clearSession();

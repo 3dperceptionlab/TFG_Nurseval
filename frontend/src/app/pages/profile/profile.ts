@@ -55,7 +55,7 @@ export class Profile {
   });
 
   byProtocolFull = computed(() => {
-    const protocols = this.protocolService.protocolkeys();
+    const protocols = this.protocolService.protocolkeys() ?? [];
     const real = this.stats()?.byProtocol ?? [];
     return protocols.map((name) => {
       const found = real.find((p: any) => p.protocolName === name);

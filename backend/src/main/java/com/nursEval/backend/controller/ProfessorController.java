@@ -40,12 +40,14 @@ public class ProfessorController {
   }
 
   @GetMapping("/profile")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<ProfessorResponse> getMyProfile(Principal principal) {
     String id = principal.getName();
     return ResponseEntity.ok(convertToResponse(professorService.getProfessorById(id)));
   }
  
   @PutMapping("/profile")
+  @PreAuthorize("hasRole('PROFESSOR')")
   public ResponseEntity<ProfessorResponse> updateMyProfile(
     Principal principal, 
     @Valid @RequestBody UpdateProfessorProfileRquest request) {

@@ -23,7 +23,7 @@ export class PendingProcedures {
   procedureService = inject(ProcedureService);
   protocolService = inject(ProtocolService);
 
-  myStudentsProcedures = computed<procedureSummary[]>(() => (this.procedureService.myStudentProceduresResource.value() as procedureSummary[]) ?? [])
+  myStudentsProcedures = computed<procedureSummary[]>(() => (this.procedureService.pendingProceduresResource.value() as procedureSummary[]) ?? [])
   filteredProcedures = computed(() => {
     const list = this.myStudentsProcedures();
 
@@ -41,5 +41,5 @@ export class PendingProcedures {
     return this.filteredProcedures().slice(startIndex, endIndex);
   });
   
-  isLoading = computed(() => this.procedureService.myStudentProceduresResource.isLoading());
+  isLoading = computed(() => this.procedureService.pendingProceduresResource.isLoading());
 }

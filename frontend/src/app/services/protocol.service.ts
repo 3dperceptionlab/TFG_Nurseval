@@ -8,16 +8,10 @@ export class ProtocolService {
   http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/protocols`;
 
-  protocols = computed<Protocol[]>(() => (this.protocolsResource.value() as Protocol[]) ?? []);
-  protocolkeys = computed(() => {
-    return this.protocols().map(protocol => protocol.title);
-  });
+  // GET protocolos
+  protocolsResource = httpResource<Protocol[]>(() => this.baseUrl);
 
-  selectedProtocolId = signal<string | null>(null); 
-
-  protocolsResource = httpResource(() => this.baseUrl);
-  protocolResource = httpResource(() => {
-    return this.selectedProtocolId() ? `${this.baseUrl}/${this.selectedProtocolId()}` : undefined; 
-  });
+  protocols = this.protocolsResource.value;
+  protocolkeys = computed(() => {return this.protocols() ? this.protocols()?.map(p => p.title) : [];});
   
 }
