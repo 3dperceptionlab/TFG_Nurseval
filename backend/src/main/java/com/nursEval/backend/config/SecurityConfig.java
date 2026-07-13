@@ -46,7 +46,8 @@ public class SecurityConfig {
           "/api/auth/register", 
           "/api/auth/check-email",
           "/api/auth/refresh", 
-          "/api/auth/logout").permitAll()
+          "/api/auth/logout",
+          "/api/chatbot/**").permitAll()
         .anyRequest().authenticated()
       )
     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
