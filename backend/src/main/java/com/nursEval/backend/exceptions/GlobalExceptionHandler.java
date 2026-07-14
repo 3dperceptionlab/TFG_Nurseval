@@ -172,6 +172,19 @@ public class GlobalExceptionHandler {
       .build();
   }
 
+  // --------- ERRORES 502 - BAD GATEWAY ---------
+
+  @ExceptionHandler(DialogflowIntegrationException.class)
+  @ResponseStatus(HttpStatus.BAD_GATEWAY)
+  public ApiErrorResponse handleDialogflowIntegration(DialogflowIntegrationException ex) {
+    return ApiErrorResponse.builder()
+      .status("KO")
+      .statusCode(HttpStatus.BAD_GATEWAY.value())
+      .message(ex.getMessage())
+      .timestamp(LocalDateTime.now())
+      .build();
+  }
+
   // --------- ERRORES 500 - INTERNAL SERVER ERROR ---------
 
   @ExceptionHandler(Exception.class)

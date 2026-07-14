@@ -1,0 +1,121 @@
+@if (!isOpen()) {
+  <button
+    (click)="toggleOpen()"
+    aria-label="Abrir chat"
+    class="fixed z-50 bottom-6 right-6 w-16 h-16 rounded-full bg-aqua-blue text-white shadow-lg flex items-center justify-center cursor-pointer hover:bg-dark-blue transition-colors">
+    <fa-icon [icon]="icons.faComment" [size]="'xl'" />
+  </button>
+}
+
+@if (isOpen()) {
+  <div
+    class="fixed z-50 bottom-6 right-6 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden"
+    [style.width.px]="width()"
+    [style.height.px]="height()">
+
+    <!-- Asa de redimensionado -->
+    <div
+      (pointerdown)="onResizeStart($event)"
+      aria-hidden="true"
+      class="absolute top-0 left-0 w-4 h-4 z-20 cursor-nwse-resize"
+      style="touch-action: none; clip-path: polygon(0 0, 100% 0, 0 100%); background: rgba(255,255,255,0.35);">
+    </div>
+
+    <!-- Cabecera -->
+    <div class="flex items-center justify-between px-4 py-3 bg-dark-blue text-white shrink-0">
+      <span class="font-semibold">Fellow</span>
+      <div class="flex items-center gap-3">
+        <button (click)="resetConversation()" aria-label="Reiniciar conversación" title="Reiniciar conversación"
+          class="cursor-pointer hover:opacity-75 transition-opacity">
+          <fa-icon [icon]="icons.faArrowRotateLeft" />
+        </button>
+        <button (click)="toggleOpen()" aria-label="Cerrar chat" title="Cerrar chat"
+          class="cursor-pointer hover:opacity-75 transition-opacity">
+          <fa-icon [icon]="icons.faXmark" size="lg" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div #messagesContainer class="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-background">
+      @for (message of messages(); track message.id) {
+        <div class="flex" [class.justify-end]="message.sender === 'user'">
+          <div
+            class="max-w-[85%] rounded-lg px-3 py-2 text-sm"
+            [class.bg-light-blue]="message.sender === 'user'"
+            [class.text-slate-800]="message.sender === 'user'"
+            [class.bg-white]="message.sender === 'bot'"
+            [class.border]="message.sender === 'bot'"
+            [class.border-blue-shadow]="message.sender === 'bot'">
+
+            @if (message.text) {
+              <p class="whitespace-pre-line">{{ message.text }}</p>
+            }
+
+            @for (block of message.richContent; track $index) {
+              @switch (block.type) {
+                @case ('image') {
+                  <img [src]="block.rawUrl" class="w-full rounded-md my-2" alt="" />
+                }
+                @case ('info') {
+                  <div class="my-1">
+                    <p class="font-semibold text-slate-800">{{ block.title }}</p>
+                    @if (block.subtitle) {
+                      <p class="text-slate-600">{{ block.subtitle }}</p>
+                    }
+                  </div>
+                }
+                @case ('description') {
+                  <div class="my-1">
+                    @if (block.title) {
+                      <p class="font-semibold text-slate-800">{{ block.title }}</p>
+                    }
+                    @for (line of block.text; track $index) {
+                      <p class="whitespace-pre-line text-slate-700">{{ line }}</p>
+                    }
+                  </div>
+                }
+                @case ('divider') {
+                  <hr class="my-2 border-slate-200" />
+                }
+                @case ('chips') {
+                  <div class="flex flex-wrap gap-2 my-1">
+                    @for (option of block.options; track option.text) {
+                      <button (click)="onChipClick(option.text)"
+                        class="text-xs px-3 py-1.5 rounded-full border border-aqua-blue text-dark-blue cursor-pointer hover:bg-light-blue transition-colors">
+                        {{ option.text }}
+                      </button>
+                    }
+                  </div>
+                }
+              }
+            }
+          </div>
+        </div>
+      }
+
+      @if (isSending()) {
+        <div class="flex">
+          <div class="max-w-[85%] rounded-lg px-3 py-2 text-sm bg-white border border-blue-shadow text-slate-500">
+            Escribiendo…
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Input -->
+    <form (ngSubmit)="sendMessage()" class="flex items-center gap-2 px-3 py-3 border-t border-slate-200 shrink-0">
+      <input
+        type="text"
+        name="draft"
+        placeholder="Escribe un mensaje..."
+        [(ngModel)]="draft"
+        [disabled]="isSending()"
+        class="flex-1 text-sm text-slate-800 rounded-lg px-3 py-2.5 outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-aqua-blue" />
+      <button type="submit" aria-label="Enviar mensaje" [disabled]="isSending() || !draft().trim()"
+        class="w-10 h-10 shrink-0 rounded-full bg-dark-blue text-white flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-aqua-blue transition-colors">
+        <fa-icon [icon]="icons.faPaperPlane" class="mt-1"/>
+      </button>
+    </form>
+  </div>
+}
