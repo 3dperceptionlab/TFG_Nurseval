@@ -161,15 +161,15 @@ public class GlobalExceptionHandler {
 
   // --------- ERRORES 409 - CONFLICT ---------
 
-  @ExceptionHandler(org.springframework.dao.DuplicateKeyException.class)
+  @ExceptionHandler(EmailAlreadyExistsException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
-  public ApiErrorResponse handleDuplicateKey(org.springframework.dao.DuplicateKeyException ex) {
-    return ApiErrorResponse.builder()
-      .status("KO")
-      .statusCode(HttpStatus.CONFLICT.value())
-      .message("El email ya está registrado")
-      .timestamp(LocalDateTime.now())
-      .build();
+  public ApiErrorResponse handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
+      return ApiErrorResponse.builder()
+        .status("KO")
+        .statusCode(HttpStatus.CONFLICT.value())
+        .message("El email ya está registrado")
+        .timestamp(LocalDateTime.now())
+        .build();
   }
 
   // --------- ERRORES 502 - BAD GATEWAY ---------

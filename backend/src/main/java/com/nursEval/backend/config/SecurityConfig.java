@@ -47,7 +47,8 @@ public class SecurityConfig {
           "/api/auth/check-email",
           "/api/auth/refresh", 
           "/api/auth/logout",
-          "/api/chatbot/**").permitAll()
+          "/api/chatbot/**",
+          "/error").permitAll()
         .anyRequest().authenticated()
       )
     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -65,7 +66,9 @@ public class SecurityConfig {
     config.setAllowedOrigins(List.of(
         "http://localhost:4200", 
         "https://apidog.com", 
-        "https://www.apidog.com"
+        "https://www.apidog.com",
+        "http://localhost:8082",
+        "http://localhost:55862"
     ));
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
     config.setAllowedHeaders(List.of("*"));
