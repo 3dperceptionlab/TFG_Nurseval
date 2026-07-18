@@ -45,7 +45,7 @@
       @if(!isProfessor()){
         <p class="text-slate-600"><span class="font-semibold text-slate-800">Curso:</span> {{ userData().course ?? '-' }}</p>
         <p class="text-slate-600"><span class="font-semibold text-slate-800">Grupo:</span> {{ userData().group ?? '-' }}</p>
-        <p class="text-slate-600"><span class="font-semibold text-slate-800">Profesor:</span> {{ userData().professor ?? 'Sin asignar' }}</p>
+        <p class="text-slate-600"><span class="font-semibold text-slate-800">Profesor:</span> {{ userData().professorName }}</p>
       }@else {
         <p class="text-slate-600"><span class="font-semibold text-slate-800">Cargo:</span> {{ userData().position }}</p>
         <p class="text-slate-600"><span class="font-semibold text-slate-800">Alumnos:</span> {{ stats().totalStudents ?? 0 }}</p>

@@ -137,14 +137,17 @@ export class VideoSection implements OnDestroy {
   private projectGaze(frame: HololensFrame): { x: number; y: number } | null {
     const dir = frame.eyeTrackerDir;
     if (!dir || dir.z === 0) return null;
-
+    
     // División de perspectiva: -dir.z es la componente delante
     const projX = dir.x / -dir.z;
     const projY = dir.y / -dir.z;
 
-    const fov = this.gazeFovScale();
-    const nx = 0.5 + (projX / fov) * 0.5;
-    const ny = 0.5 - (projY / fov) * 0.5; // invertido: Y positivo suele ser arriba
+    const fov = 1.3; 
+    let nx = 0.5 + (projX / fov);
+    let ny = 0.5 - (projY / fov);
+
+    // bajar un poco el punto porque la camra está arriba
+    ny = ny + 0.1; 
 
     return {
       x: Math.min(1, Math.max(0, nx)),
