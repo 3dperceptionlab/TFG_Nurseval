@@ -43,7 +43,11 @@
 
 </div>
 
-<app-evaluation (onChangeMark)="onChangeMark($event)" [globalMetrics]="procedure()?.globalMetrics!"></app-evaluation>
+<app-evaluation 
+(onChangeMark)="onChangeMark($event)" 
+[globalMetrics]="procedure()?.globalMetrics!"
+[duration]="videoDuration() ?? procedure()?.globalMetrics?.duration">
+</app-evaluation>
 
 <app-video-section
   [videoUrl]="procedure()?.video"

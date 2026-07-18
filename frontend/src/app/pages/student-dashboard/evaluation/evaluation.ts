@@ -21,6 +21,8 @@ export class Evaluation {
   tempMark = signal<number>(0);
   globalMetrics = input.required<GlobalMetrics>();
 
+  duration = input<number>();
+
   onChangeMark = output<number>();
   onChangeComment = output<string>();
 
