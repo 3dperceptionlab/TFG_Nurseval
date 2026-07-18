@@ -127,7 +127,7 @@ export class EditForm {
         }, 2000);
 
       } catch (error: any) {
-        this.warningMessage.set({ show: true, type: 'error', title: 'Error', message: error?.error ?? 'No se pudieron guardar los cambios.' });
+        this.warningMessage.set({ show: true, type: 'error', title: 'Error', message: error?.error.message ?? 'No se pudieron guardar los cambios.' });
         setTimeout(() => this.clearMessage(), 4000);
       }
     });
